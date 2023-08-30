@@ -19,6 +19,10 @@ class Tenants extends Model
 
     public function kelola(){
         // tenant dapat mengrlola banyak makanan
-        // return $this->hasMany();
+        return $this->hasMany(MenusKelola::class, 'tenant_id');
+    }
+    public function listMenu(){
+        // tenant memiliki banyak menu
+        return $this->belongsToMany(Menus::class, 'menus_kelola', 'tenant_id', 'menu_id');
     }
 }

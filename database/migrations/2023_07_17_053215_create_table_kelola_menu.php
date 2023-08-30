@@ -13,7 +13,7 @@ class CreateTableKelolaMenu extends Migration
      */
     public function up()
     {
-        Schema::create('kelola_menu', function (Blueprint $table) {
+        Schema::create('menus_kelola', function (Blueprint $table) {
             $table->id();
             $table->integer('harga');
             $table->string('gambar');
