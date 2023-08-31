@@ -28,6 +28,6 @@ class CreateTableListMenu extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_list_menu');
+        Schema::dropIfExists('menus');
     }
 }

@@ -22,7 +22,7 @@ class CreateTableKelolaMenu extends Migration
             $table->softDeletes();
 
             $table->foreign('tenant_id')->references('id')->on('tenants');
-            $table->foreign('menu_id')->references('id')->on('list_menu');
+            $table->foreign('menu_id')->references('id')->on('menus');
             $table->timestamps();
         });
     }
@@ -34,6 +34,6 @@ class CreateTableKelolaMenu extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_kelola_menu');
+        Schema::dropIfExists('menus_kelola');
     }
 }

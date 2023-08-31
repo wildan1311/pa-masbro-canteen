@@ -31,6 +31,6 @@ class CreateTableTenants extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_tenants');
+        Schema::dropIfExists('tenants');
     }
 }
