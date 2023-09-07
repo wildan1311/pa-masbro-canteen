@@ -101,7 +101,7 @@ class UserController extends Controller
             return response()->json($valdidator->errors());
         }
 
-        $updated = User::where('id', $id)->d($request);
+        $updated = User::where('id', $id)->update($request->all());
 
         if(!$updated){
             return response()->json(['messages' => 'Update Gagal']);

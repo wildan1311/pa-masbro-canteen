@@ -15,7 +15,7 @@ class AuthController extends Controller
         $validate = Validator::make($request->all(), [
             'email' => 'required|unique:users,email',
             'password' => 'required',
-            'nama' => 'required'
+            'name' => 'required'
         ]);
 
         if($validate->fails()){
@@ -26,8 +26,8 @@ class AuthController extends Controller
 
         // User Management
         $newUser = User::create([
-            'nama' => $request->nama,
-            'email' => $request->nama,
+            'name' => $request->name,
+            'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
@@ -35,7 +35,7 @@ class AuthController extends Controller
         $token = $newUser->createToken('secret')->plainTextToken;
 
         return response()->json([
-            'nama' => $newUser->nama,
+            'name' => $newUser->name,
             'token' => $token,
             'token_type' => 'Bearer'
         ]);
@@ -47,11 +47,11 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $user = User::where('email', $request->email);
+        $user = User::where('email', $request->email)->first();
         $token = $user->createToken('secret')->plainTextToken;
 
         return response()->json([
-            'nama' => $user->nama,
+            'nama' => $user->name,
             'token' => $token,
             'token_type' => 'Bearer'
         ]);

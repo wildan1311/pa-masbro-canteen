@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,7 +24,8 @@ Route::middleware('auth:sanctum')->namespace('Tenant')->prefix('tenants')->group
     Route::get('/', 'Tenant\TenantController@getAll');
 });
 
-Route::post('login', 'Api\AuthController@login');
-Route::post('register', 'Api\AuthController@register');
-Route::post('logout', 'Api\AuthController@logout');
+Route::post('login', [AuthController::class, 'login']);
+Route::post('register', [AuthController::class, 'register']);
+Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
+Route::resource('user', UserController::class);
