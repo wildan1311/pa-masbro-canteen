@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Tenant\TenantController;
+use App\Http\Controllers\Transaksi\TransaksiController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,3 +31,13 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::resource('user', UserController::class);
+
+Route::get('/tenants', [TenantController::class, 'getAll']);
+Route::get('/tenants/{TenantId}', [TenantController::class, 'getSpecificTenant']);
+Route::post('/order', [TransaksiController::class, 'store']);
+Route::post('/order/detail', [TransaksiController::class, 'store'])->name('');
+
+// Midtrans
+Route::post('/getSnapToken', function(){
+    
+});

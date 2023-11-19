@@ -12,11 +12,11 @@ use Psr\Http\Message\ResponseInterface;
 class TransaksiDetailController extends Controller
 {
     public function store(Request $request, Transaksi $transaksi){
-        $validator = Validator::make($request->only(['menu']), [
+        $validator = Validator::make($request->only(['menus']), [
             'menus' => ['required', 'exists:menus,id', 'array'],
-            'menus.*.id' => ['required', 'numeric'],
-            'menus.*.jumlah' => ['required', 'numeric'],
-            'menus.*.harga' => ['required', 'numeric'],
+            'menus.id' => ['required', 'numeric'],
+            'menus.jumlah' => ['required', 'numeric'],
+            'menus.harga' => ['required', 'numeric'],
         ]);
 
         if($validator->fails()){

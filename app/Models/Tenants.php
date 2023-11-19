@@ -15,7 +15,7 @@ class Tenants extends Model
         'nama_tenant',
         'nama_kavling',
         'nama_gambar',
-        'nama_jam',
+        'jam',
     ];
 
     public function kelola(){
@@ -24,6 +24,6 @@ class Tenants extends Model
     }
     public function listMenu(){
         // tenant memiliki banyak menu
-        return $this->belongsToMany(Menus::class, 'menus_kelola', 'tenant_id', 'menu_id');
+        return $this->belongsToMany(Menus::class, 'menus_kelola', 'tenant_id', 'menu_id')->withPivot(['harga', 'gambar'])->as('detail_menu');
     }
 }

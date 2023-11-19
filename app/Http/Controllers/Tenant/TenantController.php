@@ -10,16 +10,14 @@ use Psr\Http\Message\ResponseInterface;
 class TenantController extends Controller
 {
     public function getAll(){
-        $tenants = Tenants::with(['listMenu' => function($query) {
-            $query->limit(5);
-        }])->get();
+        $tenants = Tenants::with(['listMenu'])->get();
 
-        return response()->json(compact($tenants));
+        return response()->json(compact('tenants'));
     }
 
-    public function getSpecificTenant($id){
-        $tenants = Tenants::find($id)->with(['listMenu'])->get();
+    public function getSpecificTenant($TenantId){
+        $tenant = Tenants::with(['listMenu'])->find($TenantId);
 
-        return response()->json(compact($tenants));
+        return response()->json(compact('tenant'));
     }
 }
