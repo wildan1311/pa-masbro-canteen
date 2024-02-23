@@ -35,7 +35,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('update-tenant-menu', [MenusKelolaPolicy::class, 'update']);
         Gate::define('delete-tenant-menu', [MenusKelolaPolicy::class, 'delete']);
 
-        Gate::define('update-tenant', [MenusKelolaPolicy::class, 'update']);
-        Gate::define('delete-tenant', [MenusKelolaPolicy::class, 'delete']);
+        // Gate::define('update-tenant', [MenusKelolaPolicy::class, 'update']);
+        // Gate::define('delete-tenant', [MenusKelolaPolicy::class, 'delete']);
     }
 }

@@ -16,7 +16,8 @@ class MenusKelola extends Model
         'harga',
         'gambar',
         'tenant_id',
-        'menu_id'
+        'menu_id',
+        'isReady'
     ];
 
     public function menus(){

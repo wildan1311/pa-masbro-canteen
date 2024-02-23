@@ -11,14 +11,16 @@ class TransaksiDetail extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'transaksi_detail';
-    protected $fillable=[
-        'menu_id',
+    protected $fillable = [
+        'menus_kelola_id',
         'transaksi_id',
         'jumlah',
         'harga',
     ];
 
-    public function transaksi(){
+    public function transaksi()
+    {
         return $this->belongsTo(Transaksi::class, 'transaksi_id');
     }
+
 }

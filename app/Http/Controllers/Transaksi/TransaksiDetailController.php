@@ -47,4 +47,21 @@ class TransaksiDetailController extends Controller
             'data' => $transaksiDetail
         ]);
     }
+
+    public function updateTransaksi(Request $request, $id){
+        $user = $request->user();
+        $transaksiDetail = TransaksiDetail::with('transaksi')->find($id);
+
+        $transaksiDetail->status = $request->status;
+        $transaksiDetail->save();
+
+        // push notification firebase ke akun user dan yang bersangkutan (ke tenant atau ke masbro)
+        // device token bisa dapat dari var $user
+
+        return response()->json([
+            "status" => "success",
+            "message" => "berhasil update data",
+            "data" => $transaksiDetail
+        ]);
+    }
 }

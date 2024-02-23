@@ -24,6 +24,6 @@ class Tenants extends Model
     }
     public function listMenu(){
         // tenant memiliki banyak menu
-        return $this->belongsToMany(Menus::class, 'menus_kelola', 'tenant_id', 'menu_id')->withPivot(['harga', 'gambar'])->as('detail_menu');
+        return $this->belongsToMany(Menus::class, 'menus_kelola', 'tenant_id', 'menu_id')->withPivot(['harga', 'gambar', 'id', 'isReady'])->wherePivot('deleted_at', null)->as('detail_menu');
     }
 }

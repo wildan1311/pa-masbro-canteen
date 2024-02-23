@@ -41,9 +41,9 @@ class MenusKelolaPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user, MenusKelola $menusKelola)
+    public function create(User $user, Tenants $tenant)
     {
-        return $user->id === $menusKelola->user_id
+        return $user->id === $tenant->user_id
                 ? Response::allow()
                 : Response::deny('Anda bukan pemilik tenant ini');
     }

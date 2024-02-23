@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+// use Silber\Bouncer\Bouncer;
+use Silber\Bouncer\BouncerFacade;
 
 class AuthController extends Controller
 {
@@ -15,7 +17,8 @@ class AuthController extends Controller
         $validate = Validator::make($request->all(), [
             'email' => 'required|unique:users,email',
             'password' => 'required',
-            'name' => 'required'
+            'name' => 'required',
+            'role' => 'required'
         ]);
 
         if($validate->fails()){
@@ -33,6 +36,9 @@ class AuthController extends Controller
 
         // Token Management
         $token = $newUser->createToken('secret')->plainTextToken;
+
+        // Assign Role
+        BouncerFacade::assign($request->role)->to($newUser);
 
         return response()->json([
             'name' => $newUser->name,
@@ -53,7 +59,9 @@ class AuthController extends Controller
         return response()->json([
             'nama' => $user->name,
             'token' => $token,
-            'token_type' => 'Bearer'
+            'token_type' => 'Bearer',
+            'role' => $user->getRoles(),
+            'abilities' => $user->getAbilities(),
         ]);
     }
     public function logout(Request $request){

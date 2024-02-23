@@ -22,8 +22,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:sanctum')->namespace('Tenant')->prefix('tenants')->group(function (){
-    Route::get('/', 'Tenant\TenantController@getAll');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/tenants', [TenantController::class, 'getAll']);
+    Route::get('/tenants/{TenantId}', [TenantController::class, 'getSpecificTenant']);
+    Route::post('/order', [TransaksiController::class, 'store']);
+    Route::post('/order/detail', [TransaksiController::class, 'store'])->name('');
 });
 
 Route::post('login', [AuthController::class, 'login']);
@@ -32,12 +35,27 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanct
 
 Route::resource('user', UserController::class);
 
-Route::get('/tenants', [TenantController::class, 'getAll']);
-Route::get('/tenants/{TenantId}', [TenantController::class, 'getSpecificTenant']);
-Route::post('/order', [TransaksiController::class, 'store']);
-Route::post('/order/detail', [TransaksiController::class, 'store'])->name('');
-
 // Midtrans
-Route::post('/getSnapToken', function(){
-    
+Route::post('/getSnapToken', function () {
+    // Set your Merchant Server Key
+    \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY_DEV');
+    // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+    \Midtrans\Config::$isProduction = false;
+
+    $params = array(
+        'transaction_details' => array(
+            'order_id' => rand(),
+            'gross_amount' => 10000,
+        ),
+        'customer_details' => array(
+            'first_name' => 'budi',
+            'last_name' => 'pratama',
+            'email' => 'budi.pra@example.com',
+            'phone' => '08111222333',
+        ),
+    );
+
+    $response = \Midtrans\Snap::createTransaction($params);
+
+    return response()->json($response);
 });
