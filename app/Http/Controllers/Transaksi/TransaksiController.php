@@ -51,10 +51,9 @@ class TransaksiController extends Controller
 
         if ($success) {
             // do midtrans
-            $transaksi = Transaksi::with(['user', 'listTransaksiDetail'])->where('id', $transaksi->id)->first();
+            $transaksi = Transaksi::with(['user', 'listTransaksiDetail.menusKelola.menus'])->where('id', $transaksi->id)->first();
             $midtrans = new Midtrans();
             $snapMidtrans = $midtrans->createSnapTransaction($transaksi);
-            // dd($transaksi);
             // \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY_DEV');
             // \Midtrans\Config::$isProduction = false;
 

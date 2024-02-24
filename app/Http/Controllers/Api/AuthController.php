@@ -38,7 +38,8 @@ class AuthController extends Controller
         $token = $newUser->createToken('secret')->plainTextToken;
 
         // Assign Role
-        BouncerFacade::assign($request->role)->to($newUser);
+        // BouncerFacade::assign($request->role)->to($newUser);
+        $newUser->assignRole('user');
 
         return response()->json([
             'name' => $newUser->name,
@@ -60,8 +61,8 @@ class AuthController extends Controller
             'nama' => $user->name,
             'token' => $token,
             'token_type' => 'Bearer',
-            'role' => $user->getRoles(),
-            'abilities' => $user->getAbilities(),
+            'role' => $user->getRoleNames(),
+            // 'abilities' => $user->getAbilities(),
         ]);
     }
     public function logout(Request $request){

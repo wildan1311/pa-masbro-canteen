@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\RuanganController;
 use App\Http\Controllers\Tenant\TenantController;
 use App\Http\Controllers\Transaksi\TransaksiController;
 use App\Http\Controllers\User\UserController;
@@ -27,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/tenants/{TenantId}', [TenantController::class, 'getSpecificTenant']);
     Route::post('/order', [TransaksiController::class, 'store']);
     Route::post('/order/detail', [TransaksiController::class, 'store'])->name('');
+    Route::get('/ruangan', [RuanganController::class, 'index']);
 });
 
 Route::post('login', [AuthController::class, 'login']);
@@ -38,7 +40,7 @@ Route::resource('user', UserController::class);
 // Midtrans
 Route::post('/getSnapToken', function () {
     // Set your Merchant Server Key
-    \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY_DEV');
+    \Midtrans\Config::$serverKey = 'SB-Mid-server-VVST_NSHtMMRxUO6Wm768Ejv';
     // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
     \Midtrans\Config::$isProduction = false;
 

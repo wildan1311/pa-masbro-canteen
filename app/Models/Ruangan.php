@@ -14,6 +14,14 @@ class Ruangan extends Model
         'nama', 'gedung_id'
     ];
 
+    public $appends = [
+        'nama_ruangan'
+    ];
+
+    public function getNamaRuanganAttribute(){
+        return $this->nama . ' - ' . $this->gedung->nama;
+    }
+
     public function gedung(){
         return $this->belongsTo(Gedung::class);
     }

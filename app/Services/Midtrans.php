@@ -14,6 +14,7 @@ class Midtrans
     private $isSanitized;
     private $is3ds;
     private $transaksi;
+    private $clientKey;
 
     public function __construct()
     {
@@ -21,16 +22,17 @@ class Midtrans
         $this->isProduction = config('midtrans.is_production');
         $this->isSanitized = config('midtrans.is_sanitized');
         $this->is3ds = config('midtrans.is_3ds');
+        $this->clientKey = config('midtrans.client_key');
 
         $this->__configureMidtrans();
     }
 
     public function __configureMidtrans()
     {
-        Config::$serverKey = $this->serverKey;
-        Config::$isProduction = $this->isProduction;
-        Config::$isSanitized = $this->isSanitized;
-        Config::$is3ds = $this->is3ds;
+        \Midtrans\Config::$serverKey = $this->serverKey;
+        \Midtrans\Config::$isProduction = $this->isProduction;
+        \Midtrans\Config::$isSanitized = $this->isSanitized;
+        \Midtrans\Config::$is3ds = $this->is3ds;
     }
 
     public function createParams()
@@ -44,13 +46,14 @@ class Midtrans
 
     public function getTransaksiItemsDetail()
     {
+        // dd($this->transaksi);
         $itemsDetail = $this->transaksi->listTransaksiDetail->map(function ($item) {
             return [
                 "id" => $item->id,
                 "price" => $item->harga,
                 "quantity" => $item->jumlah,
+                "name" => $item->menusKelola->menus->nama
                 // "merchant_name" =>
-                // "name"
             ];
         });
         return $itemsDetail;

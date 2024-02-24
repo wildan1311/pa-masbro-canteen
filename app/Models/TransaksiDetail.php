@@ -23,4 +23,7 @@ class TransaksiDetail extends Model
         return $this->belongsTo(Transaksi::class, 'transaksi_id');
     }
 
+    public function menusKelola(){
+        return $this->belongsTo(MenusKelola::class, 'menus_kelola_id', 'id');
+    }
 }

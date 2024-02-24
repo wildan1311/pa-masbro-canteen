@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Kelola;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tenants;
+use App\Models\Transaksi;
 use App\Models\TransaksiDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -47,7 +48,7 @@ class TenantOrderController extends Controller
         }
     }
 
-    public function acceptOrRejectOrder(Request $request, $transaksiDetailId){
+    public function update(Request $request, $transaksiDetailId){
         $transaksiDetail = TransaksiDetail::find($transaksiDetailId);
 
         $validator = Validator::make($request->all(), [
@@ -63,11 +64,38 @@ class TenantOrderController extends Controller
 
         $transaksiDetail->status = $request->status;
         $transaksiDetail->save();
+        $transaksi = $transaksiDetail->transaksi;
 
         // firebase notification to bersangkutan
         if($transaksiDetail->status == 'pesanan_ditolak'){
-            // kirim ke user
-            // bingung : gimana cara nolaknya, kan yg ditolak menunya,
+            // todo : refund
+        }
+
+        if($transaksiDetail->status == 'pesanan_diterima'){
+            $banyak_transaksi_yang_diterima = Transaksi::withCount(['listTransaksiDetail' => function($query){
+                $query->where('status', 'pesanan_diterima');
+            }])->find($transaksi->id)->list_transaksi_detail_count;
+
+            if($transaksi->listTransaksiDetail->count() == $banyak_transaksi_yang_diterima){
+                $transaksi->update(['status'=>'sedang_diolah']);
+                // todo : notif ke user
+            }
+        }
+
+        if($transaksiDetail->status == 'selesai'){
+            $banyak_transaksi_yang_selesai = Transaksi::withCount(['listTransaksiDetail' => function($query){
+                $query->where('status', 'selesai');
+            }])->find($transaksi->id)->list_transaksi_detail_count;
+
+            if($transaksi->listTransaksiDetail->count() == $banyak_transaksi_yang_selesai){
+                if($transaksi->isAntar){
+                    $transaksi->update(['status'=>'siap_diantar']);
+                    // todo : notif ke masbro
+                }else{
+                    $transaksi->update(['status'=>'selesai']);
+                    // todo : notif ke user
+                }
+            }
         }
 
         return response()->json([
