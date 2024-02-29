@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Konfigurrasi\Menu;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -55,14 +57,32 @@ class AuthController extends Controller
         }
 
         $user = User::where('email', $request->email)->first();
-        $token = $user->createToken('secret')->plainTextToken;
+        // $menu = Menu::with('subMenus')->whereHas('permissions.roles.users', function($query) use ($user){
+        //     $query->where('model_id', $user->id);
+        // })->whereNull('main_menu_id')->get();
+
+        $menu = Menu::get();
+
+        $role = Role::findByName('user');
+        $role->revokePermissionTo('read /katalog/pesan/antar');
+
+        $menu = $menu->filter(function($mm) use($user){
+            if($user->hasPermissionTo('read '.$mm->url)){
+                return $mm;
+            }
+        })->values();
+
+        $permission = ($user->getPermissionsViaRoles()->pluck('name')->toArray());
+
+        $token = $user->createToken('secret', $permission)->plainTextToken;
 
         return response()->json([
             'nama' => $user->name,
             'token' => $token,
             'token_type' => 'Bearer',
             'role' => $user->getRoleNames(),
-            // 'abilities' => $user->getAbilities(),
+            'menu' => $menu,
+            'permission' => $permission,
         ]);
     }
     public function logout(Request $request){

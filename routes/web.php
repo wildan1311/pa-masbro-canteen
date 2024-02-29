@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Web\Konfigurasi\MenuController;
+use App\Http\Controllers\Web\Konfigurasi\PermissionController;
+use App\Http\Controllers\Web\Konfigurasi\RoleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,5 +23,17 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
+
+Route::middleware('auth')->group(function(){
+
+    Route::resource('menu', MenuController::class);
+    Route::resource('role', RoleController::class);
+    Route::get('role/{id}/permission', [RoleController::class, 'removePermission'])->name('role.destroy.permission');
+    Route::resource('permission', PermissionController::class);
+
+    // Route::group(['prefix' => 'konfigurasi', 'as' => 'konfigurasi.'], function(){
+    //     Route::resource('menu', MenuController::class);
+    // });
+});
 
 require __DIR__.'/auth.php';

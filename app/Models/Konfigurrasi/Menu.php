@@ -10,6 +10,7 @@ class Menu extends Model
 {
     use HasFactory;
     protected $table = 'menu';
+    protected $fillable = ['name', 'category', 'url_server', 'url_aplikasi', 'urutan', 'aktif', 'main_menu_id'];
     protected $guard = ['id'];
 
     public function subMenus(){

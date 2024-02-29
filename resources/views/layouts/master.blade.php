@@ -14,6 +14,9 @@
     <link rel="stylesheet" href="{{asset('')}}vendor/themify-icons/themify-icons.css">
     <link rel="stylesheet" href="{{asset('')}}vendor/perfect-scrollbar/css/perfect-scrollbar.css">
 
+    <link href="{{asset('')}}vendor/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    <link href="{{asset('')}}vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css" rel="stylesheet" />
+
     <!-- CSS for this page only -->
     @stack('cssLibrary')
     {{-- <link rel="stylesheet" href="{{asset('')}}vendor/chart.js/Chart.min.css"> --}}
@@ -31,6 +34,10 @@
         @include('layouts.header')
         @include('layouts.sidebar')
 
+        <div class="modal fade" id="modal_action" tabindex="-1" aria-labelledby="largeModalLabel" aria-hidden="true">
+
+        </div>
+
         {{$slot}}
 
         @include('layouts.setting')
@@ -43,6 +50,13 @@
     </div>
     <script src="{{asset('')}}vendor/bootstrap/js/bootstrap.bundle.js"></script>
     <script src="{{asset('')}}vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+
+    <script src="{{asset('')}}vendor/jquery/jquery.min.js"></script>
+    <script src="{{asset('')}}vendor/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="{{asset('')}}vendor/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="{{asset('')}}vendor/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="{{asset('')}}vendor/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js"></script>
+    <script src="{{asset('')}}assets/js/pages/datatables.min.js"></script>
 
     <!-- js for this page only -->
     @stack('jsLibrary')

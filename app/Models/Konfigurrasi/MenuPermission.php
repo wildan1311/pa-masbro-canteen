@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class MenuPermission extends Model
 {
     use HasFactory;
+
+    protected $table = 'menu_permission';
 }

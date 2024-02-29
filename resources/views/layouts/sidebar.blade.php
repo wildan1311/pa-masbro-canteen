@@ -17,13 +17,17 @@
     </div>
     <div class="sidebar-content">
         <ul>
-            <li class="active">
-                <a href="index.html" class="link">
-                    <i class="ti-home"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
-            <li class="menu-category">
+            @foreach ($menus as $mm)
+                @can("read {$mm->name}")
+                    <li class="{{ explode('/', request()->path())[0] == $mm->name ? 'active' : '' }} link">
+                        <a href="{{ $mm->url_server }}" class="link">
+                            <i class="ti-{{$mm->icon}}"></i>
+                            <span>{{ strtoupper($mm->name) }}</span>
+                        </a>
+                    </li>
+                @endcan
+            @endforeach
+            {{-- <li class="menu-category">
                 <span class="text-uppercase">User Interface</span>
             </li>
             <li>
@@ -116,7 +120,7 @@
                     <i class="ti-calendar"></i>
                     <span>Calendar</span>
                 </a>
-            </li>
+            </li> --}}
         </ul>
     </div>
 </nav>
