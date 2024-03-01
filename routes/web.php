@@ -20,12 +20,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
 
-Route::middleware('auth')->group(function(){
+Route::middleware(['shared','auth'])->group(function(){
 
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
     Route::resource('menu', MenuController::class);
     Route::resource('role', RoleController::class);
     Route::get('role/{id}/permission', [RoleController::class, 'removePermission'])->name('role.destroy.permission');
