@@ -17,7 +17,7 @@ class CreateTableTenants extends Migration
             $table->id();
             $table->string('nama_tenant');
             $table->string('nama_kavling');
-            $table->string('nama_gambar');
+            $table->string('nama_gambar')->nullable();
             $table->timestamp('jam');
             $table->softDeletes();
             $table->timestamps();

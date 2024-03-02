@@ -23,13 +23,13 @@ class TenantOrderController extends Controller
                 ->join('menus_kelola', 'menus_kelola.id', 'transaksi_detail.menus_kelola_id')
                 ->join('menus', 'menus.id', 'menus_kelola.menu_id')
                 ->join('tenants', 'tenants.id', 'menus_kelola.tenant_id')
-                ->where('tenant_id', $tenant->id)
+                ->where('tenant_id', @$tenant->id)
                 // ->where('status', 'pesanan_masuk')
                 ->select('transaksi_detail.*', 'menus.nama as namaMenu', 'tenants.nama_tenant as tenant')
                 ->addSelect(DB::raw('transaksi_detail.jumlah * transaksi_detail.harga as subTotal'));
             // ->get();
 
-            $dataPesananMasuk = (clone $baseQuery)->where('status', 'pesanan_masuk')->get();
+            $dataPesananMasuk = (clone $baseQuery)->where('transaksi_detail.status', 'pesanan_masuk')->get();
             $dataPesanan = (clone $baseQuery)->get();
             return response()->json([
                 "status" => "success",
@@ -50,6 +50,13 @@ class TenantOrderController extends Controller
 
     public function update(Request $request, $transaksiDetailId){
         $transaksiDetail = TransaksiDetail::find($transaksiDetailId);
+
+        if(!$transaksiDetail){
+            return response()->json([
+                "status" => "Bad Request",
+                "message" => "Transaksi Detail Id tidak ditemukan"
+            ], 401);
+        }
 
         $validator = Validator::make($request->all(), [
             'status' => ['required'],

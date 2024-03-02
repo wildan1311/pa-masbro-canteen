@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class RuanganController extends Controller
 {
     public function index(){
-        $ruangan = Ruangan::all();
+        $ruangan = Ruangan::with('gedung')->get();
 
         return response()->json([
             'success' => true,
