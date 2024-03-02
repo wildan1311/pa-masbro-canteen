@@ -118,7 +118,29 @@ class TransaksiController extends Controller
         return $transaksiDetail;
     }
 
-    public function webHookMidtrans(Request $request){
+    public function webHookMidtrans(Request $request)
+    {
+        // $payload = $request->getContent();
+        \Midtrans\Config::$isProduction = false;
+        \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
+        $notif = new \Midtrans\Notification();
+        // $signatureKey = env('MIDTRANS_SERVER_KEY');
 
+        $transaction = $notif->transaction_status;
+        // $type = $notif->payment_type;
+        $order_id = $notif->order_id;
+        // $fraud = $notif->fraud_status;
+
+        $transaksi = Transaksi::find($order_id);
+        if ($transaction == 'settlement') {
+            $transaksi->update(['status' => $transaction]);
+            // todo : firebase ke tenant dari transaksi
+        } else if ($transaction == 'expire') {
+            $transaksi->update(['status' => $transaction]);
+        } else if ($transaction == 'cancel') {
+            $transaksi->update(['status' => $transaction]);
+        }
+
+        return response()->json(['message' => 'Webhook received']);
     }
 }
