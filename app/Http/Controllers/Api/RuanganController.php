@@ -14,7 +14,9 @@ class RuanganController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Data ruangan berhasil diambil.',
-            'data' => $ruangan,
+            'data' => [
+                'ruangan'=>$ruangan
+            ],
         ]);
     }
 }

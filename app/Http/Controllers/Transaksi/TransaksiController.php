@@ -7,7 +7,10 @@ use App\Models\Transaksi;
 use App\Models\TransaksiDetail;
 use App\Services\Midtrans;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class TransaksiController extends Controller
 {
@@ -19,8 +22,18 @@ class TransaksiController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
+        $permission = $user->can('create order');
+        $permission = true;
+
+        if (!$permission) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'tidak memiliki akses',
+            ], 403);
+        }
+
         $validatator = Validator::make($request->all(), [
-            'user_id' => 'required',
+            // 'user_id' => 'required',
             'isAntar' => 'required|boolean',
             'total' => 'required|numeric',
             'ruangan_id' => 'required_if:isAntar,true', //kurang exists in ruangan
@@ -33,65 +46,44 @@ class TransaksiController extends Controller
             ]);
         }
 
-        $transaksi = Transaksi::create([
-            'user_id' => $request->user_id,
-            'total' => $request->total,
-            'isAntar' => $request->isAntar,
-            'metode_pembayaran' => $request->metode_pembayaran,
-            'ruangan_id' => $request->ruangan_id,
-        ]);
-
-        if (!$transaksi) {
-            return response()->json([
-                'messages' => 'gagal',
+        DB::beginTransaction();
+        try {
+            $transaksi = Transaksi::create([
+                'user_id' => $user->id,
+                'total' => $request->total,
+                'isAntar' => $request->isAntar,
+                'metode_pembayaran' => $request->metode_pembayaran,
+                'ruangan_id' => $request->ruangan_id,
             ]);
-        }
 
-        $success = $this->storeTransakasiDetail($request, $transaksi);
+            $success = $this->storeTransakasiDetail($request, $transaksi);
 
-        if ($success) {
-            // do midtrans
-            $transaksi = Transaksi::with(['user', 'listTransaksiDetail.menusKelola.menus'])->where('id', $transaksi->id)->first();
-            $midtrans = new Midtrans();
-            $snapMidtrans = $midtrans->createSnapTransaction($transaksi);
-            // \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY_DEV');
-            // \Midtrans\Config::$isProduction = false;
+            if ($success) {
+                $transaksi = Transaksi::with(['user', 'listTransaksiDetail.menusKelola.menus'])->where('id', $transaksi->id)->first();
+                $midtrans = new Midtrans();
+                $snapMidtrans = $midtrans->createSnapTransaction($transaksi);
 
-            // $transaksiDetail = TransaksiDetail::where("transaksi_id", $transaksi->id)->get();
+                DB::commit();
+                return response()->json([
+                    "status" => 'success',
+                    'messages' => "transaksi berhasil dibuat",
+                    "snap" => $snapMidtrans
+                ], 201);
+            } else {
+                return response()->json([
+                    'status' => 'failed',
+                    'messages' => 'gagal transaksi detail',
+                ], 401);
+            }
 
-            // $itemsDetail = $transaksiDetail->map(function ($item) {
-            //     return [
-            //         "id" => $item->id,
-            //         "price" => $item->harga,
-            //         "quantity" => $item->jumlah,
-            //         // "merchant_name" =>
-            //         // "name"
-            //     ];
-            // });
-
-            // $params = array(
-            //     'transaction_details' => array(
-            //         'order_id' => $transaksi->id,
-            //         'gross_amount' => $transaksi->total,
-            //     ),
-            //     "items_detail" => $itemsDetail,
-            //     "customer_details" => array(
-            //         "first_name" => $user->name,
-            //         "email" => $user->email,
-            //     )
-            // );
-
-            // $snapMidtrans = \Midtrans\Snap::createTransaction($params);
+        } catch (Throwable $th) {
+            DB::rollback();
+            Log::error($th->getMessage());
 
             return response()->json([
-                "status" => 'success',
-                'messages' => "transaksi berhasil dibuat",
-                "snap" => $snapMidtrans
-            ], 201);
-        } else {
-            return response()->json([
-                'messages' => 'gagal transaksi detail',
-            ], 401);
+                'status' => 'failed',
+                'messages' => 'transaksi gagal',
+            ], 400);
         }
     }
 
@@ -121,12 +113,12 @@ class TransaksiController extends Controller
             ];
         }, $request->menus);
 
-        try {
-            $transaksiDetail = TransaksiDetail::insert($dataInsert);
-        } catch (\Throwable $th) {
-            return false;
-        }
+        $transaksiDetail = TransaksiDetail::insert($dataInsert);
 
         return $transaksiDetail;
+    }
+
+    public function webHookMidtrans(Request $request){
+
     }
 }

@@ -24,6 +24,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/katalog/tenants', [TenantController::class, 'getAll']);
+    Route::get('/katalog/tenants/{TenantId}', [TenantController::class, 'getSpecificTenant']);
+    // Route::post('/order', [TransaksiController::class, 'store']);
+    // Route::post('/order/detail', [TransaksiController::class, 'store'])->name('');
+    // Route::get('/ruangan', [RuanganController::class, 'index']);
     Route::get('/tenants', [TenantController::class, 'getAll']);
     Route::get('/tenants/{TenantId}', [TenantController::class, 'getSpecificTenant']);
     Route::post('/order', [TransaksiController::class, 'store']);
@@ -38,26 +43,26 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanct
 Route::resource('user', UserController::class);
 
 // Midtrans
-Route::post('/getSnapToken', function () {
-    // Set your Merchant Server Key
-    \Midtrans\Config::$serverKey = 'SB-Mid-server-VVST_NSHtMMRxUO6Wm768Ejv';
-    // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
-    \Midtrans\Config::$isProduction = false;
+// Route::post('/getSnapToken', function () {
+//     // Set your Merchant Server Key
+//     \Midtrans\Config::$serverKey = 'SB-Mid-server-VVST_NSHtMMRxUO6Wm768Ejv';
+//     // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+//     \Midtrans\Config::$isProduction = false;
 
-    $params = array(
-        'transaction_details' => array(
-            'order_id' => rand(),
-            'gross_amount' => 10000,
-        ),
-        'customer_details' => array(
-            'first_name' => 'budi',
-            'last_name' => 'pratama',
-            'email' => 'budi.pra@example.com',
-            'phone' => '08111222333',
-        ),
-    );
+//     $params = array(
+//         'transaction_details' => array(
+//             'order_id' => rand(),
+//             'gross_amount' => 10000,
+//         ),
+//         'customer_details' => array(
+//             'first_name' => 'budi',
+//             'last_name' => 'pratama',
+//             'email' => 'budi.pra@example.com',
+//             'phone' => '08111222333',
+//         ),
+//     );
 
-    $response = \Midtrans\Snap::createTransaction($params);
+//     $response = \Midtrans\Snap::createTransaction($params);
 
-    return response()->json($response);
-});
+//     return response()->json($response);
+// });
