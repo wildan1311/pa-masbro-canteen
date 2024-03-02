@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Transaksi;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tenants;
 use App\Models\Transaksi;
 use App\Models\TransaksiDetail;
 use App\Services\Midtrans;
@@ -18,6 +19,72 @@ class TransaksiController extends Controller
     {
 
     }
+
+    public function orderUser(Request $request){
+        $user = $request->user();
+        $permission = $user->can('read order user');
+        $permission = true;
+
+        if (!$permission) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'tidak memiliki akses',
+            ], 403);
+        }
+        $transaksi = Transaksi::with('listTransaksiDetail')->where('user_id', $user->id)->orderBy('status')->get();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'data berhasil didapatkan',
+            'data' => [
+                'transaksi' => $transaksi
+            ],
+        ]);
+
+    }
+    public function orderTenant(Request $request){
+        $user = $request->user();
+        $permission = $user->can('read order user');
+        $permission = true;
+
+        if (!$permission) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'tidak memiliki akses',
+            ], 403);
+        }
+        try{
+            $tenant = Tenants::where("user_id", $request->user()->id)->first();
+            $baseQuery = DB::table('transaksi_detail')
+                ->join('transaksi', 'transaksi.id', 'transaksi_detail.transaksi_id')
+                ->join('menus_kelola', 'menus_kelola.id', 'transaksi_detail.menus_kelola_id')
+                ->join('menus', 'menus.id', 'menus_kelola.menu_id')
+                ->join('tenants', 'tenants.id', 'menus_kelola.tenant_id')
+                ->where('tenant_id', @$tenant->id)
+                // ->where('status', 'pesanan_masuk')
+                ->select('transaksi_detail.*', 'menus.nama as namaMenu', 'tenants.nama_tenant as tenant')
+                ->addSelect(DB::raw('transaksi_detail.jumlah * transaksi_detail.harga as subTotal'));
+            // ->get();
+
+            $dataPesananMasuk = (clone $baseQuery)->where('transaksi_detail.status', 'pesanan_masuk')->get();
+            $dataPesanan = (clone $baseQuery)->get();
+            return response()->json([
+                "status" => "success",
+                "message" => "Berhasil mengambil data",
+                "data" => [
+                    "pesanan_masuk" => $dataPesananMasuk,
+                    "riwayat_pesanan" => $dataPesanan
+                ]
+            ]);
+        }catch(Throwable $th){
+            Log::error($th->getMessage());
+            return response()->json([
+                "status" => "server error",
+                "message" => "terjadi kesalahan di server"
+            ], 500);
+        }
+    }
+    public function orderMasbro(){}
 
     public function store(Request $request)
     {
