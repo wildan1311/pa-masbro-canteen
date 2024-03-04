@@ -16,6 +16,15 @@ class TenantOrderController extends Controller
 {
     public function index(Request $request)
     {
+        $user = $request->user();
+
+        if(!$user->can('read order tenant')){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'tidak memiliki akses',
+            ], 403);
+        }
+
         try{
             $tenant = Tenants::where("user_id", $request->user()->id)->first();
             $baseQuery = DB::table('transaksi_detail')
@@ -49,6 +58,15 @@ class TenantOrderController extends Controller
     }
 
     public function update(Request $request, $transaksiDetailId){
+        $user = $request->user();
+
+        if(!$user->can('update order tenant')){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'tidak memiliki akses',
+            ], 403);
+        }
+
         $transaksiDetail = TransaksiDetail::find($transaksiDetailId);
 
         if(!$transaksiDetail){
