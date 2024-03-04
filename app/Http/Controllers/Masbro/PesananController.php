@@ -13,11 +13,32 @@ use Throwable;
 
 class PesananController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $user = $request->user();
+
+        if(!$user->can('read order masbro')){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'tidak memiliki akses',
+            ], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:diantar,selesai,siap_diantar',
+            'gedung' => 'nullable',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "status" => "Bad Request",
+                "message" => $validator->errors()
+            ], 400);
+        }
+
         try {
             // $tenant = Tenants::where("user_id", $request->user()->id)->first();
-            $transaksi_siap_diantar = DB::table('transaksi_detail')
+            $transaksi = DB::table('transaksi_detail')
                 ->join('transaksi', 'transaksi.id', 'transaksi_detail.transaksi_id')
                 ->join('menus_kelola', 'menus_kelola.id', 'transaksi_detail.menus_kelola_id')
                 ->join('menus', 'menus.id', 'menus_kelola.menu_id')
@@ -30,17 +51,28 @@ class PesananController extends Controller
                 ->addSelect(DB::raw('transaksi_detail.jumlah * transaksi_detail.harga as subTotal'));
             // ->get();
 
-            $transaksi_diantar = (clone $transaksi_siap_diantar)->where('transaksi.status', 'diantar')->get()->groupBy('transaksi_id');
-            $transaksi_selesai = (clone $transaksi_siap_diantar)->where('transaksi.status', 'selesai')->get()->groupBy('transaksi_id');
-            $transaksi_siap_diantar = $transaksi_siap_diantar->where('transaksi.status', 'siap_diantar')->get()->groupBy('transaksi_id');
+            if($request->gedung){
+                $transaksi = $transaksi->where('gedung.nama', $request->gedung);
+            }
+
+            if($request->status){
+                $transaksi = ($transaksi)->where('transaksi.status', 'diantar');
+            }
+
+            $transaksi = $transaksi->get()->groupBy('transaksi_id');
+
+            // $transaksi_diantar = (clone $transaksi_siap_diantar)->where('transaksi.status', 'diantar')->get()->groupBy('transaksi_id');
+            // $transaksi_selesai = (clone $transaksi_siap_diantar)->where('transaksi.status', 'selesai')->get()->groupBy('transaksi_id');
+            // $transaksi_siap_diantar = $transaksi_siap_diantar->where('transaksi.status', 'siap_diantar')->get()->groupBy('transaksi_id');
 
             return response()->json([
                 "status" => "success",
                 "message" => "Berhasil mengambil data",
                 "data" => [
-                    'transaksi_siap_diantar' => $transaksi_siap_diantar,
-                    'transaksi_diantar' => $transaksi_diantar,
-                    'transaksi_selesai' => $transaksi_selesai,
+                    'order' => $transaksi,
+                    // 'transaksi_siap_diantar' => $transaksi_siap_diantar,
+                    // 'transaksi_diantar' => $transaksi_diantar,
+                    // 'transaksi_selesai' => $transaksi_selesai,
                 ]
             ]);
         } catch (Throwable $th) {
@@ -54,8 +86,18 @@ class PesananController extends Controller
 
     public function update(Request $request, $transaksiId)
     {
+        $user = $request->user();
+
+        if(!$user->can('update order masbro')){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'tidak memiliki akses',
+            ], 403);
+        }
+
         $validator = Validator::make($request->all(), [
-            'status' => 'required'
+            'status' => 'required|in:diantar,selesai,siap_diantar',
+            // 'status' => 'required'
         ]);
 
         if ($validator->fails()) {

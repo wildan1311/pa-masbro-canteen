@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\RuanganController;
 use App\Http\Controllers\Kelola\TenantController as KelolaTenantController;
 use App\Http\Controllers\Kelola\TenantOrderController;
+use App\Http\Controllers\Masbro\PesananController;
 use App\Http\Controllers\Tenant\TenantController;
 use App\Http\Controllers\Transaksi\TransaksiController;
 use App\Http\Controllers\User\UserController;
@@ -48,6 +49,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/order', [TenantOrderController::class, 'index']);
         Route::put('/order/{id}', [TenantOrderController::class, 'update']);
+    });
+
+    Route::prefix('masbro')->middleware(['role:masbro'])->name('api.masbro.')->group(function(){
+        Route::get('/order', [PesananController::class, 'index']);
+        Route::put('/order/{transaksiId}', [PesananController::class, 'update']);
     });
 });
 Route::post('/order/callback', [TransaksiController::class, 'webHookMidtrans']);
