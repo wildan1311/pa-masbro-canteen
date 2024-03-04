@@ -22,8 +22,22 @@ class TenantController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+
+        if(!$user->can('read kelola tenant')){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'tidak memiliki akses',
+            ], 403);
+        }
+
         $tenant = Tenants::where('user_id', $user->id)->with('listMenu')->get();
-        return response()->json(compact('tenant'));
+        return response()->json([
+            'status' => 'success',
+            'message' => 'berhasil mengambil data',
+            'data' => [
+                'tenant' => $tenant
+            ]
+        ]);
     }
 
     /**
@@ -34,8 +48,16 @@ class TenantController extends Controller
      */
     public function storeMenu(Request $request)
     {
-        $tenant = Tenants::where("user_id", $request->user()->id)->first();
-        Gate::authorize('add-tenant-menu', $tenant);
+        $user = $request->user();
+
+        if(!$user->can('create kelola tenant')){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'tidak memiliki akses',
+            ], 403);
+        }
+
+        $tenant = Tenants::where("user_id", $user->id)->first();
 
         $validator = Validator::make($request->all(), [
             'menu_id' => 'required',
@@ -54,7 +76,7 @@ class TenantController extends Controller
             $newMenu = MenusKelola::create([
                 "harga" => $request->harga,
                 "gambar"=> $request->gambar ?? "halo",
-                "tenant_id" => $tenant->id,
+                "tenant_id" => @$tenant->id,
                 "menu_id" => $request->menu_id
             ]);
 
@@ -67,7 +89,7 @@ class TenantController extends Controller
             return response()->json([
                 "status" => "failed",
                 "message" => $th->getMessage(),
-            ]);
+            ], 500);
         }
 
     }
@@ -92,7 +114,16 @@ class TenantController extends Controller
      */
     public function update(Request $request)
     {
-        $tenant = Tenants::where("user_id", $request->user()->id)->first();
+        $user = $request->user();
+
+        if(!$user->can('update kelola tenant')){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'tidak memiliki akses',
+            ], 403);
+        }
+
+        $tenant = Tenants::where("user_id", $user->id)->first();
         // Gate::authorize('update-tenant', $tenant);
 
         $validator = Validator::make($request->all(), [
@@ -102,9 +133,13 @@ class TenantController extends Controller
             'jam' => 'required|timezone'
         ]);
 
-        $image = $request->file('image');
-        $fileName = time(). '-' . $image->getBasename() . '.' . $image->getClientOriginalExtension();
-        $imagePath = Storage::disk('local')->put('public/images/', $fileName);
+        if ($request->hasFile('gambar')) {
+            $gambar = $request->file('gambar');
+
+            $path = $gambar->store('public/images');
+
+            $url = Storage::url($path);
+        }
 
         if ($validator->fails()) {
             return response()->json([
@@ -116,13 +151,14 @@ class TenantController extends Controller
             'nama_kavling' => $request->input('nama_kavling'),
             'nama_tenant' => $request->input('nama_tenant'),
             'jam' => Carbon::parse($request->input('jam'))->format('H:i:s'),
-            'gambar' => $fileName
+            'nama_gambar' => $url,
         ]);
 
         if (!$update) {
             return response()->json([
-                'messages' => 'gagal'
-            ]);
+                'status' => 'success',
+                'messages' => 'berhasil update tenant',
+            ], 500);
         }
 
         return response()->json([
@@ -131,13 +167,24 @@ class TenantController extends Controller
     }
     public function updateMenu(Request $request, $id)
     {
+        $user = $request->user();
+
+        if(!$user->can('update kelola tenant')){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'tidak memiliki akses',
+            ], 403);
+        }
+
+        // todo : tambahin validasi khusus user tenant itu saja yang bisa ganti
+
         // $tenant = Tenants::where("user_id", $request->user()->id)->first();
         $menu = MenusKelola::find($id);
         // Gate::authorize('update-tenant-menu', ["menu" => $menu]);
 
         $validator = Validator::make($request->all(), [
-            'menu_id' => 'required',
-            'harga' => 'required|numeric',
+            'menu_id' => 'nullable',
+            'harga' => 'nullable|numeric',
             'gambar' => 'nullable',
             'isReady' => 'nullable'
         ]);
@@ -150,21 +197,22 @@ class TenantController extends Controller
 
         try {
             $menu->update([
-                "menu_id" => $request->menu_id,
-                "harga" => $request->harga,
-                "gambar" => $request->gambar ?? $menu->gambar,
-                "isReady" => $request->isReady ?? $menu->isReady
+                "menu_id" => @$request->menu_id ?? $menu->menu_id,
+                "harga" => @$request->harga ?? $menu->harga,
+                "gambar" => @$request->gambar ?? $menu->gambar,
+                "isReady" => @$request->isReady ?? $menu->isReady
             ]);
 
             return response()->json([
-                'messages' => 'berhasil'
+                'status' => 'success',
+                'messages' => 'berhasil update menu',
             ]);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             return response()->json([
                 'status' => 'gagal',
                 "messages" => "Terjadi Kesalahan Pada Server"
-            ]);
+            ], 500);
             //throw $th;
         }
     }
@@ -188,7 +236,7 @@ class TenantController extends Controller
             return response()->json([
                 "status" => "fail",
                 "message" => $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }

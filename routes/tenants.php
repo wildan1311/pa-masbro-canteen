@@ -17,15 +17,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('tenant')->middleware(['auth:sanctum', 'role:tenant'])->name('api.tenant.')->group(function(){
-    Route::get('/', [TenantController::class, 'index']);
-    Route::post('/menu', [TenantController::class, 'storeMenu']);
-    Route::put('/menu/{id}', [TenantController::class, 'updateMenu']);
-    Route::delete('/menu/{id}', [TenantController::class, 'destroyMenu']);
+// Route::prefix('tenant')->middleware(['auth:sanctum', 'role:tenant'])->name('api.tenant.')->group(function(){
+//     Route::get('/', [TenantController::class, 'index']);
+//     Route::post('/menu', [TenantController::class, 'storeMenu']);
+//     Route::put('/menu/{id}', [TenantController::class, 'updateMenu']);
+//     Route::delete('/menu/{id}', [TenantController::class, 'destroyMenu']);
 
-    Route::get('/order', [TenantOrderController::class, 'index']);
-    Route::put('/order/{id}', [TenantOrderController::class, 'update']);
-});
+//     Route::get('/order', [TenantOrderController::class, 'index']);
+//     Route::put('/order/{id}', [TenantOrderController::class, 'update']);
+// });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

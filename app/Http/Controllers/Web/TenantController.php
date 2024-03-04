@@ -19,7 +19,7 @@ class TenantController extends Controller
     public function index()
     {
         $this->authorize('read tenant');
-        $tenants = Tenants::all();
+        $tenants = Tenants::with('pemilik')->get();
         return view('pages.konfigurasi.tenant.index', compact('tenants'));
     }
 
@@ -120,7 +120,7 @@ class TenantController extends Controller
         Storage::delete($tenant->nama_url);
         $url = null;
         if ($request->hasFile('gambar')) {
-            Storage::delete($tenant->nama_url);
+            Storage::delete(@$tenant->nama_url);
             $gambar = $request->file('gambar');
             $path = $gambar->store('public/images');
             $url = Storage::url($path);

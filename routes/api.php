@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\RuanganController;
+use App\Http\Controllers\Kelola\TenantController as KelolaTenantController;
+use App\Http\Controllers\Kelola\TenantOrderController;
 use App\Http\Controllers\Tenant\TenantController;
 use App\Http\Controllers\Transaksi\TransaksiController;
 use App\Http\Controllers\User\UserController;
@@ -24,6 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    // USER
     Route::get('/katalog/tenants', [TenantController::class, 'getAll']);
     Route::get('/katalog/tenants/{TenantId}', [TenantController::class, 'getSpecificTenant']);
     // Route::post('/order', [TransaksiController::class, 'store']);
@@ -35,6 +38,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/order', [TransaksiController::class, 'store']);
     Route::post('/order/detail', [TransaksiController::class, 'store'])->name('');
     Route::get('/ruangan', [RuanganController::class, 'index']);
+
+    // TENANT
+    Route::prefix('tenant')->middleware(['role:tenant'])->name('api.tenant.')->group(function(){
+        Route::get('/', [KelolaTenantController::class, 'index']);
+        Route::post('/menu', [KelolaTenantController::class, 'storeMenu']);
+        Route::put('/menu/{id}', [KelolaTenantController::class, 'updateMenu']);
+        Route::delete('/menu/{id}', [KelolaTenantController::class, 'destroyMenu']);
+
+        Route::get('/order', [TenantOrderController::class, 'index']);
+        Route::put('/order/{id}', [TenantOrderController::class, 'update']);
+    });
 });
 Route::post('/order/callback', [TransaksiController::class, 'webHookMidtrans']);
 

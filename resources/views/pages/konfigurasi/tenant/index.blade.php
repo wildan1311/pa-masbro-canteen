@@ -36,7 +36,7 @@
                                     <td>{{ $tenant->nama_kavling ?? '-' }}</td>
                                     <td>{{ $tenant->jam_buka }}</td>
                                     <td>{{ $tenant->jam_tutup }}</td>
-                                    <td>{{ $tenant->pemilik->name }}</td>
+                                    <td>{{ @$tenant->pemilik->name }}</td>
                                     <td>
                                         <img src="{{ $tenant->gambar }}" alt="" class="img-fluid"
                                             width="20px">
