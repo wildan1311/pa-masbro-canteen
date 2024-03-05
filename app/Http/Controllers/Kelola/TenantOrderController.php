@@ -38,14 +38,20 @@ class TenantOrderController extends Controller
                 ->addSelect(DB::raw('transaksi_detail.jumlah * transaksi_detail.harga as subTotal'));
             // ->get();
 
-            $dataPesananMasuk = (clone $baseQuery)->where('transaksi_detail.status', 'pesanan_masuk')->get();
-            $dataPesanan = (clone $baseQuery)->get();
+            if($request->status){
+                $dataPesanan = ($baseQuery)->where('transaksi_detail.status', $request->status);
+                // $dataPesanan = (clone $baseQuery)->where('transaksi_detail.status', $request->status);
+                // ->get();
+            }
+            // $dataPesananMasuk = (clone $baseQuery)->where('transaksi_detail.status', 'pesanan_masuk')->get();
+            $dataPesanan = ($baseQuery)->get();
+
             return response()->json([
                 "status" => "success",
                 "message" => "Berhasil mengambil data",
                 "data" => [
-                    "pesanan_masuk" => $dataPesananMasuk,
-                    "riwayat_pesanan" => $dataPesanan
+                    "pesanan" => $dataPesanan,
+                    // "riwayat_pesanan" => $dataPesanan
                 ]
             ]);
         }catch(Throwable $th){

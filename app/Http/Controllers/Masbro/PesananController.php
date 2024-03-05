@@ -56,7 +56,7 @@ class PesananController extends Controller
             }
 
             if($request->status){
-                $transaksi = ($transaksi)->where('transaksi.status', 'diantar');
+                $transaksi = ($transaksi)->where('transaksi.status', $request->status);
             }
 
             $transaksi = $transaksi->get()->groupBy('transaksi_id');
