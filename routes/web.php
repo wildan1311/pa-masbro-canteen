@@ -4,6 +4,7 @@ use App\Http\Controllers\Web\Konfigurasi\MenuController;
 use App\Http\Controllers\Web\Konfigurasi\PermissionController;
 use App\Http\Controllers\Web\Konfigurasi\RoleController;
 use App\Http\Controllers\Web\TenantController;
+use App\Http\Controllers\Web\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,6 +34,7 @@ Route::middleware(['shared','auth'])->group(function(){
     Route::get('role/{id}/permission', [RoleController::class, 'removePermission'])->name('role.destroy.permission');
     Route::resource('permission', PermissionController::class);
     Route::resource('tenant', TenantController::class);
+    Route::resource('user', UserController::class);
 
     // Route::group(['prefix' => 'konfigurasi', 'as' => 'konfigurasi.'], function(){
     //     Route::resource('menu', MenuController::class);

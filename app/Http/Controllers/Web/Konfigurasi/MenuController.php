@@ -58,7 +58,7 @@ class MenuController extends Controller
         $menu->icon = $request->icon;
         $menu->save();
 
-        $this->attachMenuPermission($menu, $request->permissions ?? [], $request->roles);
+        $this->attachMenuPermission($menu, $request->permissions ?? [], []);
 
         return redirect()->route('menu.index');
     }
@@ -117,7 +117,7 @@ class MenuController extends Controller
             foreach ($request->permissions as $value) {
                 $permission = Permission::firstOrCreate(['name' => $value . " {$menu->name}"], ['name' => $value . " {$menu->name}"]);
                 $permission->menu()->attach($menu);
-                $permission->assignRole(['admin']);
+                // $permission->assignRole(['admin']);
             }
         }
 

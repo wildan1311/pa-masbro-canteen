@@ -59,7 +59,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col">
                                 <div class="mb-3">
                                     <label for="basicInput" class="form-label">Role Yang Bisa Akses</label>
@@ -70,7 +70,7 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-md-12 mb-3">
                             <label for="">Permission</label><br>
                             <div class="form-check form-check-inline">
