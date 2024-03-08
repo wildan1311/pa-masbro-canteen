@@ -21,15 +21,15 @@
                                 <input type="text" placeholder="Input Here" class="form-control" id="basicInput"
                                     name="name" required value="{{ $menu->name }}">
                             </div>
-                            <div class="mb-3">
+                            {{-- <div class="mb-3">
                                 <label for="basicInput" class="form-label">URL Aplikasi</label>
                                 <input type="text" placeholder="Input Here" class="form-control" id="basicInput"
                                     name="url_aplikasi" value="{{ $menu->url_aplikasi }}">
-                            </div>
+                            </div> --}}
                             <div class="mb-3">
                                 <label for="basicInput" class="form-label">URL Server</label>
                                 <input type="text" placeholder="Input Here" class="form-control" id="basicInput"
-                                    name="url_server" value="{{ $menu->url_server }}">
+                                    name="url" value="{{ $menu->url }}">
                             </div>
                             <div class="mb-3">
                                 <label for="basicInput" class="form-label">Category</label>
@@ -41,14 +41,24 @@
                                 <input type="text" placeholder="Input Here" class="form-control" id="basicInput"
                                     name="icon" value="{{ $menu->icon }}">
                             </div>
+                            <div class="mb-3">
+                                <label for="basicInput" class="form-label">Device</label>
+                                <select name="device_id" class="form-control" id="">
+                                    @foreach ($devices as $device)
+                                        <option value="{{ $device->id }}" {{in_array($device->id, $menu->device->pluck('id')->toArray()) ? 'selected' : ''}}>{{ $device->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                             <div class="col-md-12 mb-3">
                                 <label for="">Permission</label><br>
                                 @foreach (['create', 'read', 'update', 'delete'] as $item)
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="{{$item}}"
-                                        name="permissions[]" {{$menu->permissions->where('name', "{$item} {$menu->name}")->first() != null ? 'checked' : ''}}>
-                                    <label class="form-check-label" for="inlineCheckbox1">{{$item}}</label>
-                                </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1"
+                                            value="{{ $item }}" name="permissions[]"
+                                            {{ $menu->permissions->where('name', "{$item} {$menu->name}")->first() != null ? 'checked' : '' }}>
+                                        <label class="form-check-label"
+                                            for="inlineCheckbox1">{{ $item }}</label>
+                                    </div>
                                 @endforeach
                             </div>
                         </div>

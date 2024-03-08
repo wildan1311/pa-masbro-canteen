@@ -100,11 +100,11 @@ class TransaksiController extends Controller
         }
 
         $validatator = Validator::make($request->all(), [
-            // 'user_id' => 'required',
             'isAntar' => 'required|boolean',
             'total' => 'required|numeric',
             'ruangan_id' => 'required_if:isAntar,true', //kurang exists in ruangan
             'metode_pembayaran' => 'required',
+            'menus' => 'required|array',
         ]);
 
         if ($validatator->fails()) {

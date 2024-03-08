@@ -20,8 +20,10 @@
                         <thead>
                             <th>No</th>
                             <th>Nama Menu</th>
-                            <th>Url Mobile</th>
-                            <th>Url Server</th>
+                            <th>URL</th>
+                            <th>Device</th>
+                            {{-- <th>Url Mobile</th> --}}
+                            {{-- <th>Url Server</th> --}}
                             <th>Category</th>
                             <th>Icon</th>
                             <th>Action</th>
@@ -31,12 +33,17 @@
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
                                     <td>{{$mm->name}}</td>
-                                    <td>{{$mm->url_aplikasi ?? '-'}}</td>
-                                    <td>{{$mm->url_server}}</td>
+                                    <td>{{$mm->url ?? '-'}}</td>
+                                    <td>
+                                        @foreach ($mm->device as $device)
+                                            <span class="btn btn-primary">{{$device->name}}</span>
+                                        @endforeach
+                                    </td>
+                                    {{-- <td>{{$mm->url_server}}</td> --}}
                                     <td>{{$mm->category}}</td>
                                     <td>{{$mm->icon}}</td>
                                     <td>
-                                        <a href="{{route('menu.show', $mm->id)}}" class="btn btn-primary">Lihat Permission</a>
+                                        {{-- <a href="{{route('menu.show', $mm->id)}}" class="btn btn-primary">Lihat Permission</a> --}}
                                         <a href="{{route('menu.edit', $mm->id)}}" class="btn btn-secondary">Edit</a>
                                         <form action="{{route('menu.destroy', $mm->id)}}" class="d-inline" method="POST">
                                             @csrf

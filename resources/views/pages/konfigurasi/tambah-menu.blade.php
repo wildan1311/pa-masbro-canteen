@@ -23,7 +23,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col">
                                 <div class="mb-3">
                                     <label for="basicInput" class="form-label">Url Aplikasi</label>
@@ -31,13 +31,13 @@
                                         name="url_aplikasi">
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="row">
                             <div class="col">
                                 <div class="mb-3">
                                     <label for="basicInput" class="form-label">Url Server</label>
                                     <input type="text" placeholder="Input Here" class="form-control" id="basicInput"
-                                        name="url_server">
+                                        name="url">
                                 </div>
                             </div>
                         </div>
@@ -56,6 +56,18 @@
                                     <label for="basicInput" class="form-label">icon</label>
                                     <input type="text" placeholder="Input Here" class="form-control" id="basicInput"
                                         name="icon">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label for="basicInput" class="form-label">Device</label>
+                                    <select name="device_id" class="form-control" id="">
+                                        @foreach ($devices as $device)
+                                            <option value="{{$device->id}}">{{$device->name}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>

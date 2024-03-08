@@ -22,7 +22,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'email' => 'required|unique:users,email',
+            'email' => 'required|unique:users,email|email|regex:/^\S*$/',
             'password' => 'required',
             'name' => 'required',
             'role' => 'nullable'
@@ -95,7 +95,9 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        $menu = Menu::get();
+        $menu = Menu::whereHas('device', function($device){
+            return $device->where('device_id', 1);
+        })->get();
 
         $menu = $menu->filter(function ($mm) use ($user) {
             if ($user->hasPermissionTo('read ' . $mm->name)) {

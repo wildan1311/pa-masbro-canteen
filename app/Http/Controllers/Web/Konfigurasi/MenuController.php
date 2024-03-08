@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web\Konfigurasi;
 use App\DataTables\Konfigurasi\MenuDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Konfigurasi\MenuRequest;
+use App\Models\Device;
 use App\Models\Konfigurrasi\Menu;
 use App\Models\Konfigurrasi\MenuPermission;
 use App\Models\Permission;
@@ -33,7 +34,8 @@ class MenuController extends Controller
     public function create(Menu $menu)
     {
         $roles = Role::get();
-        return view('pages.konfigurasi.tambah-menu', compact('menu', 'roles'));
+        $devices = Device::all();
+        return view('pages.konfigurasi.tambah-menu', compact('menu', 'roles', 'devices'));
     }
     // public function create(Menu $menu)
     // {
@@ -52,11 +54,14 @@ class MenuController extends Controller
     public function store(Request $request, Menu $menu)
     {
         $menu->name = $request->name;
-        $menu->url_aplikasi = $request->url_aplikasi;
-        $menu->url_server = $request->url_server;
+        $menu->url = $request->url;
+        // $menu->url_server = $request->url_server;
         $menu->category = $request->category;
         $menu->icon = $request->icon;
         $menu->save();
+
+        $device = Device::find($request->device_id);
+        $device->listMenu()->attach($menu);
 
         $this->attachMenuPermission($menu, $request->permissions ?? [], []);
 
@@ -80,7 +85,8 @@ class MenuController extends Controller
     public function edit(Menu $menu)
     {
         $roles = Role::get();
-        return view('pages.konfigurasi.edit-menu', compact('menu'));
+        $devices = Device::all();
+        return view('pages.konfigurasi.edit-menu', compact('menu', 'devices'));
     }
 
     /**
@@ -93,14 +99,16 @@ class MenuController extends Controller
     public function update(Request $request, Menu $menu)
     {
         $menu->name = $request->name;
-        $menu->url_aplikasi = $request->url_aplikasi;
-        $menu->url_server = $request->url_server;
+        $menu->url = $request->url;
         $menu->category = $request->category;
         $menu->icon = $request->icon;
         $menu->save();
 
         $menuPermission = MenuPermission::where('menu_id', $menu->id);
         $permissions = Permission::whereIn('id', $menuPermission->pluck('permission_id')->toArray());
+
+        // $device = Device::find($request->device_id);
+        $menu->device()->attach($request->device_id);
 
         // $roles = Role::whereHas('permissions', function ($query) use ($permissions) {
         //     $query->whereIn('id', $permissions->pluck('id')->toArray());

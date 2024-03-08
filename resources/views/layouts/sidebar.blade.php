@@ -20,7 +20,7 @@
             @foreach ($menus as $mm)
                 @can("read {$mm->name}")
                     <li class="{{ explode('/', request()->path())[0] == $mm->name ? 'active' : '' }} link">
-                        <a href="{{ $mm->url_server }}" class="link">
+                        <a href="{{ $mm->url }}" class="link">
                             <i class="ti-{{$mm->icon}}"></i>
                             <span>{{ strtoupper($mm->name) }}</span>
                         </a>

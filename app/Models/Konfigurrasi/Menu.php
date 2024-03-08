@@ -2,6 +2,7 @@
 
 namespace App\Models\Konfigurrasi;
 
+use App\Models\Device;
 use App\Models\Permission;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,7 @@ class Menu extends Model
 {
     use HasFactory;
     protected $table = 'menu';
-    protected $fillable = ['name', 'category', 'url_server', 'url_aplikasi', 'urutan', 'aktif', 'main_menu_id'];
+    protected $fillable = ['name', 'category', 'url', 'urutan', 'aktif', 'main_menu_id'];
     protected $guard = ['id'];
 
     public function subMenus(){
@@ -19,5 +20,9 @@ class Menu extends Model
 
     public function permissions(){
         return $this->belongsToMany(Permission::class, 'menu_permission', 'menu_id', 'permission_id');
+    }
+
+    public function device(){
+        return $this->belongsToMany(Device::class, 'menu_device', 'menu_id', 'device_id');
     }
 }
