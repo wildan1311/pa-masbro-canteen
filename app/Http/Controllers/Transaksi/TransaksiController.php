@@ -138,8 +138,8 @@ class TransaksiController extends Controller
                 ], 201);
             } else {
                 return response()->json([
-                    'status' => 'failed',
-                    'messages' => 'gagal transaksi detail',
+                    'statu' => 'failed',
+                    'message' => 'gagal transaksi detail',
                 ], 401);
             }
 
@@ -194,9 +194,7 @@ class TransaksiController extends Controller
         // $signatureKey = env('MIDTRANS_SERVER_KEY');
 
         $transaction = $notif->transaction_status;
-        // $type = $notif->payment_type;
         $order_id = $notif->order_id;
-        // $fraud = $notif->fraud_status;
 
         $transaksi = Transaksi::find($order_id);
         if ($transaction == 'settlement') {
