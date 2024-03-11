@@ -18,6 +18,15 @@ class TransaksiDetail extends Model
         'harga',
     ];
 
+    public $appends = ['nama_menu', 'kategori_menu'];
+
+    public function getNamaMenuAttribute(){
+        return $this->menusKelola->menus->nama;
+    }
+    public function getKategoriMenuAttribute(){
+        return $this->menusKelola->menus->kategori->name;
+    }
+
     public function transaksi()
     {
         return $this->belongsTo(Transaksi::class, 'transaksi_id');

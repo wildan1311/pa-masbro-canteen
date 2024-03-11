@@ -20,6 +20,14 @@ class MenusKelola extends Model
         'isReady'
     ];
 
+    public $appends = ['nama_menu', 'kategori_menu'];
+
+    public function getNamaMenuAttribute(){
+        return $this->menus->nama;
+    }
+    public function getKategoriMenuAttribute(){
+        return $this->menus->kategori->name;
+    }
     public function menus(){
         return $this->belongsTo(Menus::class, 'menu_id');
     }
