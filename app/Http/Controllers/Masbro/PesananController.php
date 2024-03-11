@@ -37,42 +37,21 @@ class PesananController extends Controller
         }
 
         try {
-            // $tenant = Tenants::where("user_id", $request->user()->id)->first();
-            $transaksi = DB::table('transaksi_detail')
-                ->join('transaksi', 'transaksi.id', 'transaksi_detail.transaksi_id')
-                ->join('menus_kelola', 'menus_kelola.id', 'transaksi_detail.menus_kelola_id')
-                ->join('menus', 'menus.id', 'menus_kelola.menu_id')
-                ->join('tenants', 'tenants.id', 'menus_kelola.tenant_id')
-                ->join('users', 'users.id', 'transaksi.user_id')
-                ->join('ruangan', 'ruangan.id', 'transaksi.ruangan_id')
-                ->join('gedung', 'gedung.id', 'ruangan.gedung_id')
-                // ->where('status', 'siap_diantar')
-                ->select('transaksi_detail.*', 'menus.nama as namaMenu', 'tenants.nama_tenant as tenant', 'users.name as nama_user', 'ruangan.nama as nama_ruangan', 'gedung.nama as nama_gedung', 'transaksi.id as transaksi_id')
-                ->addSelect(DB::raw('transaksi_detail.jumlah * transaksi_detail.harga as subTotal'));
-            // ->get();
+            $transaksi = Transaksi::with(['listTransaksiDetail.menusKelola', 'user'])->get();
 
-            if($request->gedung){
-                $transaksi = $transaksi->where('gedung.nama', $request->gedung);
+            if($request->has('gedung')){
+                $transaksi = $transaksi->where('gedung', $request->gedung)->values();
             }
 
-            if($request->status){
-                $transaksi = ($transaksi)->where('transaksi.status', $request->status);
+            if($request->has('status')){
+                $transaksi = ($transaksi)->where('status', $request->status)->values();
             }
-
-            $transaksi = $transaksi->get()->groupBy('transaksi_id');
-
-            // $transaksi_diantar = (clone $transaksi_siap_diantar)->where('transaksi.status', 'diantar')->get()->groupBy('transaksi_id');
-            // $transaksi_selesai = (clone $transaksi_siap_diantar)->where('transaksi.status', 'selesai')->get()->groupBy('transaksi_id');
-            // $transaksi_siap_diantar = $transaksi_siap_diantar->where('transaksi.status', 'siap_diantar')->get()->groupBy('transaksi_id');
 
             return response()->json([
                 "status" => "success",
                 "message" => "Berhasil mengambil data",
                 "data" => [
-                    'order' => $transaksi,
-                    // 'transaksi_siap_diantar' => $transaksi_siap_diantar,
-                    // 'transaksi_diantar' => $transaksi_diantar,
-                    // 'transaksi_selesai' => $transaksi_selesai,
+                    'transaksi' => $transaksi,
                 ]
             ]);
         } catch (Throwable $th) {
@@ -115,12 +94,12 @@ class PesananController extends Controller
                     "message" => "Transaksi tidak ditemukan"
                 ], 404);
             } else {
-                $transaksi->status = 'selesai';
+                $transaksi->status = $request->status;
                 $transaksi->save();
                 // Jika status transaksi berubah menjadi Siap Diant
                 return response()->json([
                     "status" => "success",
-                    "message" => "Pesanan Sudah Selesai",
+                    "message" => "Pesanan {$request->status}",
                 ]);
             }
         } catch (Throwable $th) {
