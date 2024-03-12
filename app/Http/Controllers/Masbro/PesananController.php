@@ -37,7 +37,7 @@ class PesananController extends Controller
         }
 
         try {
-            $transaksi = Transaksi::with(['listTransaksiDetail.menusKelola', 'user'])->get();
+            $transaksi = Transaksi::with(['listTransaksiDetail.menusKelola.tenants', 'user'])->get();
 
             if($request->has('gedung')){
                 $transaksi = $transaksi->where('gedung', $request->gedung)->values();
