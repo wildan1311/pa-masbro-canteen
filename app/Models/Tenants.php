@@ -21,6 +21,13 @@ class Tenants extends Model
         'user_id',
     ];
 
+    public $appends = ['gambar', 'range'];
+
+    public function getRangeAttribute()
+    {
+        $minPrice = $this->listMenu->min('detail_menu.harga');
+        return $minPrice;
+    }
     public function getIsOpenAttribute()
     {
         $currentTime = now()->format('H:i:s');
@@ -32,7 +39,8 @@ class Tenants extends Model
         }
     }
 
-    public function getGambarAttribute(){
+    public function getGambarAttribute()
+    {
         return (asset($this->nama_gambar)) ?? '';
     }
 
