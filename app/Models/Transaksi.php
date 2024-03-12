@@ -17,6 +17,8 @@ class Transaksi extends Model
         'status',
         'ruangan_id',
         'total',
+        'ongkos_kirim',
+        'biaya_layanan',
         'isAntar',
         'motode_pembayaran'
     ];
