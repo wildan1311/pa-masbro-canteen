@@ -100,7 +100,7 @@ class AuthController extends Controller
         })->get();
 
         $menu = $menu->filter(function ($mm) use ($user) {
-            if ($user->hasPermissionTo('read ' . $mm->name)) {
+            if ($user->can('read ' . $mm->name)) {
                 return $mm;
             }
         })->values();
