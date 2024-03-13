@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tenants;
+use App\Response\ResponseApi;
 use Illuminate\Http\Request;
-use Psr\Http\Message\ResponseInterface;
 
 class TenantController extends Controller
 {
@@ -22,32 +22,20 @@ class TenantController extends Controller
 
         $tenants = Tenants::with(['listMenu'])->get();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'berhasil mendapatkan data',
-            'data' => [
-                'tenants' => $tenants
-            ]
-        ]);
+        return ResponseApi::success(compact('tenants'), 'berhasil mendapatkan data');
     }
 
     public function getSpecificTenant(Request $request, $TenantId){
         $user = $request->user()->can('read katalog');
+        // todo : GANTI INI WOY
         $user = true;
 
         if(!$user){
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'tidak memiliki akses',
-            ], 403);
+            ResponseApi::error('tidak memiliki akses', 403);
         }
 
         $tenant = Tenants::with(['listMenu'])->find($TenantId);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'berhasil mendaptakan data',
-            'data' => ['tenant' => $tenant]
-        ]);
+        return ResponseApi::success(compact('tenant'), 'berhasil mendapatkan data');
     }
 }

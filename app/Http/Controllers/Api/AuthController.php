@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Konfigurrasi\Menu;
 use App\Models\Role;
 use App\Models\User;
+use App\Response\ResponseApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -29,10 +30,7 @@ class AuthController extends Controller
         ]);
 
         if ($validate->fails()) {
-            return response()->json([
-                'status' => 'failed',
-                'message' => $validate->errors()
-            ], 422);
+            return ResponseApi::error($validate->errors()->all(), 422);
         }
 
         DB::beginTransaction();
@@ -59,18 +57,16 @@ class AuthController extends Controller
             DB::rollBack();
             Log::error($th->getMessage());
 
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Terjadi kesalahan'
-            ], 500);
+            ResponseApi::serverError();
         }
 
-        // User Management
-        return response()->json([
+        $data = [
             'name' => $newUser->name,
             'token' => $token,
             'token_type' => 'Bearer'
-        ]);
+        ];
+
+        return ResponseApi::success($data, 'Berhasil Mendaftar');
     }
     public function login(Request $request)
     {
@@ -80,17 +76,11 @@ class AuthController extends Controller
         ]);
 
         if ($validate->fails()) {
-            return response()->json([
-                'status' => 'failed',
-                'message' => $validate->errors()
-            ], 422);
+            return ResponseApi::error($validate->errors()->all(), 422);
         }
 
         if (!Auth::attempt($request->only(['email', 'password']))) {
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'email atau password salah'
-            ], 401);
+            return ResponseApi::error('email atau password salah');
         }
 
         $user = User::where('email', $request->email)->first();
@@ -108,26 +98,20 @@ class AuthController extends Controller
         $permission = ($user->getPermissionsViaRoles()->pluck('name')->toArray());
 
         $token = $user->createToken('secret', $permission)->plainTextToken;
+        $data = [
+            'nama' => $user->name,
+            'token' => $token,
+            'token_type' => 'Bearer',
+            'role' => $user->getRoleNames(),
+            'menu' => $menu,
+            'permission' => $permission,
+        ];
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'berhasil login',
-            'data' => [
-                'nama' => $user->name,
-                'token' => $token,
-                'token_type' => 'Bearer',
-                'role' => $user->getRoleNames(),
-                'menu' => $menu,
-                'permission' => $permission,
-            ],
-        ]);
+        return ResponseApi::success($data, 'berhasil mendapatkan data');
     }
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
-        return response()->json([
-            'status' => 'success',
-            'message' => 'logout success'
-        ]);
+        return ResponseApi::success(null, 'logout berhasil');
     }
 }

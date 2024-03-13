@@ -28,11 +28,11 @@ class TenantOrderController extends Controller
         try {
             $tenant = Tenants::where("user_id", $request->user()->id)->first();
             $dataPesanan = Transaksi::with([
-                'listTransaksiDetail.menusKelola' => function ($query) use ($tenant) {
-                    $query->where('tenant_id', @$tenant->id);
+                'listTransaksiDetail.menusKelola.tenants' => function ($query) use ($tenant) {
+                    $query->where('id', @$tenant->id);
                 }
-            ])->whereHas('listTransaksiDetail.menusKelola', function ($query) use ($tenant) {
-                $query->where('tenant_id', @$tenant->id);
+            ])->whereHas('listTransaksiDetail.menusKelola.tenants', function ($query) use ($tenant) {
+                $query->where('id', @$tenant->id);
             })->whereNotIn('status', ['pending', 'expire', 'cancel'])->get();
 
             // $baseQuery = DB::table('transaksi_detail')
@@ -54,7 +54,7 @@ class TenantOrderController extends Controller
                 "status" => "success",
                 "message" => "Berhasil mengambil data",
                 "data" => [
-                    "pesanan" => $dataPesanan,
+                    "pesanan" => $dataPesanan->values(),
                 ]
             ]);
         } catch (Throwable $th) {

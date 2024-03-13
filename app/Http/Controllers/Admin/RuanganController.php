@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ruangan;
+use App\Response\ResponseApi;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -13,21 +14,18 @@ class RuanganController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     *
      */
     public function index()
     {
         $ruangan = Ruangan::all();
-        return response()->json([
-            'data' => $ruangan
-        ]);
+        return ResponseApi::success(compact('ruangan'), 'data berhasil diambil');
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
@@ -38,20 +36,15 @@ class RuanganController extends Controller
 
         if($validator->fails()){
             // Return Exception error
-            return response()->json($validator->errors());
+            return ResponseApi::error($validator->errors()->all());
         }
 
         $ruangan = Ruangan::create($request->all());
 
         if($ruangan){
-            return response()->json([
-                'messages' => 'Berhasil',
-                'data' => $ruangan
-            ]);
+            return ResponseApi::success(compact('ruangan'), 'data berhasil dibuat');
         }else{
-            return response()->json([
-                'messages' => 'Gagal',
-            ]);
+            return ResponseApi::error('Gagal Membuat ruangan');
         }
     }
 
@@ -59,15 +52,14 @@ class RuanganController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
         try{
             $ruangan = Ruangan::findOrFail($id);
-            return response()->json(['messages' => 'Sukses', 'data' => $ruangan]);
+            return ResponseApi::success(compact('ruangan'), 'data berhasil diambil');
         }catch(ModelNotFoundException $err){
-            return response()->json(['messages' => 'Tidak Ditemukan']);
+            return ResponseApi::error('data gagal diambil');
         }
     }
 
@@ -76,7 +68,6 @@ class RuanganController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
@@ -87,20 +78,15 @@ class RuanganController extends Controller
 
         if($validator->fails()){
             // Return Exception error
-            return response()->json($validator->errors());
+            return ResponseApi::error($validator->errors()->all());
         }
 
-        $ruangan = Ruangan::where('id', $id)->create($request->all());
+        $ruangan = Ruangan::where('id', $id)->update($request->only(['nama','gedung_id']));
 
         if($ruangan){
-            return response()->json([
-                'messages' => 'Berhasil',
-                'data' => $ruangan
-            ]);
+            return ResponseApi::success(compact('ruangan'), 'data berhasil diupdate');
         }else{
-            return response()->json([
-                'messages' => 'Gagal',
-            ]);
+            return ResponseApi::error('data gagal diupdate');
         }
     }
 
@@ -108,20 +94,14 @@ class RuanganController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         $ruangan = Ruangan::find($id)->delete();
         if($ruangan){
-            return response()->json([
-                'messages' => 'Berhasil Update',
-                'data' => $ruangan
-            ]);
+            return ResponseApi::success(compact('ruangan'), 'data berhasil dihapus');
         }else{
-            return response()->json([
-                'messages' => 'Gagal',
-            ]);
+            return ResponseApi::error('data gagal dihapus');
         }
     }
 }
