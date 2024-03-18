@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Kelola;
 use App\Http\Controllers\Controller;
 use App\Models\MenusKelola;
 use App\Models\Tenants;
+use App\Response\ResponseApi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -176,11 +177,12 @@ class TenantController extends Controller
             ], 403);
         }
 
-        // todo : tambahin validasi khusus user tenant itu saja yang bisa ganti
-
-        // $tenant = Tenants::where("user_id", $request->user()->id)->first();
+        $tenant = Tenants::where("user_id", $request->user()->id)->first();
         $menu = MenusKelola::find($id);
-        // Gate::authorize('update-tenant-menu', ["menu" => $menu]);
+
+        if(!Gate::allows('update-tenant-menu', [$menu, $tenant])){
+            return ResponseApi::error('Anda Bukan Pemilik Tenant Ini', 403);
+        }
 
         $validator = Validator::make($request->all(), [
             'menu_id' => 'nullable',
@@ -223,8 +225,15 @@ class TenantController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroyMenu($id)
+    public function destroyMenu(Request $request, $id)
     {
+        $user = $request->user();
+        if(!$user->can('create kelola tenant')){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'tidak memiliki akses',
+            ], 403);
+        }
         try {
             $menu = MenusKelola::find($id)->delete();
 
@@ -234,7 +243,7 @@ class TenantController extends Controller
             ]);
         } catch (\Throwable $th) {
             return response()->json([
-                "status" => "fail",
+                "status" => "failed",
                 "message" => $th->getMessage(),
             ], 500);
         }

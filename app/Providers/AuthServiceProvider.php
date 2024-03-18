@@ -18,7 +18,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
-        // MenusKelola::class => MenusKelolaPolicy::class,
+        MenusKelola::class => MenusKelolaPolicy::class,
         // Tenants::class => TenantsPolicy::class,
     ];
 
@@ -32,7 +32,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         // Gate::define('add-tenant-menu', [MenusKelolaPolicy::class, 'create']);
-        // Gate::define('update-tenant-menu', [MenusKelolaPolicy::class, 'update']);
+        Gate::define('update-tenant-menu', [MenusKelolaPolicy::class, 'update']);
         // Gate::define('delete-tenant-menu', [MenusKelolaPolicy::class, 'delete']);
 
         // Gate::define('update-tenant', [MenusKelolaPolicy::class, 'update']);
