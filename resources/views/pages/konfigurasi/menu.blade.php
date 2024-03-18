@@ -32,16 +32,16 @@
                             @foreach ($menu as $mm)
                                 <tr>
                                     <td>{{$loop->iteration}}</td>
-                                    <td>{{$mm->name}}</td>
+                                    <td>{{$mm->nama}}</td>
                                     <td>{{$mm->url ?? '-'}}</td>
                                     <td>
                                         @foreach ($mm->device as $device)
-                                            <span class="btn btn-primary">{{$device->name}}</span>
+                                            <span class="btn btn-primary">{{$device->nama}}</span>
                                         @endforeach
                                     </td>
                                     {{-- <td>{{$mm->url_server}}</td> --}}
-                                    <td>{{$mm->category}}</td>
-                                    <td>{{$mm->icon}}</td>
+                                    <td>{{$mm->kategori}}</td>
+                                    <td>{{$mm->ikon}}</td>
                                     <td>
                                         {{-- <a href="{{route('menu.show', $mm->id)}}" class="btn btn-primary">Lihat Permission</a> --}}
                                         <a href="{{route('menu.edit', $mm->id)}}" class="btn btn-secondary">Edit</a>
@@ -94,7 +94,7 @@
 
                                     if (errors){
                                         for(let [key, message] of Object.entries(errors)){
-                                            $(`[name=${key}]`).addClass('is-invalid').parent().append(`<div class="invalid-feedback"> ${message} </div>`);
+                                            $(`[nama=${key}]`).addClass('is-invalid').parent().append(`<div class="invalid-feedback"> ${message} </div>`);
                                         }
                                     }
                                 }

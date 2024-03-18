@@ -17,7 +17,7 @@
                         <div class="row">
                             <div class="col">
                                 <div class="mb-3">
-                                    <label for="basicInput" class="form-label">Name</label>
+                                    <label for="basicInput" class="form-label">Nama</label>
                                     <input type="text" placeholder="Input Here" class="form-control" id="basicInput"
                                         name="name">
                                 </div>
@@ -65,7 +65,7 @@
                                     <label for="basicInput" class="form-label">Device</label>
                                     <select name="device_id" class="form-control" id="">
                                         @foreach ($devices as $device)
-                                            <option value="{{$device->id}}">{{$device->name}}</option>
+                                            <option value="{{$device->id}}">{{$device->nama}}</option>
                                         @endforeach
                                     </select>
                                 </div>

@@ -19,7 +19,7 @@
                             <div class="mb-3">
                                 <label for="basicInput" class="form-label">Name</label>
                                 <input type="text" placeholder="Input Here" class="form-control" id="basicInput"
-                                    name="name" required value="{{ $menu->name }}">
+                                    name="name" required value="{{ $menu->nama }}">
                             </div>
                             {{-- <div class="mb-3">
                                 <label for="basicInput" class="form-label">URL Aplikasi</label>
@@ -34,18 +34,18 @@
                             <div class="mb-3">
                                 <label for="basicInput" class="form-label">Category</label>
                                 <input type="text" placeholder="Input Here" class="form-control" id="basicInput"
-                                    name="category" required value="{{ $menu->category }}">
+                                    name="category" required value="{{ $menu->kategori }}">
                             </div>
                             <div class="mb-3">
                                 <label for="basicInput" class="form-label">Icon</label>
                                 <input type="text" placeholder="Input Here" class="form-control" id="basicInput"
-                                    name="icon" value="{{ $menu->icon }}">
+                                    name="icon" value="{{ $menu->ikon }}">
                             </div>
                             <div class="mb-3">
                                 <label for="basicInput" class="form-label">Device</label>
                                 <select name="device_id" class="form-control" id="">
                                     @foreach ($devices as $device)
-                                        <option value="{{ $device->id }}" {{in_array($device->id, $menu->device->pluck('id')->toArray()) ? 'selected' : ''}}>{{ $device->name }}</option>
+                                        <option value="{{ $device->id }}" {{in_array($device->id, $menu->device->pluck('id')->toArray()) ? 'selected' : ''}}>{{ $device->nama }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -55,7 +55,7 @@
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="checkbox" id="inlineCheckbox1"
                                             value="{{ $item }}" name="permissions[]"
-                                            {{ $menu->permissions->where('name', "{$item} {$menu->name}")->first() != null ? 'checked' : '' }}>
+                                            {{ $menu->permissions->where('name', "{$item} {$menu->nama}")->first() != null ? 'checked' : '' }}>
                                         <label class="form-check-label"
                                             for="inlineCheckbox1">{{ $item }}</label>
                                     </div>

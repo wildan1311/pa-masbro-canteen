@@ -11,7 +11,7 @@ class Device extends Model
     use HasFactory;
 
     protected $table = 'device';
-    protected $fillable = ['name'];
+    protected $fillable = ['nama'];
 
     public function listMenu(){
         return $this->belongsToMany(Menu::class, 'menu_device', 'device_id', 'menu_id');

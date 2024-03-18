@@ -17,7 +17,7 @@
                         <div class="row">
                             <div class="col">
                                 <div class="mb-3">
-                                    <label for="basicInput" class="form-label">Name</label>
+                                    <label for="basicInput" class="form-label">Nama</label>
                                     <input type="text" placeholder="Input Here" class="form-control" id="basicInput"
                                         name="name" required>
                                 </div>

@@ -11,7 +11,7 @@ class Menu extends Model
 {
     use HasFactory;
     protected $table = 'menu';
-    protected $fillable = ['name', 'category', 'url', 'urutan', 'aktif', 'main_menu_id'];
+    protected $fillable = ['nama', 'kategori', 'url', 'urutan', 'aktif', 'main_menu_id'];
     protected $guard = ['id'];
 
     public function subMenus(){

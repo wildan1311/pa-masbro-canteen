@@ -53,11 +53,11 @@ class MenuController extends Controller
      */
     public function store(Request $request, Menu $menu)
     {
-        $menu->name = $request->name;
+        $menu->nama = $request->name;
         $menu->url = $request->url;
         // $menu->url_server = $request->url_server;
-        $menu->category = $request->category;
-        $menu->icon = $request->icon;
+        $menu->kategori = $request->category;
+        $menu->ikon = $request->icon;
         $menu->save();
 
         $device = Device::find($request->device_id);
@@ -98,10 +98,10 @@ class MenuController extends Controller
      */
     public function update(Request $request, Menu $menu)
     {
-        $menu->name = $request->name;
+        $menu->nama = $request->name;
         $menu->url = $request->url;
-        $menu->category = $request->category;
-        $menu->icon = $request->icon;
+        $menu->kategori = $request->category;
+        $menu->ikon = $request->icon;
         $menu->save();
 
         $menuPermission = MenuPermission::where('menu_id', $menu->id);
@@ -123,7 +123,7 @@ class MenuController extends Controller
 
         if ($request->permissions) {
             foreach ($request->permissions as $value) {
-                $permission = Permission::firstOrCreate(['name' => $value . " {$menu->name}"], ['name' => $value . " {$menu->name}"]);
+                $permission = Permission::firstOrCreate(['name' => $value . " {$menu->nama}"], ['name' => $value . " {$menu->nama}"]);
                 $permission->menu()->attach($menu);
                 // $permission->assignRole(['admin']);
             }

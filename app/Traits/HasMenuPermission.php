@@ -18,7 +18,7 @@ trait HasMenuPermission
         }
 
         foreach ($permissions as $value) {
-            $permission = Permission::create(['name' => $value . " {$menu->name}"]);
+            $permission = Permission::create(['name' => $value . " {$menu->nama}"]);
             $permission->menu()->attach($menu);
             if ($roles) {
                 $permission->assignRole($roles);

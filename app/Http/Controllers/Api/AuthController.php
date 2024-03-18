@@ -90,7 +90,7 @@ class AuthController extends Controller
         })->get();
 
         $menu = $menu->filter(function ($mm) use ($user) {
-            if ($user->can('read ' . $mm->name)) {
+            if ($user->can('read ' . $mm->nama)) {
                 return $mm;
             }
         })->values();
