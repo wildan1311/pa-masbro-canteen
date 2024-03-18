@@ -15,6 +15,7 @@ class TransaksiDetail extends Model
         'menus_kelola_id',
         'transaksi_id',
         'jumlah',
+        'catatan',
         'harga',
     ];
 
@@ -24,7 +25,7 @@ class TransaksiDetail extends Model
         return $this->menusKelola->menus->nama;
     }
     public function getKategoriMenuAttribute(){
-        return $this->menusKelola->menus->kategori->name;
+        return $this->menusKelola->menus->kategori->nama;
     }
 
     public function transaksi()
