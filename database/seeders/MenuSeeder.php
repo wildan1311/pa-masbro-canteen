@@ -26,17 +26,17 @@ class MenuSeeder extends Seeder
         // $this->attachMenuPermission($sm, null, ['admin']);
 
         $mm = Menu::firstOrCreate(['url' => '/role'],[
-            'name' => 'role', 'url' => '/role', 'category' => 'KONFIGURASI',
+            'nama' => 'role', 'url' => '/role', 'kategori' => 'KONFIGURASI',
         ]);
         $this->attachMenuPermission($mm, null, ['admin']);
 
         $mm = Menu::firstOrCreate(['url' => '/permission'],[
-            'name' => 'permission', 'url' => '/permission', 'category' => 'KONFIGURASI',
+            'nama' => 'permission', 'url' => '/permission', 'kategori' => 'KONFIGURASI',
         ]);
         $this->attachMenuPermission($mm, null, ['admin']);
 
         $mm = Menu::firstOrCreate(['url' => '/menu'],[
-            'name' => 'menu', 'url' => '/menu', 'category' => 'KONFIGURASI',
+            'nama' => 'menu', 'url' => '/menu', 'kategori' => 'KONFIGURASI',
         ]);
         $this->attachMenuPermission($mm, null, ['admin']);
 
