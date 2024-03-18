@@ -20,7 +20,7 @@ class Transaksi extends Model
         'ongkos_kirim',
         'biaya_layanan',
         'isAntar',
-        'motode_pembayaran'
+        'metode_pembayaran'
     ];
 
     public $appends = ['sub_total', 'gedung', 'nama_ruangan'];
