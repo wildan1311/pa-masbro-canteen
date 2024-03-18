@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Tenants;
 use App\Models\Transaksi;
 use App\Models\TransaksiDetail;
+use App\Models\User;
+use App\Services\Firebases;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -140,9 +142,10 @@ class TenantOrderController extends Controller
     // }
 
     // satu tenant
-    public function update(Request $request, $id)
+    public function update(Request $request, Firebases $firebases, $id)
     {
         $user = $request->user();
+        $masbro = User::role('masbro')->first();
 
         if (!$user->can('update order tenant')) {
             return response()->json([
@@ -174,25 +177,27 @@ class TenantOrderController extends Controller
         $transaksi->status = $request->status;
         $transaksi->save();
 
-        // firebase notification to bersangkutan
-        // todo : notify ke user
         if ($transaksi->status == 'pesanan_ditolak') {
-            // todo : refund dan notif ke user bersangkutan
+            $firebases->withNotification('Tenant Membatalkan Pemesanan', "Mohon maaf, pesanan {$transaksi->id} dibatalkan, selanjutnya anda bisa melakukan refund")
+                ->sendMessages($transaksi->user->fcm_token);
         }
-
-        // if ($transaksi->status == 'pesanan_diproses') {
-        //     // todo : notify ke user
-        // }
 
         if ($transaksi->status == 'siap_diantar') {
-            //  send push notification ke masbro
+            $firebases->withNotification('Pesanan Siap Diantar', "Pesanan {$transaksi->id} siap untuk diantar")
+                ->sendMessages($transaksi->user->fcm_token);
+
+            $firebases->withNotification('Pesanan Siap Diantar', "Pesanan {$transaksi->id} siap untuk diantar")
+                ->sendMessages($masbro->fcm_token);
         }
+
         if ($transaksi->status == 'diantar') {
-            //  send push notification ke masbro
+            $firebases->withNotification('Pesanan Sedang Diantar', "Pesanan {$transaksi->id} sedang diantar")
+                ->sendMessages($transaksi->user->fcm_token);
         }
 
         if ($transaksi->status == 'selesai') {
-            //  send push notification ke masbro
+            $firebases->withNotification('Pesanan Sudah Sampai', "Pesanan {$transaksi->id} sudah sampai. Selamat Menikmat 😬")
+                ->sendMessages($transaksi->user->fcm_token);
         }
 
         return response()->json([

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Tenants;
 use App\Models\Transaksi;
 use App\Models\TransaksiDetail;
+use App\Services\Firebases;
 use App\Services\Midtrans;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -185,7 +186,7 @@ class TransaksiController extends Controller
         return $transaksiDetail;
     }
 
-    public function webHookMidtrans(Request $request)
+    public function webHookMidtrans(Request $request, Firebases $firebases)
     {
         // $payload = $request->getContent();
         \Midtrans\Config::$isProduction = false;
@@ -197,9 +198,12 @@ class TransaksiController extends Controller
         $order_id = $notif->order_id;
 
         $transaksi = Transaksi::find($order_id);
+        $tenant = $transaksi->listTransaksiDetail->first()->menusKelola->tenants->pemilik;
+
         if ($transaction == 'settlement') {
             $transaksi->update(['status' => $transaction]);
-            // todo : firebase ke tenant dari transaksi
+            $firebases->withNotification('Pesanan Masuk', "Ada Pesanan Masuk!")
+                ->sendMessages($tenant->fcm_token);
         } else if ($transaction == 'expire') {
             $transaksi->update(['status' => $transaction]);
         } else if ($transaction == 'cancel') {

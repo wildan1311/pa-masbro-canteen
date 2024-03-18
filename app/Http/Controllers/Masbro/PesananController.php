@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Masbro;
 use App\Http\Controllers\Controller;
 use App\Models\Tenants;
 use App\Models\Transaksi;
+use App\Services\Firebases;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -63,7 +64,7 @@ class PesananController extends Controller
         }
     }
 
-    public function update(Request $request, $transaksiId)
+    public function update(Request $request, $transaksiId, Firebases $firebases)
     {
         $user = $request->user();
 
@@ -97,6 +98,8 @@ class PesananController extends Controller
                 $transaksi->status = $request->status;
                 $transaksi->save();
                 // Jika status transaksi berubah menjadi Siap Diant
+                $firebases->withNotification("Pesanan {$request->status}", "Pesanan {$transaksi->id} sedang diantar")
+                ->sendMessages($transaksi->user->fcm_token);
                 return response()->json([
                     "status" => "success",
                     "message" => "Pesanan {$request->status}",
