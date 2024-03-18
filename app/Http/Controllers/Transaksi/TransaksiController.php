@@ -127,6 +127,13 @@ class TransaksiController extends Controller
             $success = $this->storeTransakasiDetail($request, $transaksi);
 
             if ($success) {
+                if($transaksi->metode_pembayaran == 'cod'){
+                    return response()->json([
+                        "status" => 'success',
+                        'messages' => "transaksi berhasil dibuat",
+                    ], 201);
+                }
+
                 $transaksi = Transaksi::with(['user', 'listTransaksiDetail.menusKelola.menus'])->where('id', $transaksi->id)->first();
                 $midtrans = new Midtrans();
                 $snapMidtrans = $midtrans->createSnapTransaction($transaksi);
