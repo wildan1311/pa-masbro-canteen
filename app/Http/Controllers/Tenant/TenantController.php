@@ -10,8 +10,7 @@ use Illuminate\Http\Request;
 class TenantController extends Controller
 {
     public function getAll(Request $request){
-        $user = true;
-        // $user = $request->user()->can('read katalog');
+        $user = $request->user()->can('read beranda');
 
         if(!$user){
             return response()->json([
@@ -26,9 +25,7 @@ class TenantController extends Controller
     }
 
     public function getSpecificTenant(Request $request, $TenantId){
-        $user = $request->user()->can('read katalog');
-        // todo : GANTI INI WOY
-        $user = true;
+        $user = $request->user()->can('read beranda');
 
         if(!$user){
             ResponseApi::error('tidak memiliki akses', 403);
