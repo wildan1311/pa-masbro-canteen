@@ -31,7 +31,7 @@ class TenantController extends Controller
             ], 403);
         }
 
-        $tenant = Tenants::where('user_id', $user->id)->with('listMenu')->get();
+        $tenant = Tenants::where('user_id', $user->id)->with('listMenu')->first();
         return response()->json([
             'status' => 'success',
             'message' => 'berhasil mengambil data',
