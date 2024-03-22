@@ -18,7 +18,7 @@ class PesananController extends Controller
     {
         $user = $request->user();
 
-        if(!$user->can('read order masbro')){
+        if(!$user->can('read pengantaran')){
             return response()->json([
                 'status' => 'failed',
                 'message' => 'tidak memiliki akses',
@@ -26,7 +26,7 @@ class PesananController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'status' => 'required|in:diantar,selesai,siap_diantar',
+            // 'status' => 'required|in:diantar,selesai,siap_diantar',
             'gedung' => 'nullable',
         ]);
 
@@ -68,7 +68,7 @@ class PesananController extends Controller
     {
         $user = $request->user();
 
-        if(!$user->can('update order masbro')){
+        if(!$user->can('update pengantaran')){
             return response()->json([
                 'status' => 'failed',
                 'message' => 'tidak memiliki akses',
@@ -97,9 +97,9 @@ class PesananController extends Controller
             } else {
                 $transaksi->status = $request->status;
                 $transaksi->save();
-                // Jika status transaksi berubah menjadi Siap Diant
-                $firebases->withNotification("Pesanan {$request->status}", "Pesanan {$transaksi->id} sedang diantar")
-                ->sendMessages($transaksi->user->fcm_token);
+                $status = str_replace('_', ' ', $transaksi->status);
+                // $firebases->withNotification("Pesanan {$status}", "Pesanan {$transaksi->id} {$status}")
+                // ->sendMessages($transaksi->user->fcm_token);
                 return response()->json([
                     "status" => "success",
                     "message" => "Pesanan {$request->status}",
