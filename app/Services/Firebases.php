@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Laravel\Firebase\Facades\Firebase;
 use Kreait\Firebase\Factory;
@@ -43,5 +44,10 @@ class Firebases
     public function defaultValue(){
         $this->notification = Notification::create("Selamat Datang Di Masbro Canteen", "Aplikasi Pemesanan Makanan di Kantin PENS Dengan Menerapkan Payment Gateway");
         $this->message = ["DATA" => "NO DATA"];
+    }
+
+    public function updateFcmToken(User $user, $token = ""){
+        $updated = $user->update(['fcm_token' => $token]);
+        return $updated;
     }
 }
