@@ -181,6 +181,10 @@ class TenantOrderController extends Controller
             $firebases->withNotification('Tenant Membatalkan Pemesanan', "Mohon maaf, pesanan {$transaksi->id} dibatalkan, selanjutnya anda bisa melakukan refund")
                 ->sendMessages($transaksi->user->fcm_token);
         }
+        if ($transaksi->status == 'pesanan_diproses') {
+            $firebases->withNotification('Tenant Sedang Membuat Pesanan', "Pesanan {$transaksi->id} Sedang dibuat")
+                ->sendMessages($transaksi->user->fcm_token);
+        }
 
         if ($transaksi->status == 'siap_diantar') {
             $firebases->withNotification('Pesanan Siap Diantar', "Pesanan {$transaksi->id} siap untuk diantar")
