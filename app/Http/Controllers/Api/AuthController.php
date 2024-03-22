@@ -8,6 +8,7 @@ use App\Models\Konfigurrasi\Menu;
 use App\Models\Role;
 use App\Models\User;
 use App\Response\ResponseApi;
+use App\Services\Firebases;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -68,7 +69,7 @@ class AuthController extends Controller
 
         return ResponseApi::success($data, 'Berhasil Mendaftar');
     }
-    public function login(Request $request)
+    public function login(Request $request, Firebases $firebases)
     {
         $validate = Validator::make($request->all(), [
             'email' => 'required',
@@ -106,6 +107,8 @@ class AuthController extends Controller
             'menu' => $menu,
             'permission' => $permission,
         ];
+
+        ($firebases->updateFcmToken($user, $request->fcm_token));
 
         return ResponseApi::success($data, 'berhasil mendapatkan data');
     }
