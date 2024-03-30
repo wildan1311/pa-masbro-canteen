@@ -17,7 +17,9 @@ class shareVariable
      */
     public function handle(Request $request, Closure $next)
     {
-        $menu = Menu::all();
+        $menu = Menu::whereHas('device', function($device){
+            $device->where('device_id', 2);
+        })->get();
         view()->share('menus', $menu);
         return $next($request);
     }
