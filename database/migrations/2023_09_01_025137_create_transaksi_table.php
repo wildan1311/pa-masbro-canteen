@@ -16,7 +16,7 @@ class CreateTransaksiTable extends Migration
         Schema::create('transaksi', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('ruangan_id')->index('ruangan_index');
+            $table->unsignedBigInteger('ruangan_id')->index('ruangan_index')->nullable();
             $table->integer('total');
             $table->boolean('isAntar');
             $table->enum('metode_pembayaran', ['transfer', 'cod'])->default('transfer');
