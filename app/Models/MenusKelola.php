@@ -14,6 +14,7 @@ class MenusKelola extends Model
 
     protected $fillable = [
         'nama',
+        'deskripsi',
         'harga',
         'gambar',
         'tenant_id',
@@ -21,7 +22,7 @@ class MenusKelola extends Model
         'isReady'
     ];
 
-    public $appends = ['nama_menu', 'kategori_menu'];
+    public $appends = ['nama_menu', 'kategori_menu', 'link_gambar'];
 
     public function getNamaMenuAttribute(){
         return $this->menus->nama;
@@ -34,5 +35,9 @@ class MenusKelola extends Model
     }
     public function tenants(){
         return $this->belongsTo(Tenants::class, 'tenant_id');
+    }
+    public function getLinkGambarAttribute()
+    {
+        return (asset($this->gambar)) ?? '';
     }
 }

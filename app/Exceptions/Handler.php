@@ -44,20 +44,20 @@ class Handler extends ExceptionHandler
         });
     }
 
-    public function render($request, Throwable $exception)
-    {
-        if ($exception instanceof InvalidMessage) {
-            return ResponseApi::error($exception->getMessage(), 422);
-        }else if ($exception instanceof MessagingErrors\NotFound) {
-            return ResponseApi::error($exception->getMessage(), 422);
-        }else if ($exception instanceof MessagingErrors\ServerUnavailable) {
-            return ResponseApi::error($exception->getMessage(), 422);
-        }else if ($exception instanceof NotFoundHttpException) {
-            return ResponseApi::error("Not Found", 404);
-        }else{
-            return ResponseApi::serverError();
-        }
+    // public function render($request, Throwable $exception)
+    // {
+    //     if ($exception instanceof InvalidMessage) {
+    //         return ResponseApi::error($exception->getMessage(), 422);
+    //     }else if ($exception instanceof MessagingErrors\NotFound) {
+    //         return ResponseApi::error($exception->getMessage(), 422);
+    //     }else if ($exception instanceof MessagingErrors\ServerUnavailable) {
+    //         return ResponseApi::error($exception->getMessage(), 422);
+    //     }else if ($exception instanceof NotFoundHttpException) {
+    //         return ResponseApi::error("Not Found", 404);
+    //     }else{
+    //         return ResponseApi::serverError();
+    //     }
 
-        return parent::render($request, $exception);
-    }
+    //     return parent::render($request, $exception);
+    // }
 }

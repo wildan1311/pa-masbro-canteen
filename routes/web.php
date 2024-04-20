@@ -1,15 +1,19 @@
 <?php
 
+use App\Http\Controllers\Admin\RuanganController;
 use App\Http\Controllers\MenuKategori;
 use App\Http\Controllers\Web\DataController;
+use App\Http\Controllers\Web\GedungController;
 use App\Http\Controllers\Web\KatalogController;
 use App\Http\Controllers\Web\KeuanganController;
 use App\Http\Controllers\Web\Konfigurasi\MenuController;
 use App\Http\Controllers\Web\Konfigurasi\PermissionController;
 use App\Http\Controllers\Web\Konfigurasi\RoleController;
 use App\Http\Controllers\Web\PesananController;
+use App\Http\Controllers\Web\RuanganController as WebRuanganController;
 use App\Http\Controllers\Web\TenantController;
 use App\Http\Controllers\Web\UserController;
+use App\Models\Gedung;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,7 +32,7 @@ Route::get('/', function () {
 });
 
 
-Route::middleware(['shared','auth'])->group(function(){
+Route::middleware(['shared','auth', 'role:tenant|kdh|admin'])->group(function(){
 
     Route::get('/dashboard', function () {
         return view('dashboard');
@@ -41,6 +45,9 @@ Route::middleware(['shared','auth'])->group(function(){
     Route::resource('tenant', TenantController::class);
     Route::resource('user', UserController::class);
     Route::resource('menu-kategori', MenuKategori::class);
+    Route::resource('ruangan', WebRuanganController::class);
+    Route::resource('gedung', GedungController::class);
+
     Route::get('/data', [DataController::class, 'index']);
     Route::get('/pesanan', [PesananController::class, 'index']);
     Route::get('/keuangan', [KeuanganController::class, 'index']);

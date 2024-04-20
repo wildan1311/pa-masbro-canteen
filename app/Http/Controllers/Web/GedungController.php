@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Web;
 
-use App\Models\Kategori;
-use App\Models\Menus;
+use App\Http\Controllers\Controller;
+use App\Models\Gedung;
+use App\Models\Ruangan;
 use Illuminate\Http\Request;
 
-class MenuKategori extends Controller
+class GedungController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +16,9 @@ class MenuKategori extends Controller
      */
     public function index()
     {
-        $menus = Menus::all();
-        return view('pages.konfigurasi.menu-kategori.index', compact('menus'));
+        $this->authorize('read ruangan');
+        $gedung = Gedung::all();
+        return view('pages.konfigurasi.gedung.index', compact('gedung'));
     }
 
     /**
@@ -26,8 +28,7 @@ class MenuKategori extends Controller
      */
     public function create()
     {
-        $kategori = Kategori::all();
-        return view('pages.konfigurasi.menu-kategori.create', compact('kategori'));
+        return view('pages.konfigurasi.gedung.create');
     }
 
     /**
@@ -40,15 +41,13 @@ class MenuKategori extends Controller
     {
         $request->validate([
             'nama' => 'required',
-            'kategori_id' => 'required',
         ]);
 
-        Menus::create([
+        Gedung::create([
             'nama' => $request->nama,
-            'kategori_id' => $request->kategori_id,
         ]);
 
-        return redirect()->route('menu-kategori.index');
+        return redirect()->route('gedung.index');
     }
 
     /**
@@ -70,9 +69,8 @@ class MenuKategori extends Controller
      */
     public function edit($id)
     {
-        $kategori = Kategori::all();
-        $menus = Menus::find($id);
-        return view('pages.konfigurasi.menu-kategori.edit', compact('kategori', 'menus'));
+        $gedung = Gedung::find($id);
+        return view('pages.konfigurasi.gedung.edit', compact('gedung'));
     }
 
     /**
@@ -86,15 +84,13 @@ class MenuKategori extends Controller
     {
         $request->validate([
             'nama' => 'required',
-            'kategori_id' => 'required',
         ]);
 
-        Menus::find($id)->update([
+        Gedung::find($id)->update([
             'nama' => $request->nama,
-            'kategori_id' => $request->kategori_id,
         ]);
 
-        return redirect()->route('menu-kategori.index');
+        return redirect()->route('gedung.index');
     }
 
     /**
@@ -105,7 +101,7 @@ class MenuKategori extends Controller
      */
     public function destroy($id)
     {
-        Menus::find($id)->delete();
-        return redirect()->route('menu-kategori.index');
+        Gedung::find($id)->delete();
+        return redirect()->route('gedung.index');
     }
 }

@@ -101,6 +101,7 @@ class AuthController extends Controller
         $token = $user->createToken('secret', $permission)->plainTextToken;
         $data = [
             'nama' => $user->name,
+            'email' => $user->email,
             'token' => $token,
             'token_type' => 'Bearer',
             'role' => $user->getRoleNames(),

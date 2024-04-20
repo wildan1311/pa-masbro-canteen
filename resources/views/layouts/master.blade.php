@@ -15,6 +15,9 @@
     <link rel="stylesheet" href="{{ asset('') }}vendor/themify-icons/themify-icons.css">
     <link rel="stylesheet" href="{{ asset('') }}vendor/perfect-scrollbar/css/perfect-scrollbar.css">
 
+    <link rel="stylesheet" href="{{ asset('') }}vendor/izitoast/css/iziToast.min.css">
+
+
     <link href="{{ asset('') }}vendor/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
     <link href="{{ asset('') }}vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css"
         rel="stylesheet" />
@@ -72,6 +75,25 @@
     <script src="{{ asset('') }}assets/js/main.min.js"></script>
     <script>
         Main.init()
+    </script>
+    <script src="{{ asset('') }}vendor/izitoast/js/iziToast.min.js"></script>
+
+    <script>
+        function showMessage(status, message) {
+            iziToast[status]({
+                title: status == 'success' ? 'Success' : 'Error',
+                message: message,
+                position: 'topRight'
+            });
+        }
+    </script>
+
+    <script>
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                showMessage('error', "{{$error}}");
+            @endforeach
+        @endif
     </script>
     @stack('js')
 </body>

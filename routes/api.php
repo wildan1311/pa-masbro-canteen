@@ -45,7 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('tenant')->middleware(['role:tenant'])->name('api.tenant.')->group(function(){
         Route::get('/', [KelolaTenantController::class, 'index']);
         Route::post('/menu', [KelolaTenantController::class, 'storeMenu']);
-        Route::put('/menu/{id}', [KelolaTenantController::class, 'updateMenu']);
+        Route::post('/menu/{id}', [KelolaTenantController::class, 'updateMenu']);
         Route::delete('/menu/{id}', [KelolaTenantController::class, 'destroyMenu']);
 
         Route::get('/order', [TenantOrderController::class, 'index']);
@@ -56,12 +56,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/order', [PesananController::class, 'index']);
         Route::put('/order/{transaksiId}', [PesananController::class, 'update']);
     });
+
+    Route::put('/update-fcm-token', [UserController::class, 'updateFcmToken']);
 });
 Route::post('/order/callback', [TransaksiController::class, 'webHookMidtrans']);
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+Route::get('/menu_kategori', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::resource('user', UserController::class);
 

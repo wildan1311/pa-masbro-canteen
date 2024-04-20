@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Kelola;
 
 use App\Http\Controllers\Controller;
+use App\Models\Menus;
 use App\Models\MenusKelola;
 use App\Models\Tenants;
 use App\Response\ResponseApi;
@@ -63,6 +64,8 @@ class TenantController extends Controller
         $validator = Validator::make($request->all(), [
             'menu_id' => 'required',
             'harga' => 'required|numeric',
+            'nama_menu' => 'nullable',
+            'deskripsi_menu' => 'nullable',
             'gambar' => 'nullable',
         ]);
 
@@ -73,10 +76,23 @@ class TenantController extends Controller
             ], 400);
         }
 
+        $url = '';
+        if ($request->hasFile('gambar')) {
+            $gambar = $request->file('gambar');
+
+            $path = $gambar->store('public/images');
+
+            $url = Storage::url($path);
+        }
+
+        $menu = Menus::find($request->menu_id);
+
         try {
             $newMenu = MenusKelola::create([
                 "harga" => $request->harga,
-                "gambar"=> $request->gambar ?? "halo",
+                "gambar"=> $url,
+                "nama"=> $request->nama_menu ?? $menu->nama,
+                "deskripsi"=> @$request->deskripsi_menu,
                 "tenant_id" => @$tenant->id,
                 "menu_id" => $request->menu_id
             ]);
@@ -87,9 +103,10 @@ class TenantController extends Controller
                 "data" => $newMenu
             ]);
         } catch (\Throwable $th) {
+            Log::error($th->getMessage());
             return response()->json([
                 "status" => "failed",
-                "message" => $th->getMessage(),
+                "message" => ResponseApi::serverError(),
             ], 500);
         }
 
@@ -188,6 +205,8 @@ class TenantController extends Controller
             'menu_id' => 'nullable',
             'harga' => 'nullable|numeric',
             'gambar' => 'nullable',
+            'nama_menu' => 'nullable',
+            'deskripsi_menu' => 'nullable',
             'isReady' => 'nullable'
         ]);
 
@@ -197,11 +216,22 @@ class TenantController extends Controller
             ]);
         }
 
+        $url = '';
+        if ($request->hasFile('gambar')) {
+            $gambar = $request->file('gambar');
+
+            $path = $gambar->store('public/images');
+
+            $url = Storage::url($path);
+        }
+
         try {
             $menu->update([
                 "menu_id" => @$request->menu_id ?? $menu->menu_id,
                 "harga" => @$request->harga ?? $menu->harga,
-                "gambar" => @$request->gambar ?? $menu->gambar,
+                "gambar" => @$url ?? $menu->gambar,
+                "nama" => @$request->nama_menu ?? $menu->nama,
+                "deskripsi" => @$request->deskripsi_menu ?? $menu->deskripsi,
                 "isReady" => @$request->isReady ?? $menu->isReady
             ]);
 

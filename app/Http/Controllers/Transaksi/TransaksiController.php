@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Tenants;
 use App\Models\Transaksi;
 use App\Models\TransaksiDetail;
+use App\Models\User;
 use App\Services\Firebases;
 use App\Services\Midtrans;
+use App\Traits\CanAntar;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -21,7 +24,8 @@ class TransaksiController extends Controller
 
     }
 
-    public function orderUser(Request $request){
+    public function orderUser(Request $request)
+    {
         $user = $request->user();
         $permission = $user->can('read order user');
         $permission = true;
@@ -43,7 +47,8 @@ class TransaksiController extends Controller
         ]);
 
     }
-    public function orderTenant(Request $request){
+    public function orderTenant(Request $request)
+    {
         $user = $request->user();
         $permission = $user->can('read order user');
         $permission = true;
@@ -54,7 +59,7 @@ class TransaksiController extends Controller
                 'message' => 'tidak memiliki akses',
             ], 403);
         }
-        try{
+        try {
             $tenant = Tenants::where("user_id", $request->user()->id)->first();
             $baseQuery = DB::table('transaksi_detail')
                 ->join('transaksi', 'transaksi.id', 'transaksi_detail.transaksi_id')
@@ -77,7 +82,7 @@ class TransaksiController extends Controller
                     "riwayat_pesanan" => $dataPesanan
                 ]
             ]);
-        }catch(Throwable $th){
+        } catch (Throwable $th) {
             Log::error($th->getMessage());
             return response()->json([
                 "status" => "server error",
@@ -85,9 +90,11 @@ class TransaksiController extends Controller
             ], 500);
         }
     }
-    public function orderMasbro(){}
+    public function orderMasbro()
+    {
+    }
 
-    public function store(Request $request)
+    public function store(Request $request, Firebases $firebases)
     {
         $user = $request->user();
         $permission = $user->can('create order');
@@ -105,6 +112,7 @@ class TransaksiController extends Controller
             'total' => 'required|numeric',
             'ruangan_id' => 'required_if:isAntar,true', //kurang exists in ruangan
             'metode_pembayaran' => 'required',
+            'catatan' => 'nullable',
             'menus' => 'required|array',
         ]);
 
@@ -116,18 +124,30 @@ class TransaksiController extends Controller
 
         DB::beginTransaction();
         try {
+            $menu_id = $request->menus[0]['id'];
+            $tenantUser = User::whereHas('tenant', function ($tenant) use ($menu_id) {
+                $tenant->whereHas('kelola', function ($kelola) use ($menu_id) {
+                    $kelola->where('id', $menu_id);
+                });
+            })->first();
+
             $transaksi = Transaksi::create([
                 'user_id' => $user->id,
                 'total' => $request->total,
                 'isAntar' => $request->isAntar,
                 'metode_pembayaran' => $request->metode_pembayaran,
                 'ruangan_id' => $request->ruangan_id,
+                'ongkos_kirim' => $request->ongkos_kirim,
+                'status' => $request->metode_pembayaran == 'cod' ? "pesanan_masuk" : "pending",
             ]);
 
             $success = $this->storeTransakasiDetail($request, $transaksi);
 
             if ($success) {
-                if($transaksi->metode_pembayaran == 'cod'){
+                $firebases->withNotification('Pesanan Masuk', 'Ada Pesanan Masuk di Tenant Kamu')->sendMessages($tenantUser->fcm_token);
+                DB::commit();
+
+                if ($transaksi->metode_pembayaran == 'cod') {
                     return response()->json([
                         "status" => 'success',
                         'messages' => "transaksi berhasil dibuat",
@@ -138,7 +158,6 @@ class TransaksiController extends Controller
                 $midtrans = new Midtrans();
                 $snapMidtrans = $midtrans->createSnapTransaction($transaksi);
 
-                DB::commit();
                 return response()->json([
                     "status" => 'success',
                     'messages' => "transaksi berhasil dibuat",
@@ -169,6 +188,7 @@ class TransaksiController extends Controller
             'menus.*.id' => ['required', 'numeric'],
             'menus.*.jumlah' => ['required', 'numeric'],
             'menus.*.harga' => ['required', 'numeric'],
+            'menus.*.catatan' => ['nullable'],
         ], [
 
         ]);
@@ -185,6 +205,9 @@ class TransaksiController extends Controller
                 'menus_kelola_id' => $menu['id'],
                 'jumlah' => $menu['jumlah'],
                 'harga' => $menu['harga'],
+                'catatan' => $menu['catatan'] ?? '',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ];
         }, $request->menus);
 

@@ -6,39 +6,34 @@
         <div class="content-wrapper">
             <div class="card">
                 <div class="card-header">
-                    <h4>Role</h4>
+                    <h4>Ruangan</h4>
                     <div class="row">
                         <div class="col-12">
-                            {{-- @can('create konfigurasi/menu') --}}
-                                <a class="btn btn-primary add" href="{{route('role.create')}}">Tambah</a>
-                            {{-- @endcan --}}
+                            @can('create tenant')
+                                <a class="btn btn-primary add" href="{{ route('ruangan.create') }}">Tambah</a>
+                            @endcan
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    <table class="table table-responsive w-full">
+                    <table class="table">
                         <thead>
                             <th>No</th>
-                            <th>Nama Role</th>
-                            <th>Permission</th>
+                            <th>Nama Ruangan</th>
+                            <th>Gedung</th>
                             <th>Action</th>
                         </thead>
                         <tbody>
-                            @foreach ($roles as $role)
+                            @foreach ($ruangan as $ruang)
                                 <tr>
-                                    <td>{{$loop->iteration}}</td>
-                                    <td>{{$role->name}}</td>
-                                    <td class="w-72">
-                                        <div class="w-full">
-                                            @foreach ($role->permissions as $permission)
-                                                <span class="btn btn-sm btn-primary m-1">{{$permission->name}}</span>
-                                            @endforeach
-                                        </div>
-                                    </td>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $ruang->nama }}</td>
+                                    <td>{{ $ruang->gedung->nama ?? '-' }}</td>
                                     <td>
-                                        <a href="{{route('role.show', $role->id)}}" class="btn btn-primary">Lihat Permission</a>
-                                        <a href="{{route('role.edit', $role->id)}}" class="btn btn-secondary">Edit</a>
-                                        <form action="{{route('role.destroy', $role->id)}}" class="d-inline" method="POST">
+                                        <a href="{{ route('ruangan.edit', $ruang->id) }}"
+                                            class="btn btn-secondary">Edit</a>
+                                        <form action="{{ route('ruangan.destroy', $ruang->id) }}" class="d-inline"
+                                            method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger">Delete</button>
@@ -55,6 +50,11 @@
     </div>
 
     @push('js')
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                alert('error')
+            @endforeach
+        @endif
         {{-- {!! $dataTable->scripts() !!}
 
         <script>

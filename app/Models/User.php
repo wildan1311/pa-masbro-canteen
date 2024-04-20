@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Middleware\Tenant;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -48,5 +49,9 @@ class User extends Authenticatable
 
     public function rolesKw(){
         return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id');
+    }
+
+    public function tenant(){
+        return  $this->belongsTo(Tenants::class, 'id', 'user_id');
     }
 }

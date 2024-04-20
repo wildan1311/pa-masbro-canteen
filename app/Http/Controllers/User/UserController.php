@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\Firebases;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -102,6 +103,29 @@ class UserController extends Controller
         }
 
         $updated = User::where('id', $id)->update($request->all());
+
+        if(!$updated){
+            return response()->json(['messages' => 'Update Gagal']);
+        }else{
+            return response()->json([
+                'messages' => 'Update Berhasil',
+                'data' => $updated
+            ]);
+        }
+    }
+    public function updateFcmToken(Request $request, Firebases $firebases)
+    {
+        $user = $request->user();
+
+        $valdidator = Validator::make($request->all(), [
+            'fcm_token' => 'string'
+        ]);
+
+        if($valdidator->fails()){
+            return response()->json($valdidator->errors()->all());
+        }
+
+        $updated = $firebases->updateFcmToken($user->id, $request->token);
 
         if(!$updated){
             return response()->json(['messages' => 'Update Gagal']);

@@ -100,6 +100,15 @@ class PesananController extends Controller
                 $status = str_replace('_', ' ', $transaksi->status);
                 // $firebases->withNotification("Pesanan {$status}", "Pesanan {$transaksi->id} {$status}")
                 // ->sendMessages($transaksi->user->fcm_token);
+                if ($transaksi->status == 'diantar') {
+                    $firebases->withNotification('Pesanan Sedang Diantar', "Pesanan {$transaksi->id} sedang diantar")
+                        ->sendMessages($transaksi->user->fcm_token);
+                }
+
+                if ($transaksi->status == 'selesai') {
+                    $firebases->withNotification('Pesanan Sudah Sampai', "Pesanan {$transaksi->id} sudah sampai. Selamat Menikmati 😋")
+                        ->sendMessages($transaksi->user->fcm_token);
+                }
                 return response()->json([
                     "status" => "success",
                     "message" => "Pesanan {$request->status}",

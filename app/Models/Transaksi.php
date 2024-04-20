@@ -31,11 +31,11 @@ class Transaksi extends Model
     }
     public function getGedungAttribute()
     {
-        return $this->ruangan->gedung->nama;
+        return @$this->ruangan->gedung->nama;
     }
     public function getNamaRuanganAttribute()
     {
-        return $this->ruangan->nama_ruangan;
+        return @$this->ruangan->nama_ruangan;
     }
 
     public function listTransaksiDetail()

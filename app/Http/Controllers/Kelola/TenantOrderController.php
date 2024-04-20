@@ -7,6 +7,7 @@ use App\Models\Tenants;
 use App\Models\Transaksi;
 use App\Models\TransaksiDetail;
 use App\Models\User;
+use App\Response\ResponseApi;
 use App\Services\Firebases;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -164,7 +165,7 @@ class TenantOrderController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'status' => ['required', 'in:siap_diantar,pesanan_ditolak,pesanan_diproses'],
+            'status' => ['required', 'in:siap_diantar,pesanan_ditolak,pesanan_diproses,pesanan_masuk,selesai'],
         ]);
 
         if ($validator->fails()) {
@@ -177,36 +178,50 @@ class TenantOrderController extends Controller
         $transaksi->status = $request->status;
         $transaksi->save();
 
-        if ($transaksi->status == 'pesanan_ditolak') {
-            $firebases->withNotification('Tenant Membatalkan Pemesanan', "Mohon maaf, pesanan {$transaksi->id} dibatalkan, selanjutnya anda bisa melakukan refund")
-                ->sendMessages($transaksi->user->fcm_token);
-        }
-        if ($transaksi->status == 'pesanan_diproses') {
-            $firebases->withNotification('Tenant Sedang Membuat Pesanan', "Pesanan {$transaksi->id} Sedang dibuat")
-                ->sendMessages($transaksi->user->fcm_token);
-        }
+        try{
+            if ($transaksi->status == 'pesanan_ditolak') {
+                $firebases->withNotification('Tenant Membatalkan Pemesanan', "Mohon maaf, pesanan {$transaksi->id} dibatalkan, selanjutnya anda bisa melakukan refund")
+                    ->sendMessages($transaksi->user->fcm_token);
+            }
+            if ($transaksi->status == 'pesanan_diproses') {
+                $firebases->withNotification('Tenant Sedang Membuat Pesanan', "Pesanan {$transaksi->id} Sedang dibuat")
+                    ->sendMessages($transaksi->user->fcm_token);
+            }
 
-        if ($transaksi->status == 'siap_diantar') {
-            $firebases->withNotification('Pesanan Siap Diantar', "Pesanan {$transaksi->id} siap untuk diantar")
-                ->sendMessages($transaksi->user->fcm_token);
+            if ($transaksi->status == 'siap_diantar') {
+                $firebases->withNotification('Pesanan Sedang Diantar', "Pesanan {$transaksi->id} siap untuk diantar")
+                    ->sendMessages($transaksi->user->fcm_token);
 
-            $firebases->withNotification('Pesanan Siap Diantar', "Pesanan {$transaksi->id} siap untuk diantar")
-                ->sendMessages($masbro->fcm_token);
+                $firebases->withNotification('Pesanan Siap Diantar', "Pesanan {$transaksi->id} siap untuk diantar")
+                    ->sendMessages($masbro->fcm_token);
+            }
+
+            if ($transaksi->status == 'diantar') {
+                $firebases->withNotification('Pesanan Sedang Diantar', "Pesanan {$transaksi->id} sedang diantar")
+                    ->sendMessages($transaksi->user->fcm_token);
+            }
+
+            if ($transaksi->status == 'selesai') {
+                $firebases->withNotification('Pesanan Sudah Sampai', "Pesanan {$transaksi->id} sudah sampai. Selamat Menikmat 😬")
+                    ->sendMessages($transaksi->user->fcm_token);
+            }
+
+            return ResponseApi::success(null, "Pesanan $transaksi->status");
+        }catch(Throwable $e){
+            $warning = "Notifikasi mungkin tidak terkirim dengan sempurna";
+            Log::error($e->getMessage());
+            ResponseApi::serverError();
         }
+        // finally{
+        //     return response()->json([
+        //         "status" => "success",
+        //         "message" => str_replace('_', ' ', $request->status)
+        //     ]);
+        // }
 
-        if ($transaksi->status == 'diantar') {
-            $firebases->withNotification('Pesanan Sedang Diantar', "Pesanan {$transaksi->id} sedang diantar")
-                ->sendMessages($transaksi->user->fcm_token);
-        }
-
-        if ($transaksi->status == 'selesai') {
-            $firebases->withNotification('Pesanan Sudah Sampai', "Pesanan {$transaksi->id} sudah sampai. Selamat Menikmat 😬")
-                ->sendMessages($transaksi->user->fcm_token);
-        }
-
-        return response()->json([
-            "status" => "success",
-            "message" => str_replace('_', ' ', $request->status)
-        ]);
+        // return response()->json([
+        //     "status" => "success",
+        //     "message" => str_replace('_', ' ', $request->status)
+        // ]);
     }
 }
