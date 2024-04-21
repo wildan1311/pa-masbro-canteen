@@ -26,7 +26,7 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.konfigurasi.tambah-permission');
     }
 
     /**
@@ -35,9 +35,12 @@ class PermissionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Permission $permission)
     {
-        //
+        $request->validate(['name' => 'required|unique:permissions']);
+        $permission->name =  $request->name;
+        $permission->save();
+        return redirect()->route('permission.index')->with('success','Data Berhasil Ditambahkan!');
     }
 
     /**
