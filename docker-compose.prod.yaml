@@ -32,7 +32,7 @@ services:
     db:
         image: mysql
         container_name: db_mysql_backend_masbrocanteen
-        restart: always
+        restart: unless-stopped
         tty: true
         ports:
           - "3306:3306"
