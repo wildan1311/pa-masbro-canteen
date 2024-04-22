@@ -6,7 +6,7 @@ WORKDIR /var/www/html
 RUN apt-get update -y
 RUN apt-get install -y zip unzip git libonig-dev zlib1g-dev libpng-dev libzip-dev libpq-dev
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
-RUN docker-php-ext-install zip pdo mbstring gd pgsql pdo_pgsql
+RUN docker-php-ext-install zip pdo mbstring gd pgsql pdo_pgsql pdo_mysql mysqli
 
 RUN groupadd -g 1000 www
 RUN useradd -u 1000 -ms /bin/bash -G www,www-data,root masbro
