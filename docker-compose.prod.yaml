@@ -30,19 +30,21 @@ services:
             - network_backend_masbrocanteen
 
     db:
-        image: postgres:15-alpine
-        container_name: db_postgres_backend_masbrocanteen
+        image: mysql
+        container_name: db_mysql_backend_masbrocanteen
         restart: always
         tty: true
         ports:
-            - "5432:5432"
+          - "3333:3306"
         networks:
-            - network_backend_masbrocanteen
+              - network_backend_masbrocanteen
         volumes:
-            - db_backend_masbrocanteen:/var/lib/postgresql/data
+            - db_backend_masbrocanteen:/var/lib/mysql
         environment:
-            POSTGRES_PASSWORD: masbrocanteen1
-            POSTGRES_DB: masbrocanteen1
+          MYSQL_DATABASE: 'masbrocanteen1'
+          MYSQL_USER: 'masbrocanteen'
+          MYSQL_PASSWORD: 'masbrocanteen1'
+          MYSQL_ROOT_PASSWORD: '@Masbrocanteen1'
 
 networks:
     network_backend_masbrocanteen:
