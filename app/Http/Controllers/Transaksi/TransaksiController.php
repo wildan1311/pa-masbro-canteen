@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Transaksi;
 
+use App\Helper\TransaksiCek;
 use App\Http\Controllers\Controller;
 use App\Models\Tenants;
 use App\Models\Transaksi;
@@ -36,7 +37,7 @@ class TransaksiController extends Controller
                 'message' => 'tidak memiliki akses',
             ], 403);
         }
-        $transaksi = Transaksi::with('listTransaksiDetail')->where('user_id', $user->id)->orderBy('status')->get();
+        $transaksi = Transaksi::with(['listTransaksiDetail.menusKelola.tenants', 'user'])->where('user_id', $user->id)->orderBy('status')->get();
 
         return response()->json([
             'status' => 'success',
@@ -50,7 +51,7 @@ class TransaksiController extends Controller
     public function orderTenant(Request $request)
     {
         $user = $request->user();
-        $permission = $user->can('read order user');
+        $permission = $user->can('read order tenant');
         $permission = true;
 
         if (!$permission) {
@@ -61,25 +62,28 @@ class TransaksiController extends Controller
         }
         try {
             $tenant = Tenants::where("user_id", $request->user()->id)->first();
-            $baseQuery = DB::table('transaksi_detail')
-                ->join('transaksi', 'transaksi.id', 'transaksi_detail.transaksi_id')
-                ->join('menus_kelola', 'menus_kelola.id', 'transaksi_detail.menus_kelola_id')
-                ->join('menus', 'menus.id', 'menus_kelola.menu_id')
-                ->join('tenants', 'tenants.id', 'menus_kelola.tenant_id')
-                ->where('tenant_id', @$tenant->id)
-                // ->where('status', 'pesanan_masuk')
-                ->select('transaksi_detail.*', 'menus.nama as namaMenu', 'tenants.nama_tenant as tenant')
-                ->addSelect(DB::raw('transaksi_detail.jumlah * transaksi_detail.harga as subTotal'));
-            // ->get();
+            $transaksi = Transaksi::whereHas('listTransaksiDetail.menusKelola', function($menusKelola)use($tenant){
+                return $menusKelola->where('tenant_id', $tenant->id);
+            })->
+            with(['listTransaksiDetail.menusKelola.tenants', 'user'])->orderBy('status')->get();
+            // $baseQuery = DB::table('transaksi_detail')
+            //     ->join('transaksi', 'transaksi.id', 'transaksi_detail.transaksi_id')
+            //     ->join('menus_kelola', 'menus_kelola.id', 'transaksi_detail.menus_kelola_id')
+            //     ->join('menus', 'menus.id', 'menus_kelola.menu_id')
+            //     ->join('tenants', 'tenants.id', 'menus_kelola.tenant_id')
+            //     ->where('tenant_id', @$tenant->id)
+            //     // ->where('status', 'pesanan_masuk')
+            //     ->select('transaksi_detail.*', 'menus.nama as namaMenu', 'tenants.nama_tenant as tenant')
+            //     ->addSelect(DB::raw('transaksi_detail.jumlah * transaksi_detail.harga as subTotal'));
+            // // ->get();
 
-            $dataPesananMasuk = (clone $baseQuery)->where('transaksi_detail.status', 'pesanan_masuk')->get();
-            $dataPesanan = (clone $baseQuery)->get();
+            // $dataPesananMasuk = (clone $baseQuery)->where('transaksi_detail.status', 'pesanan_masuk')->get();
+            // $dataPesanan = (clone $baseQuery)->get();
             return response()->json([
                 "status" => "success",
                 "message" => "Berhasil mengambil data",
                 "data" => [
-                    "pesanan_masuk" => $dataPesananMasuk,
-                    "riwayat_pesanan" => $dataPesanan
+                    "transaksi" => $transaksi
                 ]
             ]);
         } catch (Throwable $th) {
@@ -90,13 +94,40 @@ class TransaksiController extends Controller
             ], 500);
         }
     }
-    public function orderMasbro()
+    public function orderMasbro(Request $request)
     {
+        $user = $request->user();
+        $permission = $user->can('read order tenant');
+        $permission = true;
+
+        if (!$permission) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'tidak memiliki akses',
+            ], 403);
+        }
+        try {
+            $transaksi = Transaksi::where('isAntar', 1)->with(['listTransaksiDetail.menusKelola.tenants', 'user'])->where('user_id', $user->id)->orderBy('status')->get();
+            return response()->json([
+                "status" => "success",
+                "message" => "Berhasil mengambil data",
+                "data" => [
+                    "transaksi" => $transaksi
+                ]
+            ]);
+        } catch (Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                "status" => "server error",
+                "message" => "terjadi kesalahan di server"
+            ], 500);
+        }
     }
 
     public function store(Request $request, Firebases $firebases)
     {
         $user = $request->user();
+        $transaksiCek = new TransaksiCek($user, $request);
         $permission = $user->can('create order');
         $permission = true;
 
@@ -106,6 +137,20 @@ class TransaksiController extends Controller
                 'message' => 'tidak memiliki akses',
             ], 403);
         }
+
+        if(!$transaksiCek->antar()){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'tidak memiliki akses antar',
+            ], 403);
+        };
+
+        if(!$transaksiCek->metodePembayaran()){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'tidak memiliki akses transfer atau COD',
+            ], 403);
+        };
 
         $validatator = Validator::make($request->all(), [
             'isAntar' => 'required|boolean',
@@ -137,7 +182,7 @@ class TransaksiController extends Controller
                 'isAntar' => $request->isAntar,
                 'metode_pembayaran' => $request->metode_pembayaran,
                 'ruangan_id' => $request->ruangan_id,
-                'ongkos_kirim' => $request->ongkos_kirim,
+                'ongkos_kirim' => $request->ongkos_kirim ?? 0,
                 'status' => $request->metode_pembayaran == 'cod' ? "pesanan_masuk" : "pending",
             ]);
 
