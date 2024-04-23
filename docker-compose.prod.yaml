@@ -39,7 +39,7 @@ services:
         networks:
               - network_backend_masbrocanteen
         volumes:
-            - db_backend_masbrocanteen:/var/lib/mysql
+            - db_backend_masbrocanteen_mysql:/var/lib/mysql
         environment:
           MYSQL_DATABASE: 'masbrocanteen1'
           MYSQL_USER: 'masbrocanteen'
@@ -53,5 +53,5 @@ networks:
         driver: bridge
 
 volumes:
-    db_backend_masbrocanteen:
+    db_backend_masbrocanteen_mysql:
         driver: local
