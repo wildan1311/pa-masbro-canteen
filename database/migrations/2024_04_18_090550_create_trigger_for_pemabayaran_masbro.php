@@ -15,7 +15,8 @@ class CreateTriggerForPemabayaranMasbro extends Migration
     public function up()
     {
         DB::unprepared('
-            CREATE OR REPLACE TRIGGER tr_Pembayaran_Masbro AFTER INSERT ON transaksi
+            CREATE TRIGGER tr_Pembayaran_Masbro
+            AFTER INSERT ON transaksi
             FOR EACH ROW
             BEGIN
                 IF NEW.isAntar = 1 THEN
