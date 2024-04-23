@@ -30,7 +30,7 @@ services:
             - network_backend_masbrocanteen
 
     db:
-        image: mysql
+        image: mysql:5.7.29
         container_name: db_mysql_backend_masbrocanteen
         restart: unless-stopped
         tty: true
@@ -45,6 +45,8 @@ services:
           MYSQL_USER: 'masbrocanteen'
           MYSQL_PASSWORD: 'masbrocanteen1'
           MYSQL_ROOT_PASSWORD: '@Masbrocanteen1'
+          SERVICE_NAME: mysql
+          SERVICE_TAGS: dev
 
 networks:
     network_backend_masbrocanteen:
