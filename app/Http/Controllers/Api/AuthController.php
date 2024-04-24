@@ -26,7 +26,7 @@ class AuthController extends Controller
         $validate = Validator::make($request->all(), [
             'email' => 'required|unique:users,email|email|regex:/^\S*$/',
             'password' => 'required',
-            'name' => 'required|regex:/^[a-zA-Z]+$/',
+            'name' => 'required|regex:/^[a-zA-Z\s]+$/',
             'role' => 'nullable'
         ]);
 
