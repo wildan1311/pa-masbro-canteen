@@ -216,6 +216,7 @@ class TenantController extends Controller
             ]);
         }
 
+        $url = null;
         if ($request->hasFile('gambar')) {
             $gambar = $request->file('gambar');
 
