@@ -76,7 +76,7 @@ class TenantController extends Controller
             ], 400);
         }
 
-        $url = '';
+        $url = '/assets/images/default-image.png';
         if ($request->hasFile('gambar')) {
             $gambar = $request->file('gambar');
 
