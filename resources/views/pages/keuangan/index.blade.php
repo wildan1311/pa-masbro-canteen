@@ -1,65 +1,43 @@
 <x-master-layout>
     <div class="main-content">
-        <div class="text-black bg-white rounded py-10">
-            <!-- Component Start -->
-            {{-- <div class="flex">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="w-48 bg-white shadow-2xl p-6 rounded-2xl">
-                        <div class="flex items-center">
-                            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-pink-100">
-                                <svg class="w-4 h-4 stroke-current text-pink-600" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </span>
-                            <span class="ml-2 text-sm font-medium text-gray-500">Followers</span>
-                        </div>
-                        <span class="block text-4xl font-semibold mt-4">Rp. {{number_format($summary->jumlah_pending)}}</span>
-                        <div class="flex text-xs mt-3 font-medium">
-                            <span class="text-green-500">+8%</span>
-                            <span class="ml-1 text-gray-500">last 14 days</span>
-                        </div>
-                    </div>
-                    <div class="w-48 bg-white shadow-2xl p-6 rounded-2xl">
-                        <div class="flex items-center">
-                            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-red-100">
-                                <svg class="w-4 h-4 stroke-current text-red-600" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                </svg>
-                            </span>
-                            <span class="ml-2 text-sm font-medium text-gray-500">Likes</span>
-                        </div>
-                        <span class="block text-4xl font-semibold mt-4">Rp. {{number_format($summary->jumlah_minggu_ini)}}</span>
-                        <div class="flex text-xs mt-3 font-medium">
-                            <span class="text-green-500">+12%</span>
-                            <span class="ml-1 text-gray-500">last 14 days</span>
-                        </div>
-                    </div>
-                    <div class="w-48 bg-white shadow-2xl p-6 rounded-2xl">
-                        <div class="flex items-center">
-                            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-blue-100">
-                                <svg class="w-4 h-4 stroke-current text-blue-600" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                                </svg>
-                            </span>
-                            <span class="ml-2 text-sm font-medium text-gray-500">Comments</span>
-                        </div>
-                        <span class="block text-4xl font-semibold mt-4">Rp. {{number_format($summary->jumlah_bulan_ini)}}</span>
-                        <div class="flex text-xs mt-3 font-medium">
-                            <span class="text-red-500">-2%</span>
-                            <span class="ml-1 text-gray-500">last 14 days</span>
-                        </div>
+        <section class="bg-white rounded p-10">
+            <div class="flex flex-col gap-y-4">
+                <div class="flex flex-col space-y-6 md:space-y-0 md:flex-row justify-between">
+                    <div class="mr-6">
+                        <h1 class="text-4xl font-semibold mb-2">Yuk Cek Hasil Penjualan Toko Kamu</h1>
                     </div>
                 </div>
-            </div> --}}
-            <!-- Component End  -->
+        <section class="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
+            <div class="flex items-center p-8 bg-white shadow rounded-lg">
+                <div>
+                    <span class="block text-gray-500">Pending</span>
+                    <span class="block text-2xl font-bold">Rp.  </span>
+                </div>
+            </div>
+            <div class="flex items-center p-8 bg-white shadow rounded-lg">
+                <div>
+                    <span class="block text-gray-500">Minggu ini </span>
+                    <span class="block text-2xl font-bold">Rp.  </span>
+                </div>
+            </div>
+            <div class="flex items-center p-8 bg-white shadow rounded-lg">
+                <div>
+                    <span class="block text-gray-500">Bulan ini</span>
+                    <span class="block text-2xl font-bold">Rp.  </span>
+                </div>
+            </div>
+            <div class="flex items-center p-8 bg-white shadow rounded-lg">
+                <div>
+                    <span class="block text-gray-500">Total Keseluruhan</span>
+                    <span class="block text-2xl font-bold">Rp. </span>
+                </div>
+            </div>
+        </section>
+    </div>
 
+        <div class="text-black bg-white rounded py-10">
             <div class="px-8">
+
                 <div>
                     <h2 class="text-2xl font-semibold leading-tight">Rincian Penjualan</h2>
                 </div>
@@ -70,19 +48,19 @@
                                 <tr>
                                     <th
                                         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                        Nama Pemesan
+                                        Kode Pesanan
                                     </th>
                                     <th
                                         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                        Menu
+                                        Tanggal Masuk
                                     </th>
                                     <th
                                         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                        Jumlah
+                                        Tanggal Keluar
                                     </th>
                                     <th
                                         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                        Harga
+                                        Jumlah Total
                                     </th>
                                     <th
                                         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
