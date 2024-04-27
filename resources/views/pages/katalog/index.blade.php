@@ -73,7 +73,7 @@
                                                     <div class="dropdown inline-block relative">
                                                         <button
                                                             class="bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded inline-flex items-center">
-                                                            <span class="mr-1">Ready</span>
+                                                            <span class="mr-1">Tersedia</span>
                                                             <svg class="fill-current h-4 w-4"
                                                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                                                 <path
@@ -83,7 +83,7 @@
                                                         <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
                                                             <li class=""><a
                                                                     class="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                                                                    href="#">Ready</a></li>
+                                                                    href="#">Tersedia</a></li>
                                                             <li class=""><a
                                                                     class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
                                                                     href="#">Kosong</a></li>
