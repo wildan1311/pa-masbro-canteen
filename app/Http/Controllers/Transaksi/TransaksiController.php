@@ -183,6 +183,7 @@ class TransaksiController extends Controller
                 'metode_pembayaran' => $request->metode_pembayaran,
                 'ruangan_id' => $request->ruangan_id,
                 'ongkos_kirim' => $request->ongkos_kirim ?? 0,
+                'catatan' => @$request->catatan,
                 'status' => $request->metode_pembayaran == 'cod' ? "pesanan_masuk" : "pending",
             ]);
 
