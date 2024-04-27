@@ -20,6 +20,7 @@
                         <thead>
                             <th>No</th>
                             <th>Nama Ruangan</th>
+                            <th>Kode Ruangan</th>
                             <th>Gedung</th>
                             <th>Action</th>
                         </thead>
@@ -28,6 +29,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $ruang->nama }}</td>
+                                    <td>{{ $ruang->kode_ruangan }}</td>
                                     <td>{{ $ruang->gedung->nama ?? '-' }}</td>
                                     <td>
                                         <a href="{{ route('ruangan.edit', $ruang->id) }}"

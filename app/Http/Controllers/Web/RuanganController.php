@@ -43,14 +43,16 @@ class RuanganController extends Controller
         $request->validate([
             'nama' => 'required',
             'gedung_id' => 'required',
+            'kode_ruangan' => 'required',
         ]);
 
         Ruangan::create([
             'nama' => $request->nama,
             'gedung_id' => $request->gedung_id,
+            'kode_ruangan' => $request->kode_ruangan,
         ]);
 
-        return redirect()->route('ruangan.index');
+        return redirect()->route('ruangan.index')->with(["status" => "success", 'message' => "Data Berhasil Diinputkan"]);
     }
 
     /**
@@ -89,11 +91,13 @@ class RuanganController extends Controller
         $request->validate([
             'nama' => 'required',
             'gedung_id' => 'required',
+            'kode_ruangan' => 'required',
         ]);
 
         Ruangan::find($id)->update([
             'nama' => $request->nama,
             'gedung_id' => $request->gedung_id,
+            'kode_ruangan' => $request->kode_ruangan,
         ]);
 
         return redirect()->route('ruangan.index');

@@ -11,7 +11,7 @@ class Ruangan extends Model
 
     protected $table = 'ruangan';
     protected $fillable = [
-        'nama', 'gedung_id'
+        'nama', 'gedung_id', 'kode_ruangan', 'lat', 'lng'
     ];
 
     public $appends = [
@@ -19,7 +19,8 @@ class Ruangan extends Model
     ];
 
     public function getNamaRuanganAttribute(){
-        return $this->nama . ' - ' . $this->gedung->nama;
+        return "{$this->kode_ruangan} | {$this->nama} - {$this->gedung->nama}";
+        // return $this->nama . ' - ' . $this->gedung->nama;
     }
 
     public function gedung(){

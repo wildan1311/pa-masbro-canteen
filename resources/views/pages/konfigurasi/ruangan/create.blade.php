@@ -26,6 +26,15 @@
                         <div class="row">
                             <div class="col">
                                 <div class="mb-3">
+                                    <label for="basicInput" class="form-label">Kode Ruangan</label>
+                                    <input type="text" placeholder="Input Here" class="form-control" id="basicInput"
+                                        name="kode_ruangan">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3">
                                     <label for="basicInput" class="form-label">Gedung</label>
                                     <select name="gedung_id" id="" class="form-control">
                                         @foreach ($gedung as $gdg)
