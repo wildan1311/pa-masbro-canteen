@@ -107,7 +107,11 @@ class TransaksiController extends Controller
             ], 403);
         }
         try {
-            $transaksi = Transaksi::where('isAntar', 1)->with(['listTransaksiDetail.menusKelola.tenants', 'user'])->where('user_id', $user->id)->orderBy('status')->get();
+            $transaksi = Transaksi::where('isAntar', 1)->with(['listTransaksiDetail.menusKelola.tenants', 'user'])
+                                    ->where('user_id', $user->id)
+                                    ->whereIn('status', ['siap_diantar', 'diantar', 'selesai'])
+                                    ->orderBy('status')
+                                    ->get();
             return response()->json([
                 "status" => "success",
                 "message" => "Berhasil mengambil data",
