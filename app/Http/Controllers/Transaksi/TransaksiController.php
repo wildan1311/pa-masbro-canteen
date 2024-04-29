@@ -37,7 +37,7 @@ class TransaksiController extends Controller
                 'message' => 'tidak memiliki akses',
             ], 403);
         }
-        $transaksi = Transaksi::with(['listTransaksiDetail.menusKelola.tenants', 'user'])->where('user_id', $user->id)->orderBy('status')->get();
+        $transaksi = Transaksi::with(['listTransaksiDetail.menus.tenants', 'user'])->where('user_id', $user->id)->orderBy('status')->get();
 
         return response()->json([
             'status' => 'success',
@@ -62,10 +62,10 @@ class TransaksiController extends Controller
         }
         try {
             $tenant = Tenants::where("user_id", $request->user()->id)->first();
-            $transaksi = Transaksi::whereHas('listTransaksiDetail.menusKelola', function($menusKelola)use($tenant){
-                return $menusKelola->where('tenant_id', $tenant->id);
+            $transaksi = Transaksi::whereHas('listTransaksiDetail.menus', function($menus)use($tenant){
+                return $menus->where('tenant_id', $tenant->id);
             })->
-            with(['listTransaksiDetail.menusKelola.tenants', 'user'])->orderBy('status')->get();
+            with(['listTransaksiDetail.menus.tenants', 'user'])->orderBy('status')->get();
             // $baseQuery = DB::table('transaksi_detail')
             //     ->join('transaksi', 'transaksi.id', 'transaksi_detail.transaksi_id')
             //     ->join('menus_kelola', 'menus_kelola.id', 'transaksi_detail.menus_kelola_id')
@@ -107,7 +107,7 @@ class TransaksiController extends Controller
             ], 403);
         }
         try {
-            $transaksi = Transaksi::where('isAntar', 1)->with(['listTransaksiDetail.menusKelola.tenants', 'user'])->where('user_id', $user->id)->orderBy('status')->get();
+            $transaksi = Transaksi::where('isAntar', 1)->with(['listTransaksiDetail.menus.tenants', 'user'])->where('user_id', $user->id)->orderBy('status')->get();
             return response()->json([
                 "status" => "success",
                 "message" => "Berhasil mengambil data",
@@ -200,7 +200,7 @@ class TransaksiController extends Controller
                     ], 201);
                 }
 
-                $transaksi = Transaksi::with(['user', 'listTransaksiDetail.menusKelola.menus'])->where('id', $transaksi->id)->first();
+                $transaksi = Transaksi::with(['user', 'listTransaksiDetail.menus'])->where('id', $transaksi->id)->first();
                 $midtrans = new Midtrans();
                 $snapMidtrans = $midtrans->createSnapTransaction($transaksi);
 
@@ -274,7 +274,7 @@ class TransaksiController extends Controller
         $order_id = $notif->order_id;
 
         $transaksi = Transaksi::find($order_id);
-        $tenant = $transaksi->listTransaksiDetail->first()->menusKelola->tenants->pemilik;
+        $tenant = $transaksi->listTransaksiDetail->first()->menus->tenants->pemilik;
 
         if ($transaction == 'settlement') {
             $transaksi->update(['status' => $transaction]);

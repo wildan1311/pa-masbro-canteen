@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Kelola;
 
 use App\Http\Controllers\Controller;
 use App\Models\Menus;
-use App\Models\MenusKelola;
 use App\Models\Tenants;
 use App\Response\ResponseApi;
 use Carbon\Carbon;
@@ -25,7 +24,7 @@ class TenantController extends Controller
     {
         $user = $request->user();
 
-        if(!$user->can('read kelola tenant')){
+        if (!$user->can('read kelola tenant')) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'tidak memiliki akses',
@@ -52,7 +51,7 @@ class TenantController extends Controller
     {
         $user = $request->user();
 
-        if(!$user->can('create kelola tenant')){
+        if (!$user->can('create kelola tenant')) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'tidak memiliki akses',
@@ -62,10 +61,11 @@ class TenantController extends Controller
         $tenant = Tenants::where("user_id", $user->id)->first();
 
         $validator = Validator::make($request->all(), [
-            'menu_id' => 'required',
+            // 'menu_id' => 'required',
             'harga' => 'required|numeric',
             'nama_menu' => 'nullable',
             'deskripsi_menu' => 'nullable',
+            'kategori_id' => 'required',
             'gambar' => 'nullable',
         ]);
 
@@ -85,16 +85,16 @@ class TenantController extends Controller
             $url = Storage::url($path);
         }
 
-        $menu = Menus::find($request->menu_id);
+        // $menu = Menus::find($request->menu_id);
 
         try {
-            $newMenu = MenusKelola::create([
+            $newMenu = Menus::create([
                 "harga" => $request->harga,
-                "gambar"=> $url,
-                "nama"=> $request->nama_menu ?? $menu->nama,
-                "deskripsi"=> @$request->deskripsi_menu,
+                "gambar" => $url,
+                "nama" => $request->nama_menu,
+                "deskripsi" => @$request->deskripsi_menu,
                 "tenant_id" => @$tenant->id,
-                "menu_id" => $request->menu_id
+                "kategori_id" => $request->kategori_id,
             ]);
 
             return response()->json([
@@ -134,7 +134,7 @@ class TenantController extends Controller
     {
         $user = $request->user();
 
-        if(!$user->can('update kelola tenant')){
+        if (!$user->can('update kelola tenant')) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'tidak memiliki akses',
@@ -187,7 +187,7 @@ class TenantController extends Controller
     {
         $user = $request->user();
 
-        if(!$user->can('update kelola tenant')){
+        if (!$user->can('update kelola tenant')) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'tidak memiliki akses',
@@ -195,18 +195,18 @@ class TenantController extends Controller
         }
 
         $tenant = Tenants::where("user_id", $request->user()->id)->first();
-        $menu = MenusKelola::find($id);
+        $menu = Menus::find($id);
 
-        if(!Gate::allows('update-tenant-menu', [$menu, $tenant])){
+        if (!Gate::allows('update-tenant-menu', [$menu, $tenant])) {
             return ResponseApi::error('Anda Bukan Pemilik Tenant Ini', 403);
         }
 
         $validator = Validator::make($request->all(), [
-            'menu_id' => 'nullable',
-            'harga' => 'nullable|numeric',
-            'gambar' => 'nullable',
+            'harga' => 'required|numeric',
             'nama_menu' => 'nullable',
             'deskripsi_menu' => 'nullable',
+            'kategori_id' => 'kategori_id',
+            'gambar' => 'nullable',
             'isReady' => 'nullable'
         ]);
 
@@ -227,11 +227,11 @@ class TenantController extends Controller
 
         try {
             $menu->update([
-                "menu_id" => @$request->menu_id ?? $menu->menu_id,
-                "harga" => @$request->harga ?? $menu->harga,
+                "harga" => @$request->input('harga') ??  $menu->harga,
                 "gambar" => @$url ?? $menu->gambar,
                 "nama" => @$request->nama_menu ?? $menu->nama,
                 "deskripsi" => @$request->deskripsi_menu ?? $menu->deskripsi,
+                "kategori_id" => @$request->kategori_id ?? @$menu->kategori_id,
                 "isReady" => @$request->isReady ?? $menu->isReady
             ]);
 
@@ -258,14 +258,14 @@ class TenantController extends Controller
     public function destroyMenu(Request $request, $id)
     {
         $user = $request->user();
-        if(!$user->can('create kelola tenant')){
+        if (!$user->can('delete kelola tenant')) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'tidak memiliki akses',
             ], 403);
         }
         try {
-            $menu = MenusKelola::find($id)->delete();
+            $menu = Menus::find($id)->delete();
 
             return response()->json([
                 "status" => "success",

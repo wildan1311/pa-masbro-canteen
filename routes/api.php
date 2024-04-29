@@ -37,8 +37,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/tenants/{TenantId}', [TenantController::class, 'getSpecificTenant']);
     Route::get('/order/user', [TransaksiController::class, 'orderUser']);
     Route::post('/order', [TransaksiController::class, 'store']);
-    Route::get('/order/riwayat', [TransaksiController::class, 'orderUser']);
-    Route::get('/order/riwayat/1', [TransaksiController::class, 'orderTenant']);
+    Route::get('/order/tenant', [TransaksiController::class, 'orderUser']);
+    Route::get('/order/masbro', [TransaksiController::class, 'orderTenant']);
     // Route::get('/order/riwayat/2', [TransaksiController::class, 'orderUser']);
     Route::post('/order/detail', [TransaksiController::class, 'store'])->name('');
     Route::get('/ruangan', [RuanganController::class, 'index']);

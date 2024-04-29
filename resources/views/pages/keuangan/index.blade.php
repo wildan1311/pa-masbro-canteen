@@ -107,12 +107,12 @@
                                                 <div class="flex items-center">
                                                     <div class="flex-shrink-0 w-10 h-10">
                                                         <img class="w-full h-full rounded-full"
-                                                            src="{{$detail->menusKelola->link_gambar}}"
+                                                            src="{{$detail->menus->link_gambar}}"
                                                             alt="" />
                                                     </div>
                                                     <div class="ml-3">
                                                         <p class="text-gray-900 whitespace-no-wrap">
-                                                            {{$detail->menusKelola->nama ?? $detail->menusKelola->menus->nama}}
+                                                            {{$detail->menus->nama}}
                                                         </p>
                                                         {{-- <p class="text-gray-600 whitespace-no-wrap">000004</p> --}}
                                                     </div>
