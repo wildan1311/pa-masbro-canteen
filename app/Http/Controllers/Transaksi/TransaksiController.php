@@ -37,7 +37,7 @@ class TransaksiController extends Controller
                 'message' => 'tidak memiliki akses',
             ], 403);
         }
-        $transaksi = Transaksi::with(['listTransaksiDetail.menusKelola.tenants', 'user'])->where('user_id', $user->id)->orderBy('status')->get();
+        $transaksi = Transaksi::with(['listTransaksiDetail.menusKelola.tenants', 'user'])->where('user_id', $user->id)->orderBy('created_at')->get();
 
         return response()->json([
             'status' => 'success',
@@ -65,7 +65,7 @@ class TransaksiController extends Controller
             $transaksi = Transaksi::whereHas('listTransaksiDetail.menusKelola', function($menusKelola)use($tenant){
                 return $menusKelola->where('tenant_id', $tenant->id);
             })->
-            with(['listTransaksiDetail.menusKelola.tenants', 'user'])->orderBy('status')->get();
+            with(['listTransaksiDetail.menusKelola.tenants', 'user'])->orderBy('created_at')->get();
             // $baseQuery = DB::table('transaksi_detail')
             //     ->join('transaksi', 'transaksi.id', 'transaksi_detail.transaksi_id')
             //     ->join('menus_kelola', 'menus_kelola.id', 'transaksi_detail.menus_kelola_id')
@@ -110,7 +110,7 @@ class TransaksiController extends Controller
             $transaksi = Transaksi::where('isAntar', 1)->with(['listTransaksiDetail.menusKelola.tenants', 'user'])
                                     ->where('user_id', $user->id)
                                     ->whereIn('status', ['siap_diantar', 'diantar', 'selesai'])
-                                    ->orderBy('status')
+                                    ->orderBy('created_at')
                                     ->get();
             return response()->json([
                 "status" => "success",
