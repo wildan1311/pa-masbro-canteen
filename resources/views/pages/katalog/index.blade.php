@@ -4,10 +4,48 @@
             display: block;
             z-index: 5;
         }
+        /* .editable-field{
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .editable-input{
+            border: none;
+            font-size: inherit;
+            background: inherit;
+            color: inherit;
+            transition: .3s all linear
+            &:focus
+            outline: none
+            background: white
+            color: #545454
+        }
+
+
+        .edit-button{
+            cursor: pointer;
+            font-size: 5em;
+            position: relative;
+            top: 5px;
+        }
+
+        .hide{
+            visibility: hidden !important;
+        }
+
+        .editing{
+            background: #E9F5FA;
+            color: #f1f1f1;
+            box-shadow: -2px 0px 0px #0081C6;
+        } */
     </style>
 @endpush
 <x-master-layout>
     <div class="main-content">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Launch demo modal
+          </button>
+
         <div class="bg-white p-3 rounded ">
             <div class="container px-8">
                 <div class="mt-0 mb-0">
@@ -41,10 +79,6 @@
                                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                             Harga
                                         </th>
-                                        <th
-                                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                            Total terjual
-                                        </th>
                                         <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100"></th>
                                     </tr>
                                 </thead>
@@ -70,50 +104,22 @@
                                             <td class="px-5 border-b border-gray-200 bg-white text-sm">
                                                 <div class="py-10">
 
-                                                    <div class="dropdown inline-block relative">
-                                                        <button
-                                                            class="bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded inline-flex items-center">
-                                                            <span class="mr-1">Ready</span>
-                                                            <svg class="fill-current h-4 w-4"
-                                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                                                <path
-                                                                    d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                                            </svg>
-                                                        </button>
-                                                        <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
-                                                            <li class=""><a
-                                                                    class="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                                                                    href="#">Ready</a></li>
-                                                            <li class=""><a
-                                                                    class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                                                                    href="#">Kosong</a></li>
-                                                        </ul>
-                                                    </div>
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input update_stock" type="checkbox" role="switch" id="flexSwitchCheckChecked" {{$menu->detail_menu->isReady ? 'checked' : ""}} data-id-menu="{{$menu->detail_menu->id}}">
+                                                        <label class="form-check-label" for="flexSwitchCheckChecked">{{$menu->detail_menu->isReady ? 'Tersedia' : "Kosong"}}</label>
+                                                      </div>
 
                                                 </div>
                                             </td>
                                             <td class="px-5 border-b border-gray-200 bg-white text-sm">
-                                                <p class="text-gray-900 whitespace-no-wrap">Rp. {{number_format($menu->detail_menu->harga, 0, ',', '.')}}<i
-                                                        class="fas fa-edit"></i></p>
+                                                {{-- <div class="editable-field">
+                                                    <input class="editable-input" type="text" value="Other" placeholder="Click The Edit Icon" readonly/>
+                                                    <i class="fas fa-edit edit-button"></i>
+                                                  </div> --}}
+                                                <p class="text-gray-900 whitespace-no-wrap">Rp. {{number_format($menu->detail_menu->harga, 0, ',', '.')}}
+                                                    <i class="fas fa-edit" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-harga="{{$menu->detail_menu->harga}}" data-bs-id="{{$menu->detail_menu->id}}"></i></p>
                                                 {{-- <p class="text-gray-600 whitespace-no-wrap">Due in 3 days</p> --}}
                                             </td>
-                                            <td class="px-5 border-b border-gray-200 bg-white text-sm">
-                                                <span
-                                                    class="relative inline-block px-3 py-1 font-semibold text-red leading-tight">
-                                                    <span aria-hidden
-                                                        class="absolute inset-0 bg-red-500 opacity-50 rounded-full"></span>
-                                                    <span class="relative">Dibatalkan</span>
-                                                </span>
-                                            </td>
-                                            {{-- <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
-                                                <button type="button"
-                                                    class="inline-block text-gray-500 hover:text-gray-700">
-                                                    <svg class="inline-block h-6 w-6 fill-current" viewBox="0 0 24 24">
-                                                        <path
-                                                            d="M12 6a2 2 0 110-4 2 2 0 010 4zm0 8a2 2 0 110-4 2 2 0 010 4zm-2 6a2 2 0 104 0 2 2 0 00-4 0z" />
-                                                    </svg>
-                                                </button>
-                                            </td> --}}
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -125,44 +131,129 @@
         </div>
     </div>
 
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Update Harga</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="mb-3">
+                  <label for="recipient-name" class="col-form-label">Harga:</label>
+                  <input type="number" class="form-control" id="recipient-name">
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Send message</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     @push('js')
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                let tabTogglers = document.querySelectorAll("#tabs a");
-
-                // Hide content of Pesanan Dibatalkan tab initially
-                let tabContents = document.querySelectorAll("#tab-content-second > div");
-                tabContents.forEach(function(tabContent) {
-                    tabContent.classList.add("hidden");
+            $(document).ready(function() {
+                $('.update_stock').on('click', function() {
+                    let idMenu = $(this).data('id-menu');
+                    let token = "{{session()->get('_token')}}";
+                    console.log(token);
+                    if ($(this).is(':checked')) {
+                    // Send AJAX request when checkbox is checked
+                    $.ajax({
+                        url: '/api/menu/'+idMenu, // Replace with your actual API endpoint URL
+                        type: 'POST', // Adjust method based on API requirements (POST, GET, etc.)
+                        data: { // Send any necessary data to the API
+                        isReady: 1,
+                        },
+                        success: function(response) {
+                        console.log("Data updated successfully:", response);
+                        // Handle successful response, e.g., update UI elements
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                        console.error("Error updating data:", textStatus, errorThrown);
+                        // Handle errors appropriately, e.g., display error message to user
+                        }
+                    });
+                    } else {
+                        $.ajax({
+                        url: '/api/menu/'+idMenu, // Replace with your actual API endpoint URL
+                        type: 'POST', // Adjust method based on API requirements (POST, GET, etc.)
+                        data: { // Send any necessary data to the API
+                        isReady: 0,
+                        },
+                        success: function(response) {
+                        console.log("Data updated successfully:", response);
+                        // Handle successful response, e.g., update UI elements
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                        console.error("Error updating data:", textStatus, errorThrown);
+                        // Handle errors appropriately, e.g., display error message to user
+                        }
+                    });
+                    // Optional: Handle the case when checkbox is unchecked (if needed)
+                    }
                 });
+                });
+        </script>
+        <script>
+            const exampleModal = document.getElementById('exampleModal')
+                if (exampleModal) {
+                exampleModal.addEventListener('show.bs.modal', event => {
+                    // Button that triggered the modal
+                    const button = event.relatedTarget
+                    // Extract info from data-bs-* attributes
+                    const harga = button.getAttribute('data-bs-harga')
+                    // If necessary, you could initiate an Ajax request here
+                    // and then do the updating in a callback.
 
-                tabTogglers.forEach(function(toggler) {
-                    toggler.addEventListener("click", function(e) {
-                        e.preventDefault();
+                    const idMenu = button.getAttribute('data-bs-id')
+                    console.log(idMenu)
 
-                        let tabName = this.getAttribute("href");
+                    const submitButton = exampleModal.querySelector('.btn-primary');
 
-                        let tabContents = document.querySelectorAll(
-                            "#tab-contents-first > div, #tab-content-second > div");
+                    // Set the input value to the harga
+                    const modalBodyInput = exampleModal.querySelector('.modal-body input')
+                    modalBodyInput.value = harga;
 
-                        tabContents.forEach(function(tabContent) {
-                            if (tabContent.id === tabName.slice(1)) {
-                                tabContent.classList.remove("hidden");
-                            } else {
-                                tabContent.classList.add("hidden");
+                    // Add click event listener to the submit button
+                    submitButton.addEventListener('click', function() {
+                        console.log('jhal')
+                        // Get the updated harga from the input field
+                        const updatedHarga = modalBodyInput.value;
+
+                        // AJAX request to update the data
+                        $.ajax({
+                            url: '/api/menu/'+idMenu, // Replace with your actual API endpoint URL
+                            type: 'POST', // Adjust method based on API requirements (POST, GET, etc.)
+                            data: {
+                                harga: updatedHarga
+                            },
+                            success: function(response) {
+                                console.log("Data updated successfully:", response);
+                                // Handle successful response, e.g., update UI elements
+                                // Close the modal after successful update if needed
+                                $(exampleModal).modal('hide');
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                console.error("Error updating data:", textStatus, errorThrown);
+                                // Handle errors appropriately, e.g., display error message to user
                             }
                         });
-
-                        tabTogglers.forEach(function(tabToggler) {
-                            tabToggler.parentElement.classList.remove("border-t", "border-r",
-                                "border-l", "-mb-px", "bg-white");
-                        });
-
-                        this.parentElement.classList.add("border-t", "border-r", "border-l", "-mb-px",
-                            "bg-white");
                     });
-                });
-            });
+
+                    // Update the modal's content.
+                    const modalTitle = exampleModal.querySelector('.modal-title')
+
+
+                    console.log(button);
+
+                    modalBodyInput.value = harga
+                })
+                }
         </script>
     @endpush
 </x-master-layout>
