@@ -11,8 +11,16 @@ class Menu extends Model
 {
     use HasFactory;
     protected $table = 'menu';
-    protected $fillable = ['nama', 'kategori', 'url', 'urutan', 'aktif', 'main_menu_id'];
+    protected $fillable = ['nama', 'kategori', 'url', 'urutan', 'aktif', 'main_menu_id', 'ikon'];
     protected $guard = ['id'];
+
+    public $appends = [
+        'link_gambar'
+    ];
+
+    public function getLinkGambarAttribute(){
+        return asset("assets/images/". $this->ikon);
+    }
 
     public function subMenus(){
         return $this->hasMany(Menu::class, 'main_menu_id');
