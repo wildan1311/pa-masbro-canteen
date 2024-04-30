@@ -26,6 +26,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('menu/{id}', [KelolaTenantController::class, 'updateMenuWeb']);
+
+
 Route::middleware('auth:sanctum')->group(function () {
     // USER
     Route::get('/katalog/tenants', [TenantController::class, 'getAll']);
@@ -44,7 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/ruangan', [RuanganController::class, 'index']);
 
     // TENANT
-    Route::prefix('tenant')->middleware(['role:tenant'])->name('api.tenant.')->group(function(){
+    Route::prefix('tenant')->middleware(['role:tenant'])->name('api.tenant.')->group(function () {
         Route::get('/', [KelolaTenantController::class, 'index']);
         Route::post('/menu', [KelolaTenantController::class, 'storeMenu']);
         Route::post('/menu/{id}', [KelolaTenantController::class, 'updateMenu']);
@@ -54,7 +57,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/order/{id}', [TenantOrderController::class, 'update']);
     });
 
-    Route::prefix('masbro')->middleware(['role:masbro'])->name('api.masbro.')->group(function(){
+    Route::prefix('masbro')->middleware(['role:masbro'])->name('api.masbro.')->group(function () {
         Route::get('/order', [PesananController::class, 'index']);
         Route::put('/order/{transaksiId}', [PesananController::class, 'update']);
     });
