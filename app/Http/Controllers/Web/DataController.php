@@ -70,8 +70,9 @@ class DataController extends Controller
 
         $totalKeuangan = 0;
         $dataPesananSelesai = $dataPesananSelesai->get();
+        // dd($dataPesananSelesai);
         foreach ($dataPesananSelesai as $pesanan) {
-            $totalKeuangan += $pesanan->subTotal;
+            $totalKeuangan += $pesanan->total_pesanan;
         }
 
         return view('pages.data.index', compact('jumlahPesananMasuk', 'jumlahPesananSelesai', 'jumlahPesananDitolak', 'totalKeuangan', 'listTransaksiDetail', 'grafik'));
