@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Konfigurrasi\Menu;
 use App\Models\User;
 use App\Services\Firebases;
 use Illuminate\Http\Request;
@@ -29,6 +30,29 @@ class UserController extends Controller
 
         $user = User::find($user->id);
 
+        $menu = Menu::whereHas('device', function($device){
+            return $device->where('device_id', 1);
+        })->get();
+
+        $menu = $menu->filter(function ($mm) use ($user) {
+            if ($user->can('read ' . $mm->nama)) {
+                return $mm;
+            }
+        })->values();
+
+        $permission = ($user->getPermissionsViaRoles()->pluck('name')->toArray());
+
+        $token = $user->createToken('secret', $permission)->plainTextToken;
+        $data = [
+            'nama' => $user->name,
+            'email' => $user->email,
+            'token' => $token,
+            'token_type' => 'Bearer',
+            'role' => $user->getRoleNames(),
+            'menu' => $menu,
+            'permission' => $permission,
+        ];
+
         if(!$user){
             return response()->json([
                 'status' => 'failed',
@@ -40,7 +64,7 @@ class UserController extends Controller
             'status' => 'success',
             'message' => 'Berhasil mendapatkan data',
             'data' => [
-                'user' => $user
+                'user' => $data
             ]
         ]);
     }
