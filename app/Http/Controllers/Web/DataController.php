@@ -53,7 +53,7 @@ class DataController extends Controller
         )
             ->groupBy(DB::raw('YEAR(created_at)'), DB::raw('nama_bulan'))
             ->orderBy(DB::raw('tahun'))
-            ->orderByRaw('MONTH(created_at)')
+            ->orderBy(DB::raw('nama_bulan'))
             ->get();
 
         // dd($grafik);
