@@ -167,7 +167,8 @@ class TransaksiController extends Controller
 
         if ($validatator->fails()) {
             return response()->json([
-                'messages' => $validatator->errors()
+                'status' => 'failed',
+                'messages' => $validatator->errors()->all()
             ]);
         }
 

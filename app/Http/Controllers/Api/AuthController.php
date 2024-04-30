@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 // use Silber\Bouncer\Bouncer;
 use Silber\Bouncer\BouncerFacade;
 use Throwable;
@@ -25,7 +26,7 @@ class AuthController extends Controller
     {
         $validate = Validator::make($request->all(), [
             'email' => 'required|unique:users,email|email|regex:/^\S*$/',
-            'password' => 'required',
+            'password' => ['required', Password::min(8)->letters()],
             'name' => 'required|regex:/^[a-zA-Z\s]+$/',
             'role' => 'nullable'
         ]);
