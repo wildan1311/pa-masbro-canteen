@@ -52,7 +52,7 @@ class DataController extends Controller
             DB::raw('(sum(total) - sum(ongkos_kirim) - sum(biaya_layanan)) as total_pesanan')
         )
             ->groupBy(DB::raw('YEAR(created_at)'), DB::raw('nama_bulan'))
-            ->orderBy('tahun')
+            ->orderBy(DB::raw('tahun'))
             ->orderByRaw('MONTH(created_at)')
             ->get();
 
