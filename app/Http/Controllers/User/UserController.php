@@ -16,9 +16,33 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $user = $request->user();
+
+        if(!$user){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Tidak ada akses'
+            ], 403);
+        }
+
+        $user = User::find($user->id);
+
+        if(!$user){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'pengguna tidak ditemukan'
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berhasil mendapatkan data',
+            'data' => [
+                'user' => $user
+            ]
+        ]);
     }
 
     /**

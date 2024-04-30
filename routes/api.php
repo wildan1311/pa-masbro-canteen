@@ -22,14 +22,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::post('menu/{id}', [KelolaTenantController::class, 'updateMenuWeb']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/auth', [UserController::class, 'index']);
     // USER
     Route::get('/katalog/tenants', [TenantController::class, 'getAll']);
     Route::get('/katalog/tenants/{TenantId}', [TenantController::class, 'getSpecificTenant']);
@@ -72,7 +73,7 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanct
 
 Route::get('/menu_kategori', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::resource('user', UserController::class);
+// Route::resource('user', UserController::class);
 
 // Midtrans
 // Route::post('/getSnapToken', function () {

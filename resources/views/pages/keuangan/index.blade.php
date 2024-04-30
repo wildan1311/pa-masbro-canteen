@@ -8,25 +8,25 @@
             <div class="flex items-center p-8 bg-white shadow rounded-lg">
                 <div>
                     <span class="block text-gray-500">Pending</span>
-                    <span class="block text-2xl font-bold">Rp.  </span>
+                    <span class="block text-2xl font-bold">Rp.  {{$summary->jumlah_pending}}</span>
                 </div>
             </div>
             <div class="flex items-center p-8 bg-white shadow rounded-lg">
                 <div>
                     <span class="block text-gray-500">Minggu ini </span>
-                    <span class="block text-2xl font-bold">Rp.  </span>
+                    <span class="block text-2xl font-bold">Rp.  {{$summary->jumlah_minggu_ini}}</span>
                 </div>
             </div>
             <div class="flex items-center p-8 bg-white shadow rounded-lg">
                 <div>
                     <span class="block text-gray-500">Bulan ini</span>
-                    <span class="block text-2xl font-bold">Rp.  </span>
+                    <span class="block text-2xl font-bold">Rp.  {{$summary->jumlah_bulan_ini}}</span>
                 </div>
             </div>
             <div class="flex items-center p-8 bg-white shadow rounded-lg">
                 <div>
                     <span class="block text-gray-500">Total Keseluruhan</span>
-                    <span class="block text-2xl font-bold">Rp. </span>
+                    <span class="block text-2xl font-bold">Rp. {{$summary->jumlah_semua}}</span>
                 </div>
             </div>
         </section>
