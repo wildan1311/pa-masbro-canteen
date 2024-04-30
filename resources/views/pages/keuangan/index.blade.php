@@ -3,9 +3,6 @@
         <section class="bg-white rounded p-10">
             <div class="flex flex-col gap-y-4">
                 <div class="flex flex-col space-y-6 md:space-y-0 md:flex-row justify-between">
-                    <div class="mr-6">
-                        <h1 class="text-4xl font-semibold mb-2">Yuk Cek Hasil Penjualan Toko Kamu</h1>
-                    </div>
                 </div>
         <section class="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
             <div class="flex items-center p-8 bg-white shadow rounded-lg">
