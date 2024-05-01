@@ -62,10 +62,10 @@ class TransaksiController extends Controller
         }
         try {
             $tenant = Tenants::where("user_id", $request->user()->id)->first();
-            $transaksi = Transaksi::whereHas('listTransaksiDetail.menusKelola', function($menusKelola)use($tenant){
+            $transaksi = Transaksi::whereHas('listTransaksiDetail.menusKelola', function ($menusKelola) use ($tenant) {
                 return $menusKelola->where('tenant_id', $tenant->id);
             })->
-            with(['listTransaksiDetail.menusKelola.tenants', 'user'])->orderByDesc('created_at')->get();
+                with(['listTransaksiDetail.menusKelola.tenants', 'user'])->orderByDesc('created_at')->get();
             // $baseQuery = DB::table('transaksi_detail')
             //     ->join('transaksi', 'transaksi.id', 'transaksi_detail.transaksi_id')
             //     ->join('menus_kelola', 'menus_kelola.id', 'transaksi_detail.menus_kelola_id')
@@ -108,10 +108,10 @@ class TransaksiController extends Controller
         }
         try {
             $transaksi = Transaksi::where('isAntar', 1)->with(['listTransaksiDetail.menusKelola.tenants', 'user'])
-                                    ->where('user_id', $user->id)
-                                    ->whereIn('status', ['siap_diantar', 'diantar', 'selesai'])
-                                    ->orderByDesc('created_at')
-                                    ->get();
+                ->where('user_id', $user->id)
+                ->whereIn('status', ['siap_diantar', 'diantar', 'selesai'])
+                ->orderByDesc('created_at')
+                ->get();
             return response()->json([
                 "status" => "success",
                 "message" => "Berhasil mengambil data",
@@ -142,19 +142,21 @@ class TransaksiController extends Controller
             ], 403);
         }
 
-        if(!$transaksiCek->antar()){
+        if (!$transaksiCek->antar()) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'tidak memiliki akses antar',
             ], 403);
-        };
+        }
+        ;
 
-        if(!$transaksiCek->metodePembayaran()){
+        if (!$transaksiCek->metodePembayaran()) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'tidak memiliki akses transfer atau COD',
             ], 403);
-        };
+        }
+        ;
 
         $validatator = Validator::make($request->all(), [
             'isAntar' => 'required|boolean',
@@ -275,22 +277,26 @@ class TransaksiController extends Controller
         $notif = new \Midtrans\Notification();
         // $signatureKey = env('MIDTRANS_SERVER_KEY');
 
-        $transaction = $notif->transaction_status;
-        $order_id = $notif->order_id;
+        try {
+            $transaction = $notif->transaction_status;
+            $order_id = $notif->order_id;
 
-        $transaksi = Transaksi::find($order_id);
-        $tenant = $transaksi->listTransaksiDetail->first()->menusKelola->tenants->pemilik;
+            $transaksi = Transaksi::find($order_id);
+            $tenant = $transaksi->listTransaksiDetail->first()->menusKelola->tenants->pemilik;
 
-        if ($transaction == 'settlement') {
-            $transaksi->update(['status' => $transaction]);
-            $firebases->withNotification('Pesanan Masuk', "Ada Pesanan Masuk!")
-                ->sendMessages($tenant->fcm_token);
-        } else if ($transaction == 'expire') {
-            $transaksi->update(['status' => $transaction]);
-        } else if ($transaction == 'cancel') {
-            $transaksi->update(['status' => $transaction]);
+            if ($transaction == 'settlement') {
+                $transaksi->update(['status' => $transaction]);
+                $firebases->withNotification('Pesanan Masuk', "Ada Pesanan Masuk!")
+                    ->sendMessages($tenant->fcm_token);
+            } else if ($transaction == 'expire') {
+                $transaksi->update(['status' => $transaction]);
+            } else if ($transaction == 'cancel') {
+                $transaksi->update(['status' => $transaction]);
+            }
+        } catch (Throwable $th) {
+
+        } finally {
+            return response()->json(['message' => 'Webhook received']);
         }
-
-        return response()->json(['message' => 'Webhook received']);
     }
 }
