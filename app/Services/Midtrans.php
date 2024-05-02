@@ -35,15 +35,19 @@ class Midtrans
         \Midtrans\Config::$is3ds = $this->is3ds;
     }
 
+    public function notification(){
+        return new \Midtrans\Notification();
+    }
+
     public function createParams()
     {
         return [
             'payment_type' => 'qris',
-            "enabled_payments" => [
-                "gopay",
-                "shopeepay",
-                "other_qris"
-            ],
+            // "enabled_payments" => [
+            //     "gopay",
+            //     "shopeepay",
+            //     "other_qris"
+            // ],
             'transaction_details' => $this->getTransaksiDetail(),
             'item_details' => $this->getTransaksiItemsDetail(),
             'customer_details' => $this->getUserDetail()

@@ -272,9 +272,9 @@ class TransaksiController extends Controller
     public function webHookMidtrans(Request $request, Firebases $firebases)
     {
         // $payload = $request->getContent();
-        \Midtrans\Config::$isProduction = false;
-        \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-        $notif = new \Midtrans\Notification();
+        $midtrans = new Midtrans();
+        $notif = $midtrans->notification();
+
         // $signatureKey = env('MIDTRANS_SERVER_KEY');
 
         try {

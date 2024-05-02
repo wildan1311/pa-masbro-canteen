@@ -7,6 +7,7 @@ use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Laravel\Firebase\Facades\Firebase;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\Notification;
+use Throwable;
 
 class Firebases
 {
@@ -32,14 +33,18 @@ class Firebases
     }
     public function sendMessages(?string $token)
     {
-        $fcmToken = $token ?? '';
-        if($fcmToken == ''){
+        try{
+            $fcmToken = $token ?? '';
+            if($fcmToken == ''){
+                return false;
+            }
+            $cloudMessage = CloudMessage::withTarget('token', $fcmToken)
+                ->withNotification($this->notification)
+                ->withData($this->message);
+            $this->messaging->send($cloudMessage);
+        }catch(Throwable $th){
             return false;
         }
-        $cloudMessage = CloudMessage::withTarget('token', $fcmToken)
-            ->withNotification($this->notification)
-            ->withData($this->message);
-        $this->messaging->send($cloudMessage);
     }
     public function defaultValue(){
         $this->notification = Notification::create("Selamat Datang Di Masbro Canteen", "Aplikasi Pemesanan Makanan di Kantin PENS Dengan Menerapkan Payment Gateway");

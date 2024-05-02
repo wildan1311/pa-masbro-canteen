@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Tenants;
 use App\Models\Transaksi;
 use App\Models\TransaksiDetail;
+use App\Services\Transaksi as ServicesTransaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -25,40 +26,41 @@ class DataController extends Controller
             }, 'user'
         ])->whereHas('listTransaksiDetail.menusKelola.tenants', function ($query) use ($tenant) {
             $query->where('id', $tenant->id);
-        });
+        })->join('transaksi_detail', 'transaksi_detail.transaksi_id', 'transaksi.id')
+        ->select('*', 'transaksi.status', 'transaksi.id')
+        ->addSelect(DB::raw('transaksi_detail.harga * transaksi_detail.jumlah as subTotal'));
 
-        $jumlahPesananMasuk = (clone $dataPesanan)->count();
-        $jumlahPesananSelesai = (clone $dataPesanan)->where('status', 'selesai')->count();
-        $jumlahPesananDitolak = (clone $dataPesanan)->where('status', 'pesanan_ditolak')->count();
-        $dataPesananSelesai = (clone $dataPesanan)->whereIn('status', ["selesai", "diantar"]);
+        $transaksi = new ServicesTransaksi($dataPesanan->get());
 
-        // dd($dataPesananSelesai->get());
+        $jumlahPesananDitolak = $transaksi->jumlahPesananDitolak;
+        $jumlahPesananMasuk = $transaksi->jumlahPesananMasuk;
+        $jumlahPesananSelesai = $transaksi->jumlahPesananSelesai;
+
+        $dataPesananSelesai = (clone $dataPesanan)->whereIn('transaksi.status', ["selesai", "diantar"]);
 
         $grafik = $dataPesananSelesai->select(
             DB::raw("CASE
-                WHEN MONTH(created_at) = 1 THEN 'Januari'
-                WHEN MONTH(created_at) = 2 THEN 'Februari'
-                WHEN MONTH(created_at) = 3 THEN 'Maret'
-                WHEN MONTH(created_at) = 4 THEN 'April'
-                WHEN MONTH(created_at) = 5 THEN 'Mei'
-                WHEN MONTH(created_at) = 6 THEN 'Juni'
-                WHEN MONTH(created_at) = 7 THEN 'Juli'
-                WHEN MONTH(created_at) = 8 THEN 'Agustus'
-                WHEN MONTH(created_at) = 9 THEN 'September'
-                WHEN MONTH(created_at) = 10 THEN 'Oktober'
-                WHEN MONTH(created_at) = 11 THEN 'November'
+                WHEN MONTH(transaksi.created_at) = 1 THEN 'Januari'
+                WHEN MONTH(transaksi.created_at) = 2 THEN 'Februari'
+                WHEN MONTH(transaksi.created_at) = 3 THEN 'Maret'
+                WHEN MONTH(transaksi.created_at) = 4 THEN 'April'
+                WHEN MONTH(transaksi.created_at) = 5 THEN 'Mei'
+                WHEN MONTH(transaksi.created_at) = 6 THEN 'Juni'
+                WHEN MONTH(transaksi.created_at) = 7 THEN 'Juli'
+                WHEN MONTH(transaksi.created_at) = 8 THEN 'Agustus'
+                WHEN MONTH(transaksi.created_at) = 9 THEN 'September'
+                WHEN MONTH(transaksi.created_at) = 10 THEN 'Oktober'
+                WHEN MONTH(transaksi.created_at) = 11 THEN 'November'
                 ELSE 'Desember' END as nama_bulan"),
-            DB::raw('YEAR(created_at) as tahun'),
-            DB::raw('(sum(total) - sum(ongkos_kirim) - sum(biaya_layanan)) as total_pesanan')
+            DB::raw('YEAR(transaksi.created_at) as tahun'),
+            DB::raw('(sum(jumlah*harga)) as total_pesanan')
         )
-            ->groupBy(DB::raw('YEAR(created_at)'), DB::raw('nama_bulan'))
+            ->groupBy(DB::raw('YEAR(transaksi.created_at)'), DB::raw('nama_bulan'))
             ->orderBy(DB::raw('tahun'))
             ->orderBy(DB::raw('nama_bulan'))
             ->get();
 
-        // dd($grafik);
-
-        $listTransaksiDetail = TransaksiDetail::whereIn('transaksi_id', $dataPesanan->pluck('id')->toArray())
+        $listTransaksiDetail = TransaksiDetail::whereIn('transaksi_id', $dataPesanan->pluck('transaksi.id')->toArray())
             ->join('menus_kelola', 'menus_kelola.id', 'transaksi_detail.menus_kelola_id')
             ->join('menus', 'menus.id', 'menus_kelola.menu_id')
             ->groupBy('menus_kelola_id')
@@ -68,12 +70,7 @@ class DataController extends Controller
             ->orderByDesc('total_pembelian')
             ->get();
 
-        $totalKeuangan = 0;
-        $dataPesananSelesai = $dataPesananSelesai->get();
-        // dd($dataPesananSelesai);
-        foreach ($dataPesananSelesai as $pesanan) {
-            $totalKeuangan += $pesanan->total_pesanan;
-        }
+        $totalKeuangan = $transaksi->calculateSubTotal();
 
         return view('pages.data.index', compact('jumlahPesananMasuk', 'jumlahPesananSelesai', 'jumlahPesananDitolak', 'totalKeuangan', 'listTransaksiDetail', 'grafik'));
     }
