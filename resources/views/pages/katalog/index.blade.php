@@ -212,7 +212,7 @@
                     const idMenu = button.getAttribute('data-bs-id')
                     console.log(idMenu)
 
-                    const submitButton = exampleModal.querySelector('.btn-primary');
+                    const submitButton = exampleModal.querySelector('.btn-success');
 
                     // Set the input value to the harga
                     const modalBodyInput = exampleModal.querySelector('.modal-body input')
@@ -235,7 +235,7 @@
                                 console.log("Data updated successfully:", response);
                                 // Handle successful response, e.g., update UI elements
                                 // Close the modal after successful update if needed
-                                $(exampleModal).modal('hide');
+                                location.reload();
                             },
                             error: function(jqXHR, textStatus, errorThrown) {
                                 console.error("Error updating data:", textStatus, errorThrown);
