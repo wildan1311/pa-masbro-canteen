@@ -63,7 +63,7 @@
                         </div>
                         <div>
                             <span class="block text-gray-500">Total Penjualan</span>
-                            <span class="block text-2xl font-bold">Rp. {{ number_format($totalKeuangan) }}</span>
+                            <span class="block text-2xl font-bold">Rp{{ number_format($totalKeuangan, 0, ',', '.') }}</span>
                         </div>
                     </div>
                 </section>

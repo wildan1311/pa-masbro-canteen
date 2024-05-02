@@ -8,25 +8,25 @@
             <div class="flex items-center p-8 bg-white shadow rounded-lg">
                 <div>
                     <span class="block text-gray-500">Pending</span>
-                    <span class="block text-2xl font-bold">Rp.  </span>
+                    <span class="block text-2xl font-bold">Rp{{number_format($summary->jumlah_pending, 0, ',', '.')}}</span>
                 </div>
             </div>
             <div class="flex items-center p-8 bg-white shadow rounded-lg">
                 <div>
                     <span class="block text-gray-500">Minggu ini </span>
-                    <span class="block text-2xl font-bold">Rp.  </span>
+                    <span class="block text-2xl font-bold">Rp{{number_format($summary->jumlah_minggu_ini, 0, ',', '.')}}</span>
                 </div>
             </div>
             <div class="flex items-center p-8 bg-white shadow rounded-lg">
                 <div>
                     <span class="block text-gray-500">Bulan ini</span>
-                    <span class="block text-2xl font-bold">Rp.  </span>
+                    <span class="block text-2xl font-bold">Rp{{number_format($summary->jumlah_bulan_ini, 0, ',', '.')}}</span>
                 </div>
             </div>
             <div class="flex items-center p-8 bg-white shadow rounded-lg">
                 <div>
                     <span class="block text-gray-500">Total Keseluruhan</span>
-                    <span class="block text-2xl font-bold">Rp. </span>
+                    <span class="block text-2xl font-bold">Rp{{number_format($summary->jumlah_semua, 0, ',', '.')}}</span>
                 </div>
             </div>
         </section>
@@ -98,7 +98,7 @@
                                                 {{-- <p class="text-gray-600 whitespace-no-wrap">USD</p> --}}
                                             </td>
                                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                <p class="text-gray-900 whitespace-no-wrap">Rp. {{number_format($detail->harga, 0, ',', '.')}}</p>
+                                                <p class="text-gray-900 whitespace-no-wrap">Rp{{number_format($summary->jumlah_semua, 0, ',', '.')}}</p>
                                                 {{-- <p class="text-gray-600 whitespace-no-wrap">Due in 3 days</p> --}}
                                             </td>
                                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">

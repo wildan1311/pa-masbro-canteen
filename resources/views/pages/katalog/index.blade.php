@@ -112,7 +112,7 @@
                                                     <input class="editable-input" type="text" value="Other" placeholder="Click The Edit Icon" readonly/>
                                                     <i class="fas fa-edit edit-button"></i>
                                                   </div> --}}
-                                                <p class="text-gray-900 whitespace-no-wrap">Rp. {{number_format($menu->detail_menu->harga, 0, ',', '.')}}
+                                                <p class="text-gray-900 whitespace-no-wrap">Rp{{number_format($menu->detail_menu->harga, 0, ',', '.')}}
                                                     <i class="fas fa-edit" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-harga="{{$menu->detail_menu->harga}}" data-bs-id="{{$menu->detail_menu->id}}"></i></p>
                                                 {{-- <p class="text-gray-600 whitespace-no-wrap">Due in 3 days</p> --}}
                                             </td>
