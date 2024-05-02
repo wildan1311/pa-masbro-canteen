@@ -48,8 +48,8 @@
                     <div class="font-sans text-black bg-white flex justify-between">
                         <p class="self-center">{{ $tenant->nama_tenant }}</p>
                         <div class="flex items-center">
-                            <input type="text" class="px-4 py-2 border rounded" placeholder="Search...">
-                            <button class="flex justify-center px-4 border-l items-center">
+                            <input type="text" class="px-4 py-2 border rounded" placeholder="Search..."id='searchInput' value="{{@request()->search ?? ''}}">
+                            <button class="flex justify-center px-4 border-l items-center"id='searchButton'>
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
@@ -112,7 +112,7 @@
                                                     <input class="editable-input" type="text" value="Other" placeholder="Click The Edit Icon" readonly/>
                                                     <i class="fas fa-edit edit-button"></i>
                                                   </div> --}}
-                                                <p class="text-gray-900 whitespace-no-wrap">Rp. {{number_format($menu->detail_menu->harga, 0, ',', '.')}}
+                                                <p class="text-gray-900 whitespace-no-wrap">Rp{{number_format($menu->detail_menu->harga, 0, ',', '.')}}
                                                     <i class="fas fa-edit" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-harga="{{$menu->detail_menu->harga}}" data-bs-id="{{$menu->detail_menu->id}}"></i></p>
                                                 {{-- <p class="text-gray-600 whitespace-no-wrap">Due in 3 days</p> --}}
                                             </td>
@@ -151,6 +151,36 @@
       </div>
 
     @push('js')
+        <script>
+        document.addEventListener("DOMContentLoaded", function() {
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+
+        // Event listener untuk tombol pencarian
+        searchButton.addEventListener('click', function() {
+            const searchTerm = searchInput.value.trim();
+            if (searchTerm !== '') {
+                // Lakukan sesuatu, misalnya arahkan pengguna ke halaman pencarian dengan query yang sesuai
+                window.location.href = '?search=' + encodeURIComponent(searchTerm);
+            }else{
+                window.location.href = '/katalog';
+            }
+        });
+
+        // Event listener jika pengguna menekan tombol enter pada keyboard saat berfokus pada input pencarian
+        searchInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm !== '') {
+                    // Lakukan sesuatu, misalnya arahkan pengguna ke halaman pencarian dengan query yang sesuai
+                    window.location.href = '?search=' + encodeURIComponent(searchTerm);
+                }else{
+                window.location.href = 'katalog';
+                }
+            }
+        });
+    });
+        </script>
         <script>
             $(document).ready(function() {
         $('.update_stock').on('click', function() {
@@ -212,7 +242,7 @@
                     const idMenu = button.getAttribute('data-bs-id')
                     console.log(idMenu)
 
-                    const submitButton = exampleModal.querySelector('.btn-primary');
+                    const submitButton = exampleModal.querySelector('.btn-success');
 
                     // Set the input value to the harga
                     const modalBodyInput = exampleModal.querySelector('.modal-body input')
@@ -235,7 +265,7 @@
                                 console.log("Data updated successfully:", response);
                                 // Handle successful response, e.g., update UI elements
                                 // Close the modal after successful update if needed
-                                $(exampleModal).modal('hide');
+                                location.reload();
                             },
                             error: function(jqXHR, textStatus, errorThrown) {
                                 console.error("Error updating data:", textStatus, errorThrown);

@@ -32,7 +32,11 @@ Route::get('/', function () {
 });
 
 
-Route::middleware(['shared','auth', 'role:tenant|kdh|admin'])->group(function(){
+Route::middleware(['shared', 'auth', 'role:tenant|kdh|admin'])->group(function () {
+
+    Route::get('/welcome', function () {
+        return view('pages.welcome.index');
+    })->name('welcome');
 
     Route::get('/dashboard', function () {
         return view('dashboard');
@@ -58,4 +62,4 @@ Route::middleware(['shared','auth', 'role:tenant|kdh|admin'])->group(function(){
     // });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
