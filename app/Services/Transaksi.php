@@ -31,7 +31,7 @@ class Transaksi {
      * @return int
      */
     public function calculateSubTotal(){
-        $subTotal = $this->transaksi->sum(function($item) {
+        $subTotal = $this->transaksi->where("status", "selesai")->sum(function($item) {
             return $item['jumlah'] * $item['harga'];
         });
 
