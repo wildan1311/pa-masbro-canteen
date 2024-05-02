@@ -17,6 +17,8 @@ class DataController extends Controller
     {
         $user = Auth::user();
 
+        $this->authorize('read data');
+
         $tenant = Tenants::where("user_id", $user->id)->first();
         $dataPesanan = Transaksi::with([
             'listTransaksiDetail' => function ($query) use ($tenant) {
