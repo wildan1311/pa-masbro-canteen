@@ -18,13 +18,13 @@ class PesananController extends Controller
         $tenant = Tenants::where("user_id", $user->id)->first();
         $dataPesanan = Transaksi::with([
             'listTransaksiDetail' => function ($query) use ($tenant) {
-                $query->whereHas('menusKelola', function($menusKelola) use($tenant){
+                $query->whereHas('menusKelola', function ($menusKelola) use ($tenant) {
                     $menusKelola->where('tenant_id', $tenant->id);
                 });
-            }
-        , 'user'])->whereHas('listTransaksiDetail.menusKelola.tenants', function ($query) use ($tenant) {
+            }, 'user'
+        ])->whereHas('listTransaksiDetail.menusKelola.tenants', function ($query) use ($tenant) {
             $query->where('id', $tenant->id);
-        })->whereNotIn('status', ['pending', 'expire', 'cancel'])->get();
+        })->whereNotIn('status', ['pending', 'expire', 'cancel'])->orderByDesc('created_at')->get();
 
         // dd($dataPesanan);
 
