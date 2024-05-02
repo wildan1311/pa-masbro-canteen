@@ -42,10 +42,6 @@
 @endpush
 <x-master-layout>
     <div class="main-content">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            Launch demo modal
-          </button>
-
         <div class="bg-white p-3 rounded ">
             <div class="container px-8">
                 <div class="mt-0 mb-0">
@@ -147,8 +143,8 @@
               </form>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Send message</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+              <button type="button" class="btn btn-success">Simpan Perubahan</button>
             </div>
           </div>
         </div>
@@ -157,47 +153,50 @@
     @push('js')
         <script>
             $(document).ready(function() {
-                $('.update_stock').on('click', function() {
-                    let idMenu = $(this).data('id-menu');
-                    let token = "{{session()->get('_token')}}";
-                    console.log(token);
-                    if ($(this).is(':checked')) {
-                    // Send AJAX request when checkbox is checked
-                    $.ajax({
-                        url: '/api/menu/'+idMenu, // Replace with your actual API endpoint URL
-                        type: 'POST', // Adjust method based on API requirements (POST, GET, etc.)
-                        data: { // Send any necessary data to the API
+        $('.update_stock').on('click', function() {
+            let idMenu = $(this).data('id-menu');
+            let token = "{{ session()->get('_token') }}";
+            console.log(token);
+            if ($(this).is(':checked')) {
+                // Send AJAX request when checkbox is checked
+                $.ajax({
+                    url: '/api/menu/' + idMenu, // Replace with your actual API endpoint URL
+                    type: 'POST', // Adjust method based on API requirements (POST, GET, etc.)
+                    data: { // Send any necessary data to the API
                         isReady: 1,
-                        },
-                        success: function(response) {
+                        _token: token // Include CSRF token in the data
+                    },
+                    success: function(response) {
                         console.log("Data updated successfully:", response);
-                        // Handle successful response, e.g., update UI elements
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
+                        // Reload the page after successful update
+                        location.reload();
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
                         console.error("Error updating data:", textStatus, errorThrown);
                         // Handle errors appropriately, e.g., display error message to user
-                        }
-                    });
-                    } else {
-                        $.ajax({
-                        url: '/api/menu/'+idMenu, // Replace with your actual API endpoint URL
-                        type: 'POST', // Adjust method based on API requirements (POST, GET, etc.)
-                        data: { // Send any necessary data to the API
-                        isReady: 0,
-                        },
-                        success: function(response) {
-                        console.log("Data updated successfully:", response);
-                        // Handle successful response, e.g., update UI elements
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                        console.error("Error updating data:", textStatus, errorThrown);
-                        // Handle errors appropriately, e.g., display error message to user
-                        }
-                    });
-                    // Optional: Handle the case when checkbox is unchecked (if needed)
                     }
                 });
+            } else {
+                $.ajax({
+                    url: '/api/menu/' + idMenu, // Replace with your actual API endpoint URL
+                    type: 'POST', // Adjust method based on API requirements (POST, GET, etc.)
+                    data: { // Send any necessary data to the API
+                        isReady: 0,
+                        _token: token // Include CSRF token in the data
+                    },
+                    success: function(response) {
+                        console.log("Data updated successfully:", response);
+                        // Reload the page after successful update
+                        location.reload();
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error("Error updating data:", textStatus, errorThrown);
+                        // Handle errors appropriately, e.g., display error message to user
+                    }
                 });
+            }
+        });
+    });
         </script>
         <script>
             const exampleModal = document.getElementById('exampleModal')
