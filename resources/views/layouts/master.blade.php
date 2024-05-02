@@ -39,19 +39,19 @@
 
 <body>
     <div id="app">
-        <div class="shadow-header"></div>
-        @include('layouts.header')
+        {{-- <div class="shadow-header"></div> --}}
+        {{-- @include('layouts.header') --}}
         @include('layouts.sidebar')
 
-        <div class="modal fade" id="modal_action" tabindex="-1" aria-labelledby="largeModalLabel" aria-hidden="true">
+        {{-- <div class="modal fade" id="modal_action" tabindex="-1" aria-labelledby="largeModalLabel" aria-hidden="true"> --}}
 
-        </div>
+        {{-- </div> --}}
 
         {{ $slot }}
 
         @include('layouts.setting')
 
-        
+
         <div class="overlay action-toggle">
         </div>
     </div>

@@ -10,15 +10,27 @@ use Illuminate\Support\Facades\Auth;
 
 class KatalogController extends Controller
 {
-    public function index(){
+    public function index(Request $request)
+    {
         $this->authorize('read katalog');
 
         $user = Auth::user();
 
-        $tenant = Tenants::whereHas('pemilik', function($pemilik) use($user){
+        $tenant = Tenants::whereHas('pemilik', function ($pemilik) use ($user) {
             $pemilik->where('user_id', $user->id);
-        })->with('listMenu')->first();
+        })->with('listMenu');
 
+        if ($request->has('search')) {
+            $tenant->with('listMenu', function ($listMenu) use ($request) {
+                $search = $request->search;
+                $listMenu->where(function ($query) use ($search) {
+                    $query->where('menus.nama', 'like', "%$search%")
+                        ->orWhere('menus_kelola.nama', 'like', "%$search%");
+                });
+            });
+        }
+        $tenant = $tenant->first();
+        // dd($tenant);
         return view('pages.katalog.index', compact('tenant'));
     }
 }
