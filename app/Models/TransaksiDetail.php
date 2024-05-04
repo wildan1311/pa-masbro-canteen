@@ -34,6 +34,6 @@ class TransaksiDetail extends Model
     }
 
     public function menusKelola(){
-        return $this->belongsTo(MenusKelola::class, 'menus_kelola_id', 'id');
+        return $this->belongsTo(MenusKelola::class, 'menus_kelola_id', 'id')->withTrashed(true);
     }
 }
