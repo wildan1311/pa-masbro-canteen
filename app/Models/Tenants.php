@@ -25,7 +25,7 @@ class Tenants extends Model
 
     public function getRangeAttribute()
     {
-        $minPrice = $this->listMenu->min('detail_menu.harga');
+        $minPrice = $this->calculateMinPriceMenu();
         return $minPrice;
     }
     public function getIsOpenAttribute()
@@ -58,5 +58,9 @@ class Tenants extends Model
     public function pemilik()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function calculateMinPriceMenu(){
+        return $this->listMenu()->min('harga');
     }
 }

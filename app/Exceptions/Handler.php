@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use App\Response\ResponseApi;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Kreait\Firebase\Exception\Messaging as MessagingErrors;
@@ -44,6 +45,15 @@ class Handler extends ExceptionHandler
         });
     }
 
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        return $this->shouldReturnJson($request, $exception)
+                    ? response()->json([
+                        'status' => "failed",
+                        'message' => $exception->getMessage()
+                    ], 401)
+                    : redirect()->guest($exception->redirectTo() ?? route('login'));
+    }
     // public function render($request, Throwable $exception)
     // {
     //     if ($exception instanceof InvalidMessage) {
