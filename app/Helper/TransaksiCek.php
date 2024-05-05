@@ -38,7 +38,7 @@ class TransaksiCek
             if(!$this->user->can('antar')){
                 return false;
             }
-            if(!$masbro->status){
+            if(!$masbro->isOnline){
                 return false;
             }
         }
