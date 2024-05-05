@@ -33,8 +33,12 @@ class TransaksiCek
     }
 
     public function antar(){
+        $masbro = User::role('masbro')->first();
         if($this->request->isAntar){
             if(!$this->user->can('antar')){
+                return false;
+            }
+            if(!$masbro->status){
                 return false;
             }
         }

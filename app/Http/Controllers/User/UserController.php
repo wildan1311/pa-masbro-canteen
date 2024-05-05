@@ -5,7 +5,9 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Konfigurrasi\Menu;
 use App\Models\User;
+use App\Response\ResponseApi;
 use App\Services\Firebases;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -136,27 +138,48 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
+        $user = $request->user();
+
+        if(!$user){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Tidak ada akses'
+            ], 403);
+        }
+
+        $user = User::find($user->id);
+
         $valdidator = Validator::make($request->all(), [
             'name' => ['string', 'nullable'],
-            'email'=>['unique:users,email', 'nullable'],
-            'password'=>'nullable'
+            'email'=> ['unique:users,email', 'nullable'],
+            'password'=> 'nullable',
+            'isOnline' => ['nullable']
         ]);
 
         if($valdidator->fails()){
             return response()->json($valdidator->errors());
         }
 
-        $updated = User::where('id', $id)->update($request->all());
-
-        if(!$updated){
-            return response()->json(['messages' => 'Update Gagal']);
-        }else{
-            return response()->json([
-                'messages' => 'Update Berhasil',
-                'data' => $updated
+        try{
+            $updated = $user->update([
+                "name" => @$request->name ?? $user->name,
+                "email" => @$request->email ?? $user->email,
+                "password" => @$request->password ?? $user->password,
+                "isOnline" => @$request->isOnline ?? $user->isOnline,
             ]);
+
+            if(!$updated){
+                return response()->json(['messages' => 'Update Gagal']);
+            }else{
+                return response()->json([
+                    'messages' => 'Update Berhasil',
+                    'data' => $updated
+                ]);
+            }
+        }catch(Exception $e){
+            return ResponseApi::serverError();
         }
     }
     public function updateFcmToken(Request $request, Firebases $firebases)

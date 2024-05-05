@@ -31,6 +31,7 @@ Route::post('menu/{id}', [KelolaTenantController::class, 'updateMenuWeb']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth', [UserController::class, 'index']);
+    Route::put('/update-user', [UserController::class, 'update']);
     // USER
     Route::get('/katalog/tenants', [TenantController::class, 'getAll']);
     Route::get('/katalog/tenants/{TenantId}', [TenantController::class, 'getSpecificTenant']);
