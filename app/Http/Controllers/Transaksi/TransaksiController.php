@@ -164,6 +164,7 @@ class TransaksiController extends Controller
             'ruangan_id' => 'required_if:isAntar,true', //kurang exists in ruangan
             'metode_pembayaran' => 'required',
             'catatan' => 'nullable',
+            'status' => 'nullable',
             'menus' => 'required|array',
         ]);
 
@@ -183,6 +184,8 @@ class TransaksiController extends Controller
                 });
             })->first();
 
+            $status = @$request->status ?? ($request->metode_pembayaran == 'cod' ? "pesanan_masuk" : "pending");
+
             $transaksi = Transaksi::create([
                 'user_id' => $user->id,
                 'total' => $request->total,
@@ -191,14 +194,20 @@ class TransaksiController extends Controller
                 'ruangan_id' => $request->ruangan_id,
                 'ongkos_kirim' => $request->ongkos_kirim ?? 0,
                 'catatan' => @$request->catatan,
-                'status' => $request->metode_pembayaran == 'cod' ? "pesanan_masuk" : "pending",
+                'status' => $status,
             ]);
 
             $success = $this->storeTransakasiDetail($request, $transaksi);
 
             if ($success) {
-                $firebases->withNotification('Pesanan Masuk', 'Ada Pesanan Masuk di Tenant Kamu')->sendMessages($tenantUser->fcm_token);
                 DB::commit();
+                if($status == 'selesai'){
+                    return response()->json([
+                        "status" => 'success',
+                        'messages' => "transaksi berhasil dibuat",
+                    ], 201);
+                }
+                $firebases->withNotification('Pesanan Masuk', 'Ada Pesanan Masuk di Tenant Kamu')->sendMessages($tenantUser->fcm_token);
 
                 if ($transaksi->metode_pembayaran == 'cod') {
                     return response()->json([
