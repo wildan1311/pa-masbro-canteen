@@ -65,7 +65,7 @@ class MenuController extends Controller
 
         $this->attachMenuPermission($menu, $request->permissions ?? [], []);
 
-        return redirect()->route('menu.index');
+        return redirect()->route('menu.index')->with(["status" => "success", 'message' => "Menu berhasil ditambahkan"]);
     }
 
     public function show(Menu $menu)
@@ -98,38 +98,36 @@ class MenuController extends Controller
      */
     public function update(Request $request, Menu $menu)
     {
+        $menuPermission = MenuPermission::where('menu_id', $menu->id);
+        $permissions = Permission::whereIn('id', $menuPermission->pluck('permission_id')->toArray());
+        $roles = (Role::whereHas('permissions', function($permissionis)  use ($permissions){
+            $permissionis->whereIn('id', $permissions->pluck('id')->toArray());
+        })->get());
+
+        if ($menu->name != $request->nama) {
+            $menuPermission->delete();
+            $permissions->delete();
+        }
+
         $menu->nama = $request->name;
         $menu->url = $request->url;
         $menu->kategori = $request->category;
         $menu->ikon = $request->icon;
         $menu->save();
 
-        $menuPermission = MenuPermission::where('menu_id', $menu->id);
-        $permissions = Permission::whereIn('id', $menuPermission->pluck('permission_id')->toArray());
-
-        // $device = Device::find($request->device_id);
-        $menu->device()->attach($request->device_id);
-
-        // $roles = Role::whereHas('permissions', function ($query) use ($permissions) {
-        //     $query->whereIn('id', $permissions->pluck('id')->toArray());
-        // })->get();
-
-        // $roles->each(function ($role) use ($permissions) {
-        //     $role->revokePermissionTo($permissions->get());
-        // });
-
-        $menuPermission->delete();
-        $permissions->delete();
-
-        if ($request->permissions) {
-            foreach ($request->permissions as $value) {
-                $permission = Permission::firstOrCreate(['name' => $value . " {$menu->nama}"], ['name' => $value . " {$menu->nama}"]);
-                $permission->menu()->attach($menu);
-                // $permission->assignRole(['admin']);
-            }
+        $menu->device()->sync($request->device_id);
+        $permissions = [];
+        foreach ($request->permissions ?? [] as $value) {
+            $permission = Permission::firstOrCreate(['name' => $value . " {$menu->nama}"], ['name' => $value . " {$menu->nama}"]);
+            // $permission->syncRoles();
+            $permissions[] = $permission->id;
         }
 
-        return redirect()->route('menu.index');
+        $sync = ($menu->permissions()->sync($permissions));
+        $this->syncRolePermission($roles, $sync);
+        // $permission = Permission::whereIn("id", $detached);
+
+        return redirect()->route('menu.index')->with(["status" => "success", 'message' => "Menu berhasil diupdate"]);
     }
 
     /**
@@ -155,6 +153,15 @@ class MenuController extends Controller
         $permissions->delete();
         $menu->delete();
 
-        return redirect()->route('menu.index');
+        return redirect()->route('menu.index')->with(["status" => "success", 'message' => "Menu berhasil dihapus"]);
+        ;
+    }
+
+    public function syncRolePermission($roles, $sync){
+        foreach($roles ?? [] as $role){
+            $role->permissions()->attach($sync["attached"]);
+            $role->permissions()->detach($sync["detached"]);
+        }
+        Permission::whereIn('id', $sync['detached'])->delete();
     }
 }

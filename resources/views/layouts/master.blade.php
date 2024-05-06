@@ -91,6 +91,10 @@
                 showMessage('error', "{{$error}}");
             @endforeach
         @endif
+
+        @if(Session::has('status'))
+            showMessage('success', '{{Session::get("message") ?? ''}}');
+        @endisset
     </script>
     @stack('js')
 </body>

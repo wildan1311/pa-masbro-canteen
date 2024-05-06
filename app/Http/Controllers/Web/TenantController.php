@@ -69,7 +69,7 @@ class TenantController extends Controller
             'nama_gambar' => $url,
         ]);
 
-        return redirect()->route('tenant.index');
+        return redirect()->route('tenant.index')->with(["status" => "success", 'message' => "Tenant berhasil ditambahkan"]);
     }
 
     /**
@@ -135,7 +135,7 @@ class TenantController extends Controller
             'nama_gambar' => $url,
         ]);
 
-        return redirect()->route('tenant.index');
+        return redirect()->route('tenant.index')->with(["status" => "success", 'message' => "Tenant berhasil diupdate"]);
     }
 
     /**
@@ -147,6 +147,6 @@ class TenantController extends Controller
     public function destroy($id)
     {
         Tenants::find($id)->delete();
-        return redirect()->route('tenant.index');
+        return redirect()->route('tenant.index')->with(["status" => "success", 'message' => "Tenant berhasil dihapus"]);
     }
 }

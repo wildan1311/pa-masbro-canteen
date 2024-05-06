@@ -59,7 +59,7 @@ class UserController extends Controller
             }
         }
 
-        return redirect()->route('user.index');
+        return redirect()->route('user.index')->with(["status" => "success", 'message' => "User berhasil ditambahkan"]);
     }
 
     /**
@@ -114,7 +114,7 @@ class UserController extends Controller
             $user->syncRoles($request->roles);
         }
 
-        return redirect()->route('user.index');
+        return redirect()->route('user.index')->with(["status" => "success", 'message' => "User berhasil diupdate"]);;
     }
 
     /**
@@ -126,6 +126,6 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::destroy($id);
-        return redirect()->route('user.index');
+        return redirect()->route('user.index')->with(["status" => "success", 'message' => "User berhasil dihapus"]);;
     }
 }

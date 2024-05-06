@@ -16,7 +16,7 @@
         <div class="sidebar-content">
             <ul class="flex h-full w-full flex-col">
                 @foreach ($menus as $mm)
-                    @can("read {$mm->nama}")
+                    @can("read $mm->nama")
                         <li class="mb-2 hover:bg-sidebarHover sm:rounded-sm {{ explode('/', request()->path())[0] == $mm->nama ? 'bg-red-400' : '' }}">
                             <a href="{{ $mm->url }}"
                                 class="h-12 w-full items-center justify-center px-10 text-sm font-normal text-gray-400 focus:text-red-400 sm:justify-start sm:px-6">

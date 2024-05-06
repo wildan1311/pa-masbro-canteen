@@ -16,7 +16,7 @@ class GedungController extends Controller
      */
     public function index()
     {
-        $this->authorize('read ruangan');
+        $this->authorize('read gedung');
         $gedung = Gedung::all();
         return view('pages.konfigurasi.gedung.index', compact('gedung'));
     }
@@ -47,7 +47,7 @@ class GedungController extends Controller
             'nama' => $request->nama,
         ]);
 
-        return redirect()->route('gedung.index');
+        return redirect()->route('gedung.index')->with(["status" => "success", 'message' => "Gedung berhasil ditambahkan"]);
     }
 
     /**
@@ -90,7 +90,7 @@ class GedungController extends Controller
             'nama' => $request->nama,
         ]);
 
-        return redirect()->route('gedung.index');
+        return redirect()->route('gedung.index')->with(["status" => "success", 'message' => "Gedung berhasil diupdate"]);
     }
 
     /**
@@ -102,6 +102,6 @@ class GedungController extends Controller
     public function destroy($id)
     {
         Gedung::find($id)->delete();
-        return redirect()->route('gedung.index');
+        return redirect()->route('gedung.index')->with(["status" => "success", 'message' => "Gedung berhasil dihapus"]);
     }
 }

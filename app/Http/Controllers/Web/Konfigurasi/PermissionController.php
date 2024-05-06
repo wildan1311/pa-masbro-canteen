@@ -40,7 +40,7 @@ class PermissionController extends Controller
         $request->validate(['name' => 'required|unique:permissions']);
         $permission->name =  $request->name;
         $permission->save();
-        return redirect()->route('permission.index')->with('success','Data Berhasil Ditambahkan!');
+        return redirect()->route('permission.index')->with(["status" => "success", 'message' => "Permission berhasil ditambahkan"]);
     }
 
     /**
@@ -86,6 +86,6 @@ class PermissionController extends Controller
     public function destroy($id)
     {
         Permission::find($id)->delete();
-        return redirect()->route('permission.index');
+        return redirect()->route('permission.index')->with(["status" => "success", 'message' => "Permission berhasil dihapus"]);
     }
 }

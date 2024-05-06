@@ -100,7 +100,7 @@ class RuanganController extends Controller
             'kode_ruangan' => $request->kode_ruangan,
         ]);
 
-        return redirect()->route('ruangan.index');
+        return redirect()->route('ruangan.index')->with(["status" => "success", 'message' => "Ruangan berhasil diupdate"]);
     }
 
     /**
@@ -112,6 +112,6 @@ class RuanganController extends Controller
     public function destroy($id)
     {
         Ruangan::find($id)->delete();
-        return redirect()->route('ruangan.index');
+        return redirect()->route('ruangan.index')->with(["status" => "success", 'message' => "Ruangan berhasil dihapus"]);
     }
 }
