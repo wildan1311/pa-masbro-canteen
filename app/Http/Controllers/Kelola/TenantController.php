@@ -67,7 +67,7 @@ class TenantController extends Controller
             'harga' => 'required|numeric|gt:0',
             'nama_menu' => 'nullable',
             'deskripsi_menu' => 'nullable',
-            'gambar' => 'nullable',
+            'gambar' => 'nullable|mimes:png,jpg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -147,7 +147,7 @@ class TenantController extends Controller
         $validator = Validator::make($request->all(), [
             'nama_kavling' => 'required',
             'nama_tenant' => 'required',
-            'gambar' => 'required|mimes:png,jpg',
+            'gambar' => 'nullable|mimes:png,jpg|max:2048',
             'jam' => 'required|timezone'
         ]);
 
@@ -204,7 +204,7 @@ class TenantController extends Controller
         $validator = Validator::make($request->all(), [
             'menu_id' => 'nullable',
             'harga' => 'nullable|numeric|gt:0',
-            'gambar' => 'nullable',
+            'gambar' => 'nullable|mimes:png,jpg|max:2048',
             'nama_menu' => 'nullable',
             'deskripsi_menu' => 'nullable',
             'isReady' => 'nullable'
