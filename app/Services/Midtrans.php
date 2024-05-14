@@ -92,4 +92,18 @@ class Midtrans
         $snapTransaksi = Snap::createTransaction($params);
         return $snapTransaksi;
     }
+
+    public function refundTransaction(Transaksi $transaksi){
+        $params = array(
+            'refund_key' => "$transaksi->id-refund",
+            'amount' => $transaksi->total,
+            'reason' => 'Pesanan Ditolak'
+        );
+        $refund = \Midtrans\Transaction::refund($transaksi->id, $params);
+        return $refund;
+    }
+
+    public function getDateNow(){
+        return date("Y-m-d");
+    }
 }

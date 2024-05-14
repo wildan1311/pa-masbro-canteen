@@ -73,7 +73,7 @@ class TenantController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 "status" => "Bad Request",
-                "message" => $validator->errors()
+                "message" => $validator->errors()->all()
             ], 400);
         }
 
@@ -161,7 +161,7 @@ class TenantController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'messages' => $validator->errors()
+                'messages' => $validator->errors()->all()
             ]);
         }
 
@@ -212,7 +212,7 @@ class TenantController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'messages' => $validator->errors()
+                'messages' => $validator->errors()->all()
             ]);
         }
 

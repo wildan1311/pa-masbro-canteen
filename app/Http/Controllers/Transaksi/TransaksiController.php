@@ -8,9 +8,11 @@ use App\Models\Tenants;
 use App\Models\Transaksi;
 use App\Models\TransaksiDetail;
 use App\Models\User;
+use App\Response\ResponseApi;
 use App\Services\Firebases;
 use App\Services\Midtrans;
 use App\Traits\CanAntar;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -161,7 +163,7 @@ class TransaksiController extends Controller
         $validatator = Validator::make($request->all(), [
             'isAntar' => 'required|boolean',
             'total' => 'required|numeric',
-            'ruangan_id' => 'required_if:isAntar,true', //kurang exists in ruangan
+            'ruangan_id' => 'required_if:isAntar,true|exists:ruangan,id', //kurang exists in ruangan
             'metode_pembayaran' => 'required',
             'catatan' => 'nullable',
             'status' => 'nullable',
@@ -294,7 +296,7 @@ class TransaksiController extends Controller
             $tenant = $transaksi->listTransaksiDetail->first()->menusKelola->tenants->pemilik;
 
             if ($transaction == 'settlement') {
-                $transaksi->update(['status' => $transaction]);
+                $transaksi->update(['status' => 'pesanan_masuk']);
                 $firebases->withNotification('Pesanan Masuk', "Ada Pesanan Masuk!")
                     ->sendMessages($tenant->fcm_token);
             } else if ($transaction == 'expire') {
@@ -306,6 +308,21 @@ class TransaksiController extends Controller
 
         } finally {
             return response()->json(['message' => 'Webhook received']);
+        }
+    }
+
+    public function refund(Transaksi $transaksi){
+        try{
+            $midtrans = new Midtrans();
+
+            $refund = $midtrans->refundTransaction($transaksi);
+
+            return ResponseApi::success(null, $refund["status_message"]);
+        }catch(Exception $e){
+            return response()->json([
+                "status" => "failed",
+                "message" => "Refund Gagal, Silahkan Coba Lagi Nanti",
+            ]);
         }
     }
 }
