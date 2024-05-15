@@ -26,7 +26,7 @@ class Tenants extends Model
     public function getRangeAttribute()
     {
         // $minPrice = $this->calculateMinPriceMenu();
-        $minPrice = $this->listMenu->min('detail_menu.harga');
+        $minPrice = $this->listMenu()->min('harga');
         return $minPrice;
     }
     public function getIsOpenAttribute()
@@ -53,8 +53,13 @@ class Tenants extends Model
     public function listMenu()
     {
         // tenant memiliki banyak menu
-        return $this->belongsToMany(Menus::class, 'menus_kelola', 'tenant_id', 'menu_id')->withPivot(['harga', 'gambar', 'id', 'isReady', 'nama', 'deskripsi'])->orderByPivot('isReady', 'desc')->wherePivot('deleted_at', null)->as('detail_menu');
+        return $this->hasMany(Menus::class, 'tenant_id');
     }
+    // public function listMenu()
+    // {
+    //     // tenant memiliki banyak menu
+    //     return $this->belongsToMany(Menus::class, 'menus_kelola', 'tenant_id', 'menu_id')->withPivot(['harga', 'gambar', 'id', 'isReady', 'nama', 'deskripsi'])->orderByPivot('isReady', 'desc')->wherePivot('deleted_at', null)->as('detail_menu');
+    // }
 
     public function pemilik()
     {

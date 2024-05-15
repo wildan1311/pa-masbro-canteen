@@ -31,10 +31,10 @@ class TenantOrderController extends Controller
         try {
             $tenant = Tenants::where("user_id", $request->user()->id)->first();
             $dataPesanan = Transaksi::with([
-                'listTransaksiDetail.menusKelola.tenants' => function ($query) use ($tenant) {
+                'listTransaksiDetail.menus.tenants' => function ($query) use ($tenant) {
                     $query->where('id', @$tenant->id);
                 }
-            ])->whereHas('listTransaksiDetail.menusKelola.tenants', function ($query) use ($tenant) {
+            ])->whereHas('listTransaksiDetail.menus.tenants', function ($query) use ($tenant) {
                 $query->where('id', @$tenant->id);
             })->whereNotIn('status', ['pending', 'expire', 'cancel'])->get();
 

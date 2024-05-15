@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Menus;
 use App\Models\MenusKelola;
 use App\Models\Tenants;
 use App\Models\User;
@@ -55,7 +56,7 @@ class MenusKelolaPolicy
      * @param  \App\Models\MenusKelola  $menusKelola
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, MenusKelola $menusKelola, Tenants $tenants)
+    public function update(User $user, Menus $menusKelola, Tenants $tenants)
     {
         return $tenants->id === $menusKelola->tenant_id && $tenants->user_id === $user->id
                 ? Response::allow()

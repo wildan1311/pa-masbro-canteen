@@ -22,11 +22,11 @@ class DataController extends Controller
         $tenant = Tenants::where("user_id", $user->id)->first();
         $dataPesanan = Transaksi::with([
             'listTransaksiDetail' => function ($query) use ($tenant) {
-                $query->whereHas('menusKelola', function ($menusKelola) use ($tenant) {
-                    $menusKelola->where('tenant_id', $tenant->id);
+                $query->whereHas('menus', function ($menus) use ($tenant) {
+                    $menus->where('tenant_id', $tenant->id);
                 });
             }, 'user'
-        ])->whereHas('listTransaksiDetail.menusKelola.tenants', function ($query) use ($tenant) {
+        ])->whereHas('listTransaksiDetail.menus.tenants', function ($query) use ($tenant) {
             $query->where('id', $tenant->id);
         })->join('transaksi_detail', 'transaksi_detail.transaksi_id', 'transaksi.id')
         ->select('*', 'transaksi.status', 'transaksi.id')

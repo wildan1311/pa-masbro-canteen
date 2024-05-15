@@ -62,7 +62,7 @@ class Midtrans
                 "id" => $item->id,
                 "price" => $item->harga,
                 "quantity" => $item->jumlah,
-                "name" => $item->menusKelola->menus->nama
+                "name" => $item->menus->nama
                 // "merchant_name" =>
             ];
         });

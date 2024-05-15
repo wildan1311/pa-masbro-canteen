@@ -26,19 +26,19 @@ class PesananController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            // 'status' => 'required|in:diantar,selesai,siap_diantar',
+            'status' => 'required|in:diantar,selesai,siap_diantar',
             'gedung' => 'nullable',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 "status" => "Bad Request",
-                "message" => $validator->errors()
+                "message" => $validator->errors()->all()
             ], 400);
         }
 
         try {
-            $transaksi = Transaksi::with(['listTransaksiDetail.menusKelola.tenants', 'user'])->get();
+            $transaksi = Transaksi::with(['listTransaksiDetail.menus.tenants', 'user'])->get();
 
             if($request->has('gedung')){
                 $transaksi = $transaksi->where('gedung', $request->gedung)->values();

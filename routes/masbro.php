@@ -15,11 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('masbro')->middleware(['auth:sanctum', 'role:masbro'])->name('api.masbro.')->group(function(){
-    Route::get('/', [PesananController::class, 'index']);
-    Route::put('/{transaksiId}', [PesananController::class, 'update']);
-});
+// Route::prefix('masbro')->middleware(['auth:sanctum', 'role:masbro'])->name('api.masbro.')->group(function(){
+//     Route::get('/', [PesananController::class, 'index']);
+//     Route::put('/{transaksiId}', [PesananController::class, 'update']);
+// });
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
