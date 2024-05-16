@@ -60,8 +60,9 @@ class MenuController extends Controller
         $menu->ikon = $request->icon;
         $menu->save();
 
-        $device = Device::find($request->device_id);
-        $device->listMenu()->attach($menu);
+        $menu->device()->sync($request->device_id);
+        // $device = Device::find($request->device_id);
+        // $device->listMenu()->attach($menu);
 
         $this->attachMenuPermission($menu, $request->permissions ?? [], []);
 

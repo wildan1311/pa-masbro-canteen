@@ -43,7 +43,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="basicInput" class="form-label">Device</label>
-                                <select name="device_id" class="form-control" id="">
+                                <select name="device_id[]" class="form-control" id="" multiple="multiple">
                                     @foreach ($devices as $device)
                                         <option value="{{ $device->id }}" {{in_array($device->id, $menu->device->pluck('id')->toArray()) ? 'selected' : ''}}>{{ $device->nama }}</option>
                                     @endforeach

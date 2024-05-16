@@ -67,7 +67,9 @@ class TransaksiController extends Controller
             $transaksi = Transaksi::whereHas('listTransaksiDetail.menus', function($menus)use($tenant){
                 return $menus->where('tenant_id', $tenant->id);
             })->
-            with(['listTransaksiDetail.menus.tenants', 'user'])->orderByDesc('created_at')->get();
+            with(['listTransaksiDetail.menus.tenants' => function($tenants)use($tenant){
+                $tenants->where('id', $tenant->id);
+            }, 'user'])->orderByDesc('created_at')->get();
             // $baseQuery = DB::table('transaksi_detail')
             //     ->join('transaksi', 'transaksi.id', 'transaksi_detail.transaksi_id')
             //     ->join('menus_kelola', 'menus_kelola.id', 'transaksi_detail.menus_kelola_id')
@@ -163,7 +165,7 @@ class TransaksiController extends Controller
         $validatator = Validator::make($request->all(), [
             'isAntar' => 'required|boolean',
             'total' => 'required|numeric',
-            'ruangan_id' => 'required_if:isAntar,true|exists:ruangan,id', //kurang exists in ruangan
+            'ruangan_id' => 'required_if:isAntar,true', //kurang exists in ruangan
             'metode_pembayaran' => 'required',
             'catatan' => 'nullable',
             'status' => 'nullable',
