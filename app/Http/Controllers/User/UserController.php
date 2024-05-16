@@ -34,7 +34,7 @@ class UserController extends Controller
 
         $menu = Menu::whereHas('device', function($device){
             return $device->where('device_id', 1);
-        })->get();
+        })->orderby('urutan')->get();
 
         $menu = $menu->filter(function ($mm) use ($user) {
             if ($user->can('read ' . $mm->nama)) {

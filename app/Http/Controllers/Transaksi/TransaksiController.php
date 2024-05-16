@@ -181,7 +181,7 @@ class TransaksiController extends Controller
         try {
             $menu_id = $request->menus[0]['id'];
             $tenantUser = User::whereHas('tenant', function ($tenant) use ($menu_id) {
-                $tenant->whereHas('kelola', function ($kelola) use ($menu_id) {
+                $tenant->whereHas('listMenu', function ($kelola) use ($menu_id) {
                     $kelola->where('id', $menu_id);
                 });
             })->first();
