@@ -112,7 +112,7 @@ class TransaksiController extends Controller
         }
         try {
             $transaksi = Transaksi::where('isAntar', 1)->with(['listTransaksiDetail.menus.tenants', 'user'])
-                ->where('user_id', $user->id)
+                // ->where('user_id', $user->id)
                 ->whereIn('status', ['siap_diantar', 'diantar', 'selesai'])
                 ->orderByDesc('created_at')
                 ->get();
