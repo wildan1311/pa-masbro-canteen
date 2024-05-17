@@ -217,7 +217,7 @@ class TenantController extends Controller
             ]);
         }
 
-        $url = null;
+        $url = '/assets/images/default-image.png';
         if ($request->hasFile('gambar')) {
             $gambar = $request->file('gambar');
 
@@ -231,10 +231,10 @@ class TenantController extends Controller
                 // "menu_id" => @$request->menu_id ?? $menu->menu_id,
                 "tenant_id" => @$tenant->id,
                 "kategori_id" => @$request->kategori_id ?? $menu->kategori_id,
-                "harga" => @$request->harga ?? $menu->harga,
-                "gambar" => @$url ?? $menu->gambar,
+                "harga" => @$request->harga ?? 0,
+                "gambar" => @$url,
                 "nama" => @$request->nama_menu ?? $menu->nama,
-                "deskripsi" => @$request->deskripsi_menu ?? $menu->deskripsi,
+                "deskripsi" => @$request->deskripsi_menu,
                 "isReady" => @$request->isReady ?? $menu->isReady
             ]);
 
