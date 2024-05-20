@@ -72,7 +72,7 @@ class Midtrans
     public function getTransaksiDetail()
     {
         return array(
-            "order_id" => $this->transaksi->id,
+            "order_id" => $this->transaksi->createdAt . '_' . $this->transaksi->id,
             'gross_amount' => $this->transaksi->total,
         );
     }
@@ -99,7 +99,7 @@ class Midtrans
             'amount' => $transaksi->total,
             'reason' => 'Pesanan Ditolak'
         );
-        $refund = \Midtrans\Transaction::refund($transaksi->id, $params);
+        $refund = \Midtrans\Transaction::refund($transaksi->createdAt.'_'.$transaksi->id, $params);
         return $refund;
     }
 
