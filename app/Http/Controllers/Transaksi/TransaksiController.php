@@ -294,6 +294,9 @@ class TransaksiController extends Controller
             $transaction = $notif->transaction_status;
             $order_id = $notif->order_id;
 
+            $order_id = explode('_', $order_id);
+            $order_id = $order_id[1];
+
         $transaksi = Transaksi::find($order_id);
         $tenant = $transaksi->listTransaksiDetail->first()->menus->tenants->pemilik;
 
