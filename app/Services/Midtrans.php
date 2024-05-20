@@ -49,7 +49,7 @@ class Midtrans
                 "other_qris"
             ],
             'transaction_details' => $this->getTransaksiDetail(),
-            'item_details' => $this->getTransaksiItemsDetail(),
+            // 'item_details' => $this->getTransaksiItemsDetail(),
             'customer_details' => $this->getUserDetail()
         ];
     }
