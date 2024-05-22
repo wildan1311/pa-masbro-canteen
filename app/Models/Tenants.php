@@ -53,7 +53,7 @@ class Tenants extends Model
     public function listMenu()
     {
         // tenant memiliki banyak menu
-        return $this->hasMany(Menus::class, 'tenant_id');
+        return $this->hasMany(Menus::class, 'tenant_id')->orderByDesc('isReady');
     }
     // public function listMenu()
     // {
