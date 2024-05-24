@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\RuanganController;
+use App\Http\Controllers\Kelola\TenantController as KelolaTenantController;
 use App\Http\Controllers\MenuKategori;
 use App\Http\Controllers\Web\DataController;
 use App\Http\Controllers\Web\GedungController;
@@ -60,6 +61,7 @@ Route::middleware(['shared', 'auth', 'role:tenant|kdh|admin'])->group(function (
     // Route::group(['prefix' => 'konfigurasi', 'as' => 'konfigurasi.'], function(){
     //     Route::resource('menu', MenuController::class);
     // });
+    Route::post('menu/{id}', [KelolaTenantController::class, 'updateMenuWeb']);
 });
 
 require __DIR__ . '/auth.php';
