@@ -205,18 +205,20 @@ class TransaksiController extends Controller
 
             if ($success) {
                 DB::commit();
+                $firebases->withNotification('Pesanan Masuk', 'Ada Pesanan Masuk di Tenant Kamu')->sendMessages($tenantUser->fcm_token);
                 if($status == 'selesai'){
                     return response()->json([
                         "status" => 'success',
                         'messages' => "transaksi berhasil dibuat",
+                        "order_id" => $transaksi->id,
                     ], 201);
                 }
-                $firebases->withNotification('Pesanan Masuk', 'Ada Pesanan Masuk di Tenant Kamu')->sendMessages($tenantUser->fcm_token);
 
                 if ($transaksi->metode_pembayaran == 'cod') {
                     return response()->json([
                         "status" => 'success',
                         'messages' => "transaksi berhasil dibuat",
+                        "order_id" => $transaksi->id,
                     ], 201);
                 }
 
@@ -227,6 +229,7 @@ class TransaksiController extends Controller
                 return response()->json([
                     "status" => 'success',
                     'messages' => "transaksi berhasil dibuat",
+                    "order_id" => $transaksi->id,
                     "snap" => $snapMidtrans
                 ], 201);
             } else {
@@ -328,6 +331,17 @@ class TransaksiController extends Controller
                 "status" => "failed",
                 "message" => "Refund Gagal, Silahkan Coba Lagi Nanti",
             ]);
+        }
+    }
+
+    public function cancel($id){
+        try{
+            $midtrans = new Midtrans();
+
+            $cancel = $midtrans->cancelTransaction($id);
+            return ResponseApi::success(null, $cancel["status_message"] ?? $cancel);
+        }catch(Throwable $th){
+            return ResponseApi::serverError();
         }
     }
 }
