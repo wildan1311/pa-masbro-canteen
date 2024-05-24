@@ -3,9 +3,12 @@
 namespace App\Services;
 
 use App\Models\Transaksi;
+use App\Response\ResponseApi;
 use Illuminate\Database\Eloquent\Collection;
+use Kreait\Firebase\Exception\Messaging\ServerError;
 use \Midtrans\Config;
 use Midtrans\Snap;
+use Throwable;
 
 class Midtrans
 {
@@ -105,5 +108,18 @@ class Midtrans
 
     public function getDateNow(){
         return date("Y-m-d");
+    }
+
+    public function cancelTransaction($id){
+        try{
+            $transaksi = Transaksi::find($id);
+            $orderId = $transaksi->created_at + "_" + $transaksi->id;
+
+            $canceled = \Midtrans\Transaction::cancel($orderId);
+
+            return $canceled;
+        }catch(Throwable $th){
+            return false;
+        }
     }
 }
