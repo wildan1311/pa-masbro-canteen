@@ -9,6 +9,7 @@ use App\Models\TransaksiDetail;
 use App\Models\User;
 use App\Response\ResponseApi;
 use App\Services\Firebases;
+use App\Services\Midtrans;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -180,6 +181,10 @@ class TenantOrderController extends Controller
 
         try{
             if ($transaksi->status == 'pesanan_ditolak') {
+                if($transaksi->metode_pembayaran == 'transfer'){
+                    $midtrans = new Midtrans();
+                    $midtrans->refundTransaction($transaksi->id);
+                }
                 $firebases->withNotification('Tenant Membatalkan Pemesanan', "Mohon maaf, pesanan {$transaksi->id} dibatalkan, selanjutnya anda bisa melakukan refund")
                     ->sendMessages($transaksi->user->fcm_token);
             }
