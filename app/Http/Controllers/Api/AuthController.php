@@ -27,7 +27,7 @@ class AuthController extends Controller
         $validate = Validator::make($request->all(), [
             'email' => 'required|unique:users,email|email|regex:/^\S*$/',
             'password' => ['required', Password::min(8)->letters()],
-            'name' => 'required|regex:/^[a-zA-Z\s]+$/|max:36',
+            'name' => 'required|regex:/^[a-zA-Z\s]+$/|max:20',
             'role' => 'nullable'
         ],[
             'max' => "Nama tidak boleh lebih dari 36 karakter"
