@@ -3,10 +3,7 @@
 namespace App\Services;
 
 use App\Models\Transaksi;
-use App\Response\ResponseApi;
-use Illuminate\Database\Eloquent\Collection;
-use Kreait\Firebase\Exception\Messaging\ServerError;
-use \Midtrans\Config;
+use Carbon\Carbon;
 use Midtrans\Snap;
 use Throwable;
 
@@ -36,6 +33,7 @@ class Midtrans
         \Midtrans\Config::$isProduction = $this->isProduction;
         \Midtrans\Config::$isSanitized = $this->isSanitized;
         \Midtrans\Config::$is3ds = $this->is3ds;
+        \Midtrans\Config::$overrideNotifUrl = "https://3471-36-82-84-233.ngrok-free.app/api/order/callback";
     }
 
     public function notification(){
@@ -59,14 +57,12 @@ class Midtrans
 
     public function getTransaksiItemsDetail()
     {
-        // dd($this->transaksi);
         $itemsDetail = $this->transaksi->listTransaksiDetail->map(function ($item) {
             return [
                 "id" => $item->id,
                 "price" => $item->harga,
                 "quantity" => $item->jumlah,
                 "name" => $item->menus->nama
-                // "merchant_name" =>
             ];
         });
         return $itemsDetail;
@@ -75,7 +71,7 @@ class Midtrans
     public function getTransaksiDetail()
     {
         return array(
-            "order_id" => $this->transaksi->created_at . '_' . $this->transaksi->id,
+            "order_id" => $this->createIdTransaction($this->transaksi),
             'gross_amount' => $this->transaksi->total,
         );
     }
@@ -102,7 +98,7 @@ class Midtrans
             'amount' => $transaksi->total,
             'reason' => 'Pesanan Ditolak'
         );
-        $refund = \Midtrans\Transaction::refund($transaksi->created_at.'_'.$transaksi->id, $params);
+        $refund = \Midtrans\Transaction::refund($this->createIdTransaction($transaksi), $params);
         return $refund;
     }
 
@@ -121,5 +117,11 @@ class Midtrans
         }catch(Throwable $th){
             return false;
         }
+    }
+
+    public function createIdTransaction($transaksi){
+        $unixtimes = Carbon::createFromFormat('Y-m-d H:i:s', $transaksi->created_at)->timestamp;
+        $id = $transaksi->id;
+        return $unixtimes."_".$id;
     }
 }
