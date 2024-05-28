@@ -198,6 +198,7 @@ class TransaksiController extends Controller
                 'ruangan_id' => $request->ruangan_id,
                 'ongkos_kirim' => $request->ongkos_kirim ?? 0,
                 'catatan' => @$request->catatan,
+                'biaya_layanan' => @$request->biaya_layanan ?? 1000,
                 'status' => $status,
             ]);
 
@@ -300,8 +301,8 @@ class TransaksiController extends Controller
             $order_id = explode('_', $order_id);
             $order_id = $order_id[1];
 
-        $transaksi = Transaksi::find($order_id);
-        $tenant = $transaksi->listTransaksiDetail->first()->menus->tenants->pemilik;
+            $transaksi = Transaksi::find($order_id);
+            $tenant = $transaksi->listTransaksiDetail->first()->menus->tenants->pemilik;
 
             if ($transaction == 'settlement') {
                 $transaksi->update(['status' => 'pesanan_masuk']);
@@ -313,10 +314,11 @@ class TransaksiController extends Controller
                 $transaksi->update(['status' => $transaction]);
             }
         } catch (Throwable $th) {
-
-        } finally {
-            return response()->json(['message' => 'Webhook received']);
+            dd($transaksi);
         }
+        // finally {
+        //     return response()->json(['message' => 'Webhook received']);
+        // }
     }
 
     public function refund(Transaksi $transaksi){
@@ -338,8 +340,13 @@ class TransaksiController extends Controller
         try{
             $midtrans = new Midtrans();
 
-            $cancel = $midtrans->cancelTransaction($id);
-            return ResponseApi::success(null, $cancel["status_message"] ?? $cancel);
+            $status = $midtrans->cancelTransaction($id);
+            Log::info($status);
+            if($status == 200){
+                return ResponseApi::success(null, "Transaksi Berhasil DiBatalkan");
+            }else{
+                return ResponseApi::error("Transaksi Gagal DiBatalkan");
+            }
         }catch(Throwable $th){
             return ResponseApi::serverError();
         }

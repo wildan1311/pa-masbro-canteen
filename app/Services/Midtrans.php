@@ -109,7 +109,7 @@ class Midtrans
     public function cancelTransaction($id){
         try{
             $transaksi = Transaksi::find($id);
-            $orderId = $transaksi->created_at + "_" + $transaksi->id;
+            $orderId = $this->createIdTransaction($transaksi);
 
             $canceled = \Midtrans\Transaction::cancel($orderId);
 
