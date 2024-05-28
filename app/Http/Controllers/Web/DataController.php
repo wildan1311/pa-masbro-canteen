@@ -29,8 +29,8 @@ class DataController extends Controller
         ])->whereHas('listTransaksiDetail.menus.tenants', function ($query) use ($tenant) {
             $query->where('id', $tenant->id);
         })->join('transaksi_detail', 'transaksi_detail.transaksi_id', 'transaksi.id')
-        ->select('*', 'transaksi.status', 'transaksi.id')
-        ->addSelect(DB::raw('transaksi_detail.harga * transaksi_detail.jumlah as subTotal'));
+            ->select('*', 'transaksi.status', 'transaksi.id')
+            ->addSelect(DB::raw('transaksi_detail.harga * transaksi_detail.jumlah as subTotal'));
 
         $transaksi = new ServicesTransaksi($dataPesanan->get());
 
@@ -63,10 +63,10 @@ class DataController extends Controller
             ->get();
 
         $listTransaksiDetail = TransaksiDetail::whereIn('transaksi_id', $dataPesanan->pluck('transaksi.id')->toArray())
-            ->join('menus_kelola', 'menus_kelola.id', 'transaksi_detail.menus_kelola_id')
-            ->join('menus', 'menus.id', 'menus_kelola.menu_id')
-            ->groupBy('menus_kelola_id')
-            ->select(['menus_kelola_id', DB::raw('MAX(menus_kelola.gambar) as gambar'), DB::raw('MAX(menus_kelola.nama) as nama'), DB::raw('MAX(menus.nama) as nama_menu')])
+            // ->join('menus_kelola', 'menus_kelola.id', 'transaksi_detail.menus_kelola_id')
+            ->join('menus', 'menus.id', 'transaksi_detail.menu_id')
+            ->groupBy('menu_id')
+            ->select(['menu_id', DB::raw('MAX(menus.gambar) as gambar'), DB::raw('MAX(menus.nama) as nama')])
             ->addSelect(DB::raw('sum(jumlah) as total_pembelian'))
             ->limit(5)
             ->orderByDesc('total_pembelian')
