@@ -12,31 +12,33 @@ use Illuminate\Support\Facades\DB;
 
 class KeuanganController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $this->authorize('read pesanan');
         $user = Auth::user();
 
         $tenant = Tenants::where("user_id", $user->id)->first();
         $dataPesanan = Transaksi::with([
             'listTransaksiDetail' => function ($query) use ($tenant) {
-                $query->whereHas('menus', function($menus) use($tenant){
+                $query->whereHas('menus', function ($menus) use ($tenant) {
                     $menus->where('tenant_id', $tenant->id);
                 });
-            }
-        , 'user'])->whereHas('listTransaksiDetail.menus.tenants', function ($query) use ($tenant) {
+            }, 'user'
+        ])->whereHas('listTransaksiDetail.menus.tenants', function ($query) use ($tenant) {
             $query->where('id', $tenant->id);
         })
-        ->whereIn('status', ['selesai'])
-        ->get();
+            ->whereIn('status', ['selesai'])
+            ->get();
 
         $summary = DB::table('transaksi_detail')
-                        ->join('transaksi', 'transaksi.id', 'transaksi_detail.transaksi_id')
-                        ->join('menus_kelola', 'transaksi_detail.menus_kelola_id', 'menus_kelola.id')
-                        ->join('tenants', 'tenants.id', 'menus_kelola.tenant_id')
-                        ->select('transaksi_detail.*', 'transaksi.status as transaksi_status', 'transaksi.metode_pembayaran')
-                        ->addSelect(DB::raw('transaksi_detail.harga * jumlah as total_harga_menu'))
-                        ->where('transaksi.status', 'selesai')
-                        ->where('tenants.id', $tenant->id);
+            ->join('transaksi', 'transaksi.id', 'transaksi_detail.transaksi_id')
+            // ->join('menus_kelola', 'transaksi_detail.menus_kelola_id', 'menus_kelola.id')
+            ->join('menus', 'menus.id', 'transaksi_detail.menu_id')
+            ->join('tenants', 'tenants.id', 'menus.tenant_id')
+            ->select('transaksi_detail.*', 'transaksi.status as transaksi_status', 'transaksi.metode_pembayaran')
+            ->addSelect(DB::raw('transaksi_detail.harga * jumlah as total_harga_menu'))
+            ->where('transaksi.status', 'selesai')
+            ->where('tenants.id', $tenant->id);
 
         $summary = DB::table(DB::raw("({$summary->toSql()}) as query"))
             ->mergeBindings($summary)
@@ -50,7 +52,7 @@ class KeuanganController extends Controller
         // $summaryBulanIni = $summary->whereIn('status', ['selesai'])->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->sum('total_harga_menu');
         // $summarySemua = $summary->whereIn('status', ['selesai'])->sum('total_harga_menu');
 
-        $summary = (Object)[
+        $summary = (object)[
             "jumlah_pending" => $summaryPending,
             "jumlah_minggu_ini" => $summaryMingguIni,
             "jumlah_bulan_ini" => $summaryBulanIni,
