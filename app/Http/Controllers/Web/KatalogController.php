@@ -24,8 +24,7 @@ class KatalogController extends Controller
             $tenant->with('listMenu', function ($listMenu) use ($request) {
                 $search = $request->search;
                 $listMenu->where(function ($query) use ($search) {
-                    $query->where('menus.nama', 'like', "%$search%")
-                        ->orWhere('menus_kelola.nama', 'like', "%$search%");
+                    $query->where('menus.nama', 'like', "%$search%");
                 });
             });
         }

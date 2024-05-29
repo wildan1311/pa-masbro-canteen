@@ -48,7 +48,7 @@
                     <div class="font-sans text-black bg-white flex justify-between">
                         <p class="self-center">{{ $tenant->nama_tenant }}</p>
                         <div class="flex items-center">
-                            <input type="text" class="px-4 py-2 border rounded" placeholder="Search..."id='searchInput' value="{{@request()->search ?? ''}}">
+                            <input type="text" class="px-4 py-2 border rounded" placeholder="Search..."id='searchInput' value="{{ @request()->search ?? '' }}">
                             <button class="flex justify-center px-4 border-l items-center"id='searchButton'>
                                 <i class="fas fa-search"></i>
                             </button>
@@ -85,12 +85,12 @@
                                                 <div class="flex items-center">
                                                     <div class="flex-shrink-0 w-10 h-10">
                                                         <img class="w-full h-full rounded-full"
-                                                            src="{{url('')."{$menu->detail_menu->gambar}"}}"
+                                                            src="{{url('')."{$menu->gambar}"}}"
                                                             alt="" />
                                                     </div>
                                                     <div class="ml-3">
                                                         <p class="text-gray-900 whitespace-no-wrap">
-                                                            {{$menu->detail_menu->nama ?? $menu->nama}}
+                                                            {{$menu->nama ?? $menu->nama}}
                                                         </p>
                                                         {{-- <p class="text-gray-600 whitespace-no-wrap">000004</p> --}}
                                                     </div>
@@ -101,8 +101,8 @@
                                                 <div class="py-10">
 
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input update_stock" type="checkbox" role="switch" id="flexSwitchCheckChecked" {{$menu->detail_menu->isReady ? 'checked' : ""}} data-id-menu="{{$menu->detail_menu->id}}">
-                                                        <label class="form-check-label" for="flexSwitchCheckChecked">{{$menu->detail_menu->isReady ? 'Tersedia' : "Kosong"}}</label>
+                                                        <input class="form-check-input update_stock" type="checkbox" role="switch" id="flexSwitchCheckChecked" {{$menu->isReady ? 'checked' : ""}} data-id-menu="{{$menu->id}}">
+                                                        <label class="form-check-label" for="flexSwitchCheckChecked">{{$menu->isReady ? 'Tersedia' : "Kosong"}}</label>
                                                       </div>
 
                                                 </div>
@@ -112,8 +112,8 @@
                                                     <input class="editable-input" type="text" value="Other" placeholder="Click The Edit Icon" readonly/>
                                                     <i class="fas fa-edit edit-button"></i>
                                                   </div> --}}
-                                                <p class="text-gray-900 whitespace-no-wrap">Rp{{number_format($menu->detail_menu->harga, 0, ',', '.')}}
-                                                    <i class="fas fa-edit" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-harga="{{$menu->detail_menu->harga}}" data-bs-id="{{$menu->detail_menu->id}}"></i></p>
+                                                <p class="text-gray-900 whitespace-no-wrap">Rp{{number_format($menu->harga, 0, ',', '.')}}
+                                                    <i class="fas fa-edit" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-harga="{{$menu->harga}}" data-bs-id="{{$menu->id}}"></i></p>
                                                 {{-- <p class="text-gray-600 whitespace-no-wrap">Due in 3 days</p> --}}
                                             </td>
                                         </tr>
@@ -190,7 +190,7 @@
             if ($(this).is(':checked')) {
                 // Send AJAX request when checkbox is checked
                 $.ajax({
-                    url: '/api/menu/' + idMenu, // Replace with your actual API endpoint URL
+                    url: '/menu/' + idMenu, // Replace with your actual API endpoint URL
                     type: 'POST', // Adjust method based on API requirements (POST, GET, etc.)
                     data: { // Send any necessary data to the API
                         isReady: 1,
@@ -208,7 +208,7 @@
                 });
             } else {
                 $.ajax({
-                    url: '/api/menu/' + idMenu, // Replace with your actual API endpoint URL
+                    url: '/menu/' + idMenu, // Replace with your actual API endpoint URL
                     type: 'POST', // Adjust method based on API requirements (POST, GET, etc.)
                     data: { // Send any necessary data to the API
                         isReady: 0,
@@ -241,6 +241,7 @@
 
                     const idMenu = button.getAttribute('data-bs-id')
                     console.log(idMenu)
+                    let token = "{{ session()->get('_token') }}";
 
                     const submitButton = exampleModal.querySelector('.btn-success');
 
@@ -256,10 +257,11 @@
 
                         // AJAX request to update the data
                         $.ajax({
-                            url: '/api/menu/'+idMenu, // Replace with your actual API endpoint URL
+                            url: '/menu/'+idMenu, // Replace with your actual API endpoint URL
                             type: 'POST', // Adjust method based on API requirements (POST, GET, etc.)
                             data: {
-                                harga: updatedHarga
+                                harga: updatedHarga,
+                                _token: token
                             },
                             success: function(response) {
                                 console.log("Data updated successfully:", response);

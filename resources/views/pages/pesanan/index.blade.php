@@ -13,7 +13,14 @@
                     <div class="container mx-auto px-4 sm:px-8">
                         <div class="py-8">
                             <div>
-                                <h2 class="text-2xl font-semibold leading-tight">{{ $dataPesanan->where('status', '!=' ,'pesanan_ditolak')->count() }} Pesanan
+                                @php
+                                    $pesananTotal = $dataPesanan
+                                        ->where('status', '!=', 'pesanan_ditolak')
+                                        ->reduce(function ($carry, $pesan) {
+                                            return $carry + $pesan->listTransaksiDetail->count();
+                                        });
+                                @endphp
+                                <h2 class="text-2xl font-semibold leading-tight">{{ $pesananTotal }} Pesanan
                                     Masuk</h2>
                             </div>
                             <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
@@ -45,7 +52,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($dataPesanan->where('status', '!=' ,'pesanan_ditolak') as $pesanan)
+                                            @foreach ($dataPesanan->where('status', '!=', 'pesanan_ditolak') as $pesanan)
                                                 @foreach ($pesanan->listTransaksiDetail ?? [] as $detail)
                                                     <tr>
                                                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -53,30 +60,33 @@
                                                                 <p class="text-gray-900 whitespace-no-wrap">
                                                                     {{ $pesanan->user->name }}
                                                                 </p>
-                                                                <p class="text-gray-600 whitespace-no-wrap">pesanan-{{$pesanan->id}}</p>
+                                                                <p class="text-gray-600 whitespace-no-wrap">
+                                                                    pesanan-{{ $pesanan->id }}</p>
                                                             </div>
                                                         </td>
                                                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                                             <div class="flex items-center">
                                                                 <div class="flex-shrink-0 w-10 h-10">
                                                                     <img class="w-full h-full rounded-full"
-                                                                        src="{{$detail->menus->link_gambar}}"
+                                                                        src="{{ $detail->menus->link_gambar }}"
                                                                         alt="" />
                                                                 </div>
                                                                 <div class="ml-3">
                                                                     <p class="text-gray-900 whitespace-no-wrap">
-                                                                        {{$detail->menus->nama}}
+                                                                        {{ $detail->menus->nama }}
                                                                     </p>
                                                                     {{-- <p class="text-gray-600 whitespace-no-wrap">000004</p> --}}
                                                                 </div>
                                                             </div>
                                                         </td>
                                                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                            <p class="text-gray-900 whitespace-no-wrap">x{{$detail->jumlah}}</p>
+                                                            <p class="text-gray-900 whitespace-no-wrap">
+                                                                x{{ $detail->jumlah }}</p>
                                                             {{-- <p class="text-gray-600 whitespace-no-wrap">USD</p> --}}
                                                         </td>
                                                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                            <p class="text-gray-900 whitespace-no-wrap">Rp{{number_format($detail->harga, 0, ',', '.')}}</p>
+                                                            <p class="text-gray-900 whitespace-no-wrap">
+                                                                Rp{{ number_format($detail->harga, 0, ',', '.') }}</p>
                                                             {{-- <p class="text-gray-600 whitespace-no-wrap">Due in 3 days</p> --}}
                                                         </td>
                                                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -84,7 +94,7 @@
                                                                 class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
                                                                 <span aria-hidden
                                                                     class="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
-                                                                <span class="relative">{{$pesanan->status}}</span>
+                                                                <span class="relative">{{ $pesanan->status }}</span>
                                                             </span>
                                                         </td>
                                                         {{-- <td
@@ -115,7 +125,16 @@
                     <div class="container mx-auto px-4 sm:px-8">
                         <div class="py-8">
                             <div>
-                                <h2 class="text-2xl font-semibold leading-tight">{{ $dataPesanan->where('status','pesanan_ditolak')->count() }} Pesanan Dibatalkan</h2>
+                                @php
+                                    $pesananTotalBatal = $dataPesanan
+                                        ->where('status', '==', 'pesanan_ditolak')
+                                        ->reduce(function ($carry, $pesan) {
+                                            return $carry + $pesan->listTransaksiDetail->count();
+                                        });
+                                @endphp
+                                <h2 class="text-2xl font-semibold leading-tight">
+                                    {{ $pesananTotalBatal ?? 0 }} Pesanan Dibatalkan
+                                </h2>
                             </div>
                             <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                                 <div class="inline-block min-w-full shadow-md rounded-lg overflow-hidden">
@@ -146,7 +165,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($dataPesanan->where('status','pesanan_ditolak') as $pesanan)
+                                            @foreach ($dataPesanan->where('status', 'pesanan_ditolak') as $pesanan)
                                                 @foreach ($pesanan->listTransaksiDetail ?? [] as $detail)
                                                     <tr>
                                                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -154,30 +173,33 @@
                                                                 <p class="text-gray-900 whitespace-no-wrap">
                                                                     {{ $pesanan->user->name }}
                                                                 </p>
-                                                                <p class="text-gray-600 whitespace-no-wrap">pesanan-{{$pesanan->id}}</p>
+                                                                <p class="text-gray-600 whitespace-no-wrap">
+                                                                    pesanan-{{ $pesanan->id }}</p>
                                                             </div>
                                                         </td>
                                                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                                             <div class="flex items-center">
                                                                 <div class="flex-shrink-0 w-10 h-10">
                                                                     <img class="w-full h-full rounded-full"
-                                                                        src="{{$detail->menus->link_gambar}}"
+                                                                        src="{{ $detail->menus->link_gambar }}"
                                                                         alt="" />
                                                                 </div>
                                                                 <div class="ml-3">
                                                                     <p class="text-gray-900 whitespace-no-wrap">
-                                                                        {{$detail->menus->nama}}
+                                                                        {{ $detail->menus->nama }}
                                                                     </p>
                                                                     {{-- <p class="text-gray-600 whitespace-no-wrap">000004</p> --}}
                                                                 </div>
                                                             </div>
                                                         </td>
                                                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                            <p class="text-gray-900 whitespace-no-wrap">x{{$detail->jumlah}}</p>
+                                                            <p class="text-gray-900 whitespace-no-wrap">
+                                                                x{{ $detail->jumlah }}</p>
                                                             {{-- <p class="text-gray-600 whitespace-no-wrap">USD</p> --}}
                                                         </td>
                                                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                            <p class="text-gray-900 whitespace-no-wrap">Rp{{number_format($detail->harga, 0, ',', '.')}}</p>
+                                                            <p class="text-gray-900 whitespace-no-wrap">
+                                                                Rp{{ number_format($detail->harga, 0, ',', '.') }}</p>
                                                             {{-- <p class="text-gray-600 whitespace-no-wrap">Due in 3 days</p> --}}
                                                         </td>
                                                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -185,7 +207,8 @@
                                                                 class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
                                                                 <span aria-hidden
                                                                     class="absolute inset-0 bg-red-500 opacity-50 rounded-full"></span>
-                                                                <span class="relative">{{$pesanan->status == "pesanan_ditolak" ? "Dibatalkan" : ""}}</span>
+                                                                <span
+                                                                    class="relative">{{ $pesanan->status == 'pesanan_ditolak' ? 'Dibatalkan' : '' }}</span>
                                                             </span>
                                                         </td>
                                                         {{-- <td

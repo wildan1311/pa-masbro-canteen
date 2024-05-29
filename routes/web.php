@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\KeuanganController;
 use App\Http\Controllers\Web\Konfigurasi\MenuController;
 use App\Http\Controllers\Web\Konfigurasi\PermissionController;
 use App\Http\Controllers\Web\Konfigurasi\RoleController;
+use App\Http\Controllers\Web\PembayaranController;
 use App\Http\Controllers\Web\PesananController;
 use App\Http\Controllers\Web\RuanganController as WebRuanganController;
 use App\Http\Controllers\Web\TenantController;
@@ -52,6 +53,9 @@ Route::middleware(['shared', 'auth', 'role:tenant|kdh|admin'])->group(function (
     Route::resource('menu-kategori', MenuKategori::class);
     Route::resource('ruangan', WebRuanganController::class);
     Route::resource('gedung', GedungController::class);
+    Route::resource('pembayaran', PembayaranController::class);
+
+    Route::post('/pembayaran/transfer', [PembayaranController::class, 'transfer'])->name('pembayaran.transfer');
 
     Route::get('/data', [DataController::class, 'index']);
     Route::get('/pesanan', [PesananController::class, 'index']);

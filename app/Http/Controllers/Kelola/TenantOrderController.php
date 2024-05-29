@@ -180,10 +180,15 @@ class TenantOrderController extends Controller
         $transaksi->save();
 
         try{
+            if($transaksi->metode_pembayaran != 'transfer'){
+                $transaksi->listTransaksiDetail()->update(['status' => $transaksi->status]);
+            }
+
             if ($transaksi->status == 'pesanan_ditolak') {
                 if($transaksi->metode_pembayaran == 'transfer'){
                     $midtrans = new Midtrans();
-                    $midtrans->refundTransaction($transaksi->id);
+                    // $refund = $midtrans->refundTransaction($transaksi);
+                    // Log::info($refund);
                 }
                 $firebases->withNotification('Tenant Membatalkan Pemesanan', "Mohon maaf, pesanan {$transaksi->id} dibatalkan, selanjutnya anda bisa melakukan refund")
                     ->sendMessages($transaksi->user->fcm_token);
@@ -215,7 +220,7 @@ class TenantOrderController extends Controller
         }catch(Throwable $e){
             $warning = "Notifikasi mungkin tidak terkirim dengan sempurna";
             Log::error($e->getMessage());
-            ResponseApi::serverError();
+            return ResponseApi::error($e->getMessage());
         }
         // finally{
         //     return response()->json([

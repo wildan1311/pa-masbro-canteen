@@ -31,8 +31,8 @@ class KeuanganController extends Controller
 
         $summary = DB::table('transaksi_detail')
                         ->join('transaksi', 'transaksi.id', 'transaksi_detail.transaksi_id')
-                        ->join('menus_kelola', 'transaksi_detail.menus_kelola_id', 'menus_kelola.id')
-                        ->join('tenants', 'tenants.id', 'menus_kelola.tenant_id')
+                        ->join('menus', 'transaksi_detail.menu_id', 'menus.id')
+                        ->join('tenants', 'tenants.id', 'menus.tenant_id')
                         ->select('transaksi_detail.*', 'transaksi.status as transaksi_status', 'transaksi.metode_pembayaran')
                         ->addSelect(DB::raw('transaksi_detail.harga * jumlah as total_harga_menu'))
                         ->where('transaksi.status', 'selesai')
@@ -42,10 +42,10 @@ class KeuanganController extends Controller
             ->mergeBindings($summary)
             ->select('query.*');
 
-        $summaryPending = (clone $summary)->whereIn('status', ['pending', 'pesanan_masuk'])->where('metode_pembayaran', 'transfer')->sum('total_harga_menu');
-        $summaryMingguIni = (clone $summary)->whereBetween('created_at', [Carbon::now()->startOfWeek()->toDateTimeString(), Carbon::now()->endOfWeek()->toDateTimeString()])->sum('total_harga_menu');
-        $summaryBulanIni = (clone $summary)->whereBetween('created_at', [Carbon::now()->startOfMonth()->toDateTimeString(), Carbon::now()->endOfMonth()->toDateTimeString()])->sum('total_harga_menu');
-        $summarySemua = (clone $summary)->sum('total_harga_menu');
+        $summaryPending = (clone $summary)->whereNotIn('status', ['selesai'])->where('metode_pembayaran', 'transfer')->sum('total_harga_menu');
+        $summaryMingguIni = (clone $summary)->where('status', 'selesai')->whereBetween('created_at', [Carbon::now()->startOfWeek()->toDateTimeString(), Carbon::now()->endOfWeek()->toDateTimeString()])->sum('total_harga_menu');
+        $summaryBulanIni = (clone $summary)->where('status', 'selesai')->whereBetween('created_at', [Carbon::now()->startOfMonth()->toDateTimeString(), Carbon::now()->endOfMonth()->toDateTimeString()])->sum('total_harga_menu');
+        $summarySemua = (clone $summary)->where('status', 'selesai')->sum('total_harga_menu');
         // $summaryMingguIni = $summary->whereIn('status', ['selesai'])->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->sum('total_harga_menu');
         // $summaryBulanIni = $summary->whereIn('status', ['selesai'])->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->sum('total_harga_menu');
         // $summarySemua = $summary->whereIn('status', ['selesai'])->sum('total_harga_menu');

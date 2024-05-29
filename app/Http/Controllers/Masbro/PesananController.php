@@ -100,6 +100,9 @@ class PesananController extends Controller
                 $status = str_replace('_', ' ', $transaksi->status);
                 // $firebases->withNotification("Pesanan {$status}", "Pesanan {$transaksi->id} {$status}")
                 // ->sendMessages($transaksi->user->fcm_token);
+                if($transaksi->metode_pembayaran != 'transfer'){
+                    $transaksi->listTransaksiDetail()->update(['status' => $transaksi->status]);
+                }
                 if ($transaksi->status == 'diantar') {
                     $firebases->withNotification('Pesanan Sedang Diantar', "Pesanan {$transaksi->id} sedang diantar")
                         ->sendMessages($transaksi->user->fcm_token);
