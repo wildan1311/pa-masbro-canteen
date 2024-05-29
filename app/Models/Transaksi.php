@@ -28,7 +28,7 @@ class Transaksi extends Model
 
     public function getSubTotalAttribute()
     {
-        return $this->listTransaksiDetail()->sum(DB::raw('harga * jumlah'));
+        return (int)$this->listTransaksiDetail()->sum(DB::raw('harga * jumlah'));
     }
     public function getGedungAttribute()
     {
