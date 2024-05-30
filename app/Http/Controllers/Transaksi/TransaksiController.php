@@ -314,7 +314,7 @@ class TransaksiController extends Controller
                 $transaksi->update(['status' => 'pesanan_masuk']);
                 $firebases->withNotification('Pesanan Masuk', "Ada Pesanan Masuk!")
                     ->sendMessages($tenant->fcm_token);
-            } else if ($transaction == 'expire') {
+            } else if ($transaction == 'expired') {
                 $transaksi->update(['status' => $transaction]);
             } else if ($transaction == 'cancel') {
                 $transaksi->update(['status' => $transaction]);
