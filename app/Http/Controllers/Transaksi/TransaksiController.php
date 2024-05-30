@@ -39,7 +39,13 @@ class TransaksiController extends Controller
                 'message' => 'tidak memiliki akses',
             ], 403);
         }
-        $transaksi = Transaksi::with(['listTransaksiDetail.menus.tenants', 'user'])->where('user_id', $user->id)->orderByDesc('created_at')->get();
+        $transaksi = Transaksi::with(['listTransaksiDetail.menus.tenants', 'user'])
+            ->whereHas('listTransaksiDetail.menus.tenants', function($tenant) use($user){
+                $tenant->where('user_id', '!=', $user->id);
+            })
+            ->where('user_id', $user->id)
+            ->orderByDesc('created_at')
+            ->get();
 
         return response()->json([
             'status' => 'success',
