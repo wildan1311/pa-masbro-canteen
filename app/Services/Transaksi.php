@@ -34,6 +34,11 @@ class Transaksi {
         $subTotal = $this->transaksi->where("status", "selesai")->sum(function($item) {
             return $item['jumlah'] * $item['harga'];
         });
+        // $subTotal = $this->transaksi->where("status", "selesai")->reduce(function($result, $item) {
+        //     return $result + $item->listTransaksiDetail->sum(function($detail){
+        //         return $detail['harga'] * $detail['jumlah'];
+        //     });
+        // });
 
         return $subTotal;
     }

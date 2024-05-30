@@ -20,17 +20,27 @@ class DataController extends Controller
         $this->authorize('read data');
 
         $tenant = Tenants::where("user_id", $user->id)->first();
-        $dataPesanan = Transaksi::with([
-            'listTransaksiDetail' => function ($query) use ($tenant) {
-                $query->whereHas('menus', function ($menus) use ($tenant) {
-                    $menus->where('tenant_id', $tenant->id);
-                });
-            }, 'user'
-        ])->whereHas('listTransaksiDetail.menus.tenants', function ($query) use ($tenant) {
-            $query->where('id', $tenant->id);
-        })->join('transaksi_detail', 'transaksi_detail.transaksi_id', 'transaksi.id')
-            ->select('*', 'transaksi.status', 'transaksi.id')
+        $dataPesanan = Transaksi::leftJoin('transaksi_detail', 'transaksi.id', '=', 'transaksi_detail.transaksi_id')
+            ->leftJoin('menus', 'transaksi_detail.menu_id', '=', 'menus.id')
+            ->leftJoin('tenants', 'menus.tenant_id', '=', 'tenants.id')
+            ->where('tenants.id', $tenant->id)
+            ->whereNotIn('transaksi.status', ['pending', 'expired', 'cancel'])
+            ->select('transaksi.*', 'transaksi.status', 'transaksi.id', 'transaksi_detail.jumlah', 'transaksi_detail.harga')
             ->addSelect(DB::raw('transaksi_detail.harga * transaksi_detail.jumlah as subTotal'));
+        // $dataPesanan = Transaksi::with([
+        //     'listTransaksiDetail' => function ($query) use ($tenant) {
+        //         $query->whereHas('menus', function ($menus) use ($tenant) {
+        //             $menus->where('tenant_id', $tenant->id);
+        //         });
+        //     }, 'user'
+        // ])->whereHas('listTransaksiDetail.menus.tenants', function ($query) use ($tenant) {
+        //     $query->where('id', $tenant->id);
+        // })
+        // ->join('transaksi_detail', 'transaksi_detail.transaksi_id', 'transaksi.id')
+        //     ->select('*', 'transaksi.status', 'transaksi.id')
+        //     ->addSelect(DB::raw('transaksi_detail.harga * transaksi_detail.jumlah as subTotal'));
+
+        // dd($dataPesanan->where("transaksi.status", '!=', 'selesai')->get());
 
         $transaksi = new ServicesTransaksi($dataPesanan->get());
 
@@ -55,7 +65,7 @@ class DataController extends Controller
                 WHEN MONTH(transaksi.created_at) = 11 THEN 'November'
                 ELSE 'Desember' END as nama_bulan"),
             DB::raw('YEAR(transaksi.created_at) as tahun'),
-            DB::raw('(sum(jumlah*harga)) as total_pesanan')
+            DB::raw('(sum(transaksi_detail.jumlah*transaksi_detail.harga)) as total_pesanan')
         )
             ->groupBy(DB::raw('YEAR(transaksi.created_at)'), DB::raw('nama_bulan'))
             ->orderBy(DB::raw('tahun'))
