@@ -24,7 +24,7 @@ class Transaksi extends Model
         'catatan'
     ];
 
-    public $appends = ['sub_total', 'gedung', 'nama_ruangan'];
+    public $appends = ['sub_total', 'gedung', 'nama_ruangan', "nama_pembeli"];
 
     public function getSubTotalAttribute()
     {
@@ -33,6 +33,10 @@ class Transaksi extends Model
     public function getGedungAttribute()
     {
         return @$this->ruangan->gedung->nama;
+    }
+    public function getNamaPembeliAttribute()
+    {
+        return @$this->user()->first()->name;
     }
     public function getNamaRuanganAttribute()
     {

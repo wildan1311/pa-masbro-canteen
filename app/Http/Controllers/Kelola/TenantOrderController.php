@@ -35,7 +35,7 @@ class TenantOrderController extends Controller
                 'listTransaksiDetail.menus.tenants' => function ($query) use ($tenant) {
                     $query->where('id', @$tenant->id);
                 }
-            ])->whereHas('listTransaksiDetail.menus.tenants', function ($query) use ($tenant) {
+            , 'user'])->whereHas('listTransaksiDetail.menus.tenants', function ($query) use ($tenant) {
                 $query->where('id', @$tenant->id);
             })->whereNotIn('status', ['pending', 'expire', 'cancel'])->get();
 
