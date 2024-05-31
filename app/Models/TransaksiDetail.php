@@ -17,6 +17,7 @@ class TransaksiDetail extends Model
         'jumlah',
         'catatan',
         'harga',
+        'status'
     ];
 
     public $appends = ['nama_menu', 'kategori_menu'];

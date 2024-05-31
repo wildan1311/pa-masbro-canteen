@@ -282,6 +282,7 @@ class TransaksiController extends Controller
                 'jumlah' => $menu['jumlah'],
                 'harga' => $menu['harga'],
                 'catatan' => $menu['catatan'] ?? '',
+                'status' => $transaksi->status,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ];
