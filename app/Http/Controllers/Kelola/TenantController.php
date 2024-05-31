@@ -231,7 +231,7 @@ class TenantController extends Controller
                 // "menu_id" => @$request->menu_id ?? $menu->menu_id,
                 "tenant_id" => @$tenant->id,
                 "kategori_id" => @$request->kategori_id ?? $menu->kategori_id,
-                "harga" => @$request->harga ?? 0,
+                "harga" => @$request->harga ?? $menu->harga,
                 "gambar" => @$url,
                 "nama" => @$request->nama_menu ?? $menu->nama,
                 "deskripsi" => @$request->deskripsi_menu,
