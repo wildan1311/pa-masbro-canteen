@@ -42,7 +42,7 @@ class Tenants extends Model
 
     public function getGambarAttribute()
     {
-        return $this->nama_gambar != null ? (asset($this->nama_gambar)) : asset('assets/images/default-image.png');
+        return $this->nama_gambar != null ? (asset($this->nama_gambar)) : asset('assets/images/default-image.jpg');
     }
 
     public function kelola()

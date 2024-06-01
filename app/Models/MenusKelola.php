@@ -38,6 +38,6 @@ class MenusKelola extends Model
     }
     public function getLinkGambarAttribute()
     {
-        return $this->gambar != '' ? (asset($this->gambar)) : asset('assets/images/default-image.png');
+        return $this->gambar != '' ? (asset($this->gambar)) : asset('assets/images/default-image.jpg');
     }
 }
