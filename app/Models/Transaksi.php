@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -24,7 +25,12 @@ class Transaksi extends Model
         'catatan'
     ];
 
-    public $appends = ['sub_total', 'gedung', 'nama_ruangan', "nama_pembeli"];
+    public $appends = ['sub_total', 'gedung', 'nama_ruangan', "nama_pembeli", "order_id"];
+
+    public function getOrderIdAttribute(){
+        $tanggal = $tanggal = Carbon::parse($this->created_at)->format("Ymd");
+        return "ORDER$tanggal{$this->id}";
+    }
 
     public function getSubTotalAttribute()
     {
