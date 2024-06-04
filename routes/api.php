@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\NotifyUserWhenTransaksiUpdated;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\RuanganController;
 use App\Http\Controllers\Kelola\TenantController as KelolaTenantController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\Masbro\PesananController;
 use App\Http\Controllers\Tenant\TenantController;
 use App\Http\Controllers\Transaksi\TransaksiController;
 use App\Http\Controllers\User\UserController;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -75,6 +77,11 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::get('/menu_kategori', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+Route::get('/test-web-socket', function(){
+    $transaksi = Transaksi::first();
+    broadcast(new NotifyUserWhenTransaksiUpdated($transaksi));
+});
 
 // Route::resource('user', UserController::class);
 
