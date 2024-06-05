@@ -2,6 +2,7 @@
 
 use App\Events\NotifyUserWhenTransaksiUpdated;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PengaturanController;
 use App\Http\Controllers\Api\RuanganController;
 use App\Http\Controllers\Kelola\TenantController as KelolaTenantController;
 use App\Http\Controllers\Kelola\TenantOrderController;
@@ -76,7 +77,7 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::get('/menu_kategori', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::get('/pengaturan', [PengaturanController::class, 'index']);
 
 Route::get('/test-web-socket', function(){
     $transaksi = Transaksi::first();

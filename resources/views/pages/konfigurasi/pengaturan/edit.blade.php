@@ -4,44 +4,32 @@
     @endpush
     <div class="main-content">
         <div class="title">
-            Ruangan
+            Konfigurasi
         </div>
         <div class="content-wrapper">
             <div class="card">
                 <div class="card-header">
-                    <h4>Edit Ruangan</h4>
+                    <h4>Pengaturan</h4>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('ruangan.update', $ruangan->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('pengaturan.update', $pengaturan->id) }}" method="POST" enctype="multipart/form-data">
+                        @method('PUT')
                         @csrf
-                        @method('put')
                         <div class="row">
                             <div class="col">
                                 <div class="mb-3">
-                                    <label for="basicInput" class="form-label">Nama Ruangan</label>
+                                    <label for="basicInput" class="form-label">Nama</label>
                                     <input type="text" placeholder="Input Here" class="form-control" id="basicInput"
-                                        name="nama" value="{{$ruangan->nama}}">
+                                        name="nama" value="{{$pengaturan->nama}}">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col">
                                 <div class="mb-3">
-                                    <label for="basicInput" class="form-label">Kode Ruangan</label>
+                                    <label for="basicInput" class="form-label">Nilai</label>
                                     <input type="text" placeholder="Input Here" class="form-control" id="basicInput"
-                                        name="kode_ruangan" value="{{@$ruangan->kode_ruangan}}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <div class="mb-3">
-                                    <label for="basicInput" class="form-label">Gedung</label>
-                                    <select name="gedung_id" id="" class="form-control">
-                                        @foreach ($gedung as $gdg)
-                                            <option value="{{ $gdg->id }}" {{$ruangan->gedung->id == $gdg->id ? 'selected' : ''}}>{{ $gdg->nama }}</option>
-                                        @endforeach
-                                    </select>
+                                        name="nilai" value="{{$pengaturan->nilai}}">
                                 </div>
                             </div>
                         </div>
@@ -67,7 +55,7 @@
         </script>
         @if ($errors->any())
             @foreach ($errors->all() as $error)
-                toastr.error('{{ $error }}', 'Error');
+                $(document).Toasts('show');
             @endforeach
         @endif
         {{-- {!! $dataTable->scripts() !!}
