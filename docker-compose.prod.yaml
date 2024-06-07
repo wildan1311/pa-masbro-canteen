@@ -8,6 +8,7 @@ services:
         tty: true
         environment:
             SERVICE_NAME: backend_masbrocanteen
+            TZ: "Asia/Jakarta"
         working_dir: /var/www/html
         volumes:
             - .:/var/www/html
@@ -28,6 +29,8 @@ services:
             - ./storage/:/etc/nginx/conf.d/
         networks:
             - network_backend_masbrocanteen
+        environment:
+            TZ: "Asia/Jakarta"
 
     db:
         image: mysql:5.7.29
@@ -47,6 +50,7 @@ services:
           MYSQL_ROOT_PASSWORD: '@Masbrocanteen1'
           SERVICE_NAME: mysql
           SERVICE_TAGS: dev
+          TZ: "Asia/Jakarta"
 
 networks:
     network_backend_masbrocanteen:
