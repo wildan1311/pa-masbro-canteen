@@ -25,6 +25,10 @@ class Transaksi extends Model
         'catatan'
     ];
 
+    protected $casts = [
+        "created_at" => "datetime:Y-m-d H:i",
+        "updated_at" => "datetime:Y-m-d H:i"
+    ];
     public $appends = ['sub_total', 'gedung', 'nama_ruangan', "nama_pembeli", "order_id"];
 
     public function getOrderIdAttribute(){
