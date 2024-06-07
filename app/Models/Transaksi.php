@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -25,11 +26,12 @@ class Transaksi extends Model
         'catatan'
     ];
 
-    protected $casts = [
-        "created_at" => "datetime:Y-m-d H:i",
-        "updated_at" => "datetime:Y-m-d H:i"
-    ];
     public $appends = ['sub_total', 'gedung', 'nama_ruangan', "nama_pembeli", "order_id"];
+
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return Carbon::instance($date)->setTimezone('Asia/Jakarta')->toIso8601String();
+    }
 
     public function getOrderIdAttribute(){
         $tanggal = $tanggal = Carbon::parse($this->created_at)->format("Ymd");
