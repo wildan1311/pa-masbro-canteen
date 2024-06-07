@@ -206,6 +206,8 @@ class TransaksiController extends Controller
                 'catatan' => @$request->catatan,
                 'biaya_layanan' => @$request->biaya_layanan ?? 1000,
                 'status' => $status,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
 
             $success = $this->storeTransakasiDetail($request, $transaksi);
