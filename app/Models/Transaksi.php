@@ -30,7 +30,7 @@ class Transaksi extends Model
 
     protected function serializeDate(DateTimeInterface $date)
     {
-        return Carbon::instance($date)->setTimezone('Asia/Jakarta')->format("Y-m-d H:i:s");
+        return Carbon::instance($date)->setTimezone('Asia/Jakarta')->toIso8601String();
     }
 
     public function getOrderIdAttribute(){
