@@ -110,13 +110,16 @@
         </ul> --}}
 
        <!-- Logout Button -->
-       <div class="logout-button w-full text-center mt-auto">
+       <div class="logout-button w-full text-center mt-auto mb-4">
         <form action="{{ route('logout') }}" method="post">
             @csrf
-            <button type="submit" class="btn-logout w-full py-4 text-lg font-bold text-gray-400 hover:text-red-400 focus:outline-none">
-                <i class="fas fa-sign-out-alt mr-2"></i> Logout
-            </button>
+            <div class="inline-flex flex-shrink-0 items-center justify-center h-12 w-40 text-white bg-red-400 rounded mr-6">
+                <button type="submit" class="btn-logout w-full py-4 text-lg font-bold text-white hover:text-red-400 focus:outline-none">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </button>
+            </div>
         </form>
     </div>
+
     </aside>
 </nav>

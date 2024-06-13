@@ -39,46 +39,52 @@
                     <h2 class="text-2xl font-semibold leading-tight">Rincian Penjualan</h2>
                 </div>
                 <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-                    <div class="inline-block min-w-full shadow-md rounded-lg overflow-hidden">
+                    <div class="inline-block min-w-full rounded-lg overflow-hidden">
                         <table class="min-w-full leading-normal">
                             <thead>
                                 <tr>
                                     <th
                                         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                        Kode Pesanan
+                                        No Pesanan
                                     </th>
                                     <th
                                         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                        Menu
+                                        Tanggal
                                     </th>
                                     <th
                                         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                        Jumlah
+                                        Nama Pemesan
                                     </th>
+                                    {{-- <th
+                                        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                        Total Harga
+                                    </th> --}}
                                     <th
                                         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                        Harga
+
                                     </th>
-                                    <th
-                                        class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                        Status
-                                    </th>
-                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($dataPesanan as $pesanan)
-                                    @foreach ($pesanan->listTransaksiDetail ?? [] as $detail)
+                                    {{-- @foreach ($pesanan->listTransaksiDetail ?? [] as $detail) --}}
                                         <tr>
                                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                                 <div class="ml-3">
                                                     <p class="text-gray-900 whitespace-no-wrap">
-                                                        {{ $pesanan->user->name }}
+                                                        {{ $pesanan->order_id }}
                                                     </p>
-                                                    <p class="text-gray-600 whitespace-no-wrap">pesanan-{{$pesanan->id}}</p>
                                                 </div>
                                             </td>
+
+                                            @php
+                                                $tanggal = strtotime($pesanan->created_at)
+                                            @endphp
                                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                <p class="text-gray-900 whitespace-no-wrap">{{date("d M Y H:i", $tanggal)}}</p>
+                                                {{-- <p class="text-gray-600 whitespace-no-wrap">USD</p> --}}
+                                            </td>
+                                            {{-- <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                                 <div class="flex items-center">
                                                     <div class="flex-shrink-0 w-10 h-10">
                                                         <img class="w-full h-full rounded-full"
@@ -89,39 +95,60 @@
                                                         <p class="text-gray-900 whitespace-no-wrap">
                                                             {{$detail->menus->nama}}
                                                         </p>
-                                                        {{-- <p class="text-gray-600 whitespace-no-wrap">000004</p> --}}
+                                                        <p class="text-gray-600 whitespace-no-wrap">000004</p>
                                                     </div>
                                                 </div>
-                                            </td>
+                                            </td> --}}
                                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                <p class="text-gray-900 whitespace-no-wrap">x{{$detail->jumlah}}</p>
-                                                {{-- <p class="text-gray-600 whitespace-no-wrap">USD</p> --}}
-                                            </td>
-                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                <p class="text-gray-900 whitespace-no-wrap">Rp{{number_format($detail->harga, 0, ',', '.')}}</p>
+                                                <p class="text-gray-900 whitespace-no-wrap">{{$pesanan->user->name}}</p>
                                                 {{-- <p class="text-gray-600 whitespace-no-wrap">Due in 3 days</p> --}}
                                             </td>
                                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                                <span
-                                                    class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                                                    <span aria-hidden
-                                                        class="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
-                                                    <span class="relative">{{$detail->status}}</span>
-                                                </span>
+                                                <a href="#" onclick="toggleDetail({{$pesanan->id}})" class="text-blue-500 hover:text-blue-700">Detail</a>
                                             </td>
-                                            {{-- <td
-                                            class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
-                                            <button type="button"
-                                                class="inline-block text-gray-500 hover:text-gray-700">
-                                                <svg class="inline-block h-6 w-6 fill-current"
-                                                    viewBox="0 0 24 24">
-                                                    <path
-                                                        d="M12 6a2 2 0 110-4 2 2 0 010 4zm0 8a2 2 0 110-4 2 2 0 010 4zm-2 6a2 2 0 104 0 2 2 0 00-4 0z" />
-                                                </svg>
-                                            </button>
-                                        </td> --}}
                                         </tr>
-                                    @endforeach
+                                        <tr id="detail-{{$pesanan->id}}" class="hidden">
+                                           <td colspan="4">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>
+                                                            No
+                                                        </th>
+                                                        <th>
+                                                            Nama menu
+                                                        </th>
+                                                        <th>
+                                                            Jumlah
+                                                        </th>
+                                                        <th>
+                                                            Harga
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($pesanan->listTransaksiDetail as $transaksiDetail)
+                                                    <tr>
+                                                        <td>
+                                                            {{$loop->iteration}}
+                                                        </td>
+                                                        <td>
+                                                            {{$transaksiDetail->menus->nama}}
+                                                        </td>
+                                                        <td>
+                                                            {{$transaksiDetail->jumlah}}
+                                                        </td>
+                                                        <td>
+                                                            {{$transaksiDetail->harga}}
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                           </td>
+                                        </tr>
+
+                                    {{-- @endforeach --}}
                                 @endforeach
                             </tbody>
                         </table>
@@ -170,5 +197,13 @@
                 });
             });
         </script>
+        <script>
+            function toggleDetail(id) {
+                var detailRow = document.getElementById('detail-' + id);
+                detailRow.classList.toggle('hidden');
+            }
+        </script>
+
+
     @endpush
 </x-master-layout>

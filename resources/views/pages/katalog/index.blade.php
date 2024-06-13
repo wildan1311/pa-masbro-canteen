@@ -45,21 +45,11 @@
         <div class="bg-white p-3 rounded ">
             <div class="container px-8">
                 <div class="mt-0 mb-0">
-                    <div class="font-sans text-black bg-white flex justify-between">
-                        <p class="self-center">{{ $tenant->nama_tenant }}</p>
-                        <div class="flex items-center">
-                            <input type="text" class="px-4 py-2 border rounded" placeholder="Search..."id='searchInput' value="{{ @request()->search ?? '' }}">
-                            <button class="flex justify-center px-4 border-l items-center"id='searchButton'>
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-
                     <div>
                         <h2 class="text-2xl font-semibold leading-tight">{{ $tenant->listMenu->count() }} Produk</h2>
                     </div>
                     <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-                        <div class="inline-block min-w-full shadow-md rounded-lg overflow-hidden">
+                        <div class="inline-block min-w-full rounded-lg overflow-hidden">
                             <table class="min-w-full leading-normal">
                                 <thead>
                                     <tr>
@@ -75,7 +65,6 @@
                                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                             Harga
                                         </th>
-                                        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -104,7 +93,6 @@
                                                         <input class="form-check-input update_stock" type="checkbox" role="switch" id="flexSwitchCheckChecked" {{$menu->isReady ? 'checked' : ""}} data-id-menu="{{$menu->id}}">
                                                         <label class="form-check-label" for="flexSwitchCheckChecked">{{$menu->isReady ? 'Tersedia' : "Kosong"}}</label>
                                                       </div>
-
                                                 </div>
                                             </td>
                                             <td class="px-5 border-b border-gray-200 bg-white text-sm">
