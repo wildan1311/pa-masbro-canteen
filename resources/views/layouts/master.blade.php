@@ -35,6 +35,11 @@
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     @stack('css')
+    <style>
+        .dataTables_wrapper .dataTables_scroll {
+    box-shadow: none !important;
+}
+    </style>
 </head>
 
 <body>
@@ -83,6 +88,12 @@
                 position: 'topRight'
             });
         }
+
+        $("table").dataTable({
+            pageLength: 5,
+            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, "Semua"]],
+            bInfo: false,
+        });
     </script>
 
     <script>
