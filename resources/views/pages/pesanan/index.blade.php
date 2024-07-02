@@ -21,11 +21,20 @@
                                     $currentPagePesananDitolak = $pesananDitolak->currentPage();
                                     $currentPagePesananNonDitolak = $pesananNonDitolak->currentPage();
                                 @endphp
-                                <select id="dropdown_pesanan_non_ditolak">
-                                    @for ($i = 1 ; $i <= $totalPagePesananNonDitolak ; $i++)
-                                        <option value="{{ $i }}" {{ $currentPagePesananNonDitolak == $i ? "selected" : ""}}>{{ $i }}</option>
-                                    @endfor
-                                </select>
+
+                            <div class="d-flex flex-row justify-content-between">
+                                <h2   h2 class="text-2xl font-semibold leading-tight">Total Pesanan</h2>
+                                <div class="d-flex align-items-center">
+                                    <p class="mr-4">Halaman : </p>
+                                    <select id="dropdown_pesanan_non_ditolak">
+                                        @for ($i = 1 ; $i <= $totalPagePesananNonDitolak ; $i++)
+                                            <option value="{{ $i }}" {{ $currentPagePesananNonDitolak == $i ? "selected" : ""}}>{{ $i }}</option>
+                                        @endfor
+                                    </select>
+
+                                </div>
+
+
                             </div>
                             <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                                 <div class="inline-block min-w-full rounded-lg overflow-hidden">

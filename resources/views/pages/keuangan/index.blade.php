@@ -37,11 +37,14 @@
 
                 <div class="d-flex flex-row justify-content-between">
                     <h2 class="text-2xl font-semibold leading-tight">Rincian Penjualan</h2>
+                    <div class="d-flex align-items-center">
+                        <p class="mr-4">Halaman : </p>
                     <select name="page" id="select_page">
                         @for ($i = 1 ; $i <= $lastPage ; $i++)
                             <option value="{{ $i }}" {{ $i == $currentPage ? "selected" : "" }}/>{{ $i }}</option>
                         @endfor
                     </select>
+                    </div>
                     <script>
 
                         document.getElementById('select_page').addEventListener('change', (event) => {
