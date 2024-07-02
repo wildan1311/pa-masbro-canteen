@@ -35,12 +35,26 @@
         <div class="text-black bg-white rounded py-10">
             <div class="px-8">
 
-                <div>
+                <div class="d-flex flex-row justify-content-between">
                     <h2 class="text-2xl font-semibold leading-tight">Rincian Penjualan</h2>
+                    <div class="d-flex align-items-center">
+                        <p class="mr-4">Halaman : </p>
+                    <select name="page" id="select_page">
+                        @for ($i = 1 ; $i <= $lastPage ; $i++)
+                            <option value="{{ $i }}" {{ $i == $currentPage ? "selected" : "" }}/>{{ $i }}</option>
+                        @endfor
+                    </select>
+                    </div>
+                    <script>
+
+                        document.getElementById('select_page').addEventListener('change', (event) => {
+                            window.location.replace(`?page=${event.target.value}`);
+                        })
+                    </script>
                 </div>
                 <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                     <div class="inline-block min-w-full rounded-lg overflow-hidden">
-                       @include('components.tabel_pemesanan', ['dataPesanan' => $dataPesanan])
+                       @include('components.tabel_pemesanan', ['dataPesanan' => $dataPesanan, 'startIndex' => ($currentPage - 1) * 15 + 1])
                     </div>
                 </div>
             </div>
@@ -86,7 +100,7 @@
                 });
             });
         </script>
-       
+
 
 
     @endpush

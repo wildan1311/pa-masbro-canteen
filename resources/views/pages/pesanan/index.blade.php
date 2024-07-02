@@ -13,19 +13,34 @@
                     <div class="container mx-auto px-4 sm:px-8">
                         <div class="py-8">
                             <div>
+                                {{-- <h2 class="text-2xl font-semibold leading-tight">{{ $pesananTotal }} Pesanan
+                                    Masuk</h2> --}}
                                 @php
-                                    $pesananTotal = $dataPesanan
-                                        ->where('status', '!=', 'pesanan_ditolak')
-                                        ->reduce(function ($carry, $pesan) {
-                                            return $carry + $pesan->listTransaksiDetail->count();
-                                        });
+                                    $totalPagePesananDitolak = $pesananDitolak->lastPage();
+                                    $totalPagePesananNonDitolak = $pesananNonDitolak->lastPage();
+                                    $currentPagePesananDitolak = $pesananDitolak->currentPage();
+                                    $currentPagePesananNonDitolak = $pesananNonDitolak->currentPage();
                                 @endphp
-                                <h2 class="text-2xl font-semibold leading-tight">{{ $pesananTotal }} Pesanan
-                                    Masuk</h2>
+
+                            <div class="d-flex flex-row justify-content-between">
+                                <h2   h2 class="text-2xl font-semibold leading-tight">Total Pesanan</h2>
+                                <div class="d-flex align-items-center">
+                                    <p class="mr-4">Halaman : </p>
+                                    <select id="dropdown_pesanan_non_ditolak">
+                                        @for ($i = 1 ; $i <= $totalPagePesananNonDitolak ; $i++)
+                                            <option value="{{ $i }}" {{ $currentPagePesananNonDitolak == $i ? "selected" : ""}}>{{ $i }}</option>
+                                        @endfor
+                                    </select>
+
+                                </div>
+
+
                             </div>
                             <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                                 <div class="inline-block min-w-full rounded-lg overflow-hidden">
-                                    @include('components.tabel_pemesanan' , ['dataPesanan' => $dataPesanan->where('status', '!=', 'pesanan_ditolak')])
+                                    @include('components.tabel_pemesanan' , [
+                                        'dataPesanan' => $pesananNonDitolak,
+                                        'startIndex' => ($currentPagePesananNonDitolak - 1) * 15 + 1])
                                 </div>
                             </div>
                         </div>
@@ -38,20 +53,28 @@
                     <div class="container mx-auto px-4 sm:px-8">
                         <div class="py-8">
                             <div>
-                                @php
-                                    $pesananTotalBatal = $dataPesanan
-                                        ->where('status', '==', 'pesanan_ditolak')
-                                        ->reduce(function ($carry, $pesan) {
-                                            return $carry + $pesan->listTransaksiDetail->count();
-                                        });
-                                @endphp
-                                <h2 class="text-2xl font-semibold leading-tight">
+                                {{-- <h2 class="text-2xl font-semibold leading-tight">
                                     {{ $pesananTotalBatal ?? 0 }} Pesanan Dibatalkan
-                                </h2>
+                                </h2> --}}
+                                <select id="dropdown_pesanan_ditolak">
+                                    @for ($i = 1 ; $i <= $totalPagePesananDitolak ; $i++)
+                                        <option value="{{ $i }}" {{ $currentPagePesananDitolak == $i ? "selected" : ""}}>{{ $i }}</option>
+                                    @endfor
+                                </select>
+                                <script>
+                                    document.getElementById('dropdown_pesanan_non_ditolak').addEventListener('change', (e) => {
+                                        window.location.replace(`?pesanan_non_ditolak_page=${e.target.value}&pesanan_ditolak_page={{ $currentPagePesananDitolak }}`);
+                                    });
+                                    document.getElementById('dropdown_pesanan_ditolak').addEventListener('change', (e) => {
+                                        window.location.replace(`?pesanan_non_ditolak_page={{ $currentPagePesananNonDitolak }}&pesanan_ditolak_page=${e.target.value}`);
+                                    });
+                                </script>
                             </div>
                             <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                                 <div class="inline-block min-w-full rounded-lg overflow-hidden">
-                                    @include('components.tabel_pemesanan', ['dataPesanan' => $dataPesanan->where('status', 'pesanan_ditolak')])
+                                    @include('components.tabel_pemesanan', [
+                                        'dataPesanan' => $pesananDitolak,
+                                        'startIndex' => ($currentPagePesananDitolak - 1) * 15 + 1])
                                 </div>
                             </div>
                         </div>

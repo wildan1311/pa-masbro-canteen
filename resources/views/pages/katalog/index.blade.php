@@ -225,6 +225,11 @@
     });
         </script>
         <script>
+            $("table").dataTable({
+            pageLength: 5,
+            lengthMenu: [[5, 10, 20, -1], [5, 10, 20, "Semua"]],
+            bInfo: false,
+        });
             const exampleModal = document.getElementById('exampleModal')
                 if (exampleModal) {
                 exampleModal.addEventListener('show.bs.modal', event => {
