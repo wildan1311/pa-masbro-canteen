@@ -29,6 +29,10 @@
                                         <thead>
                                             <tr>
                                                 <th
+                                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                 No
+                                                </th>
+                                                <th
                                                     class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                                     Nama Pemesan
                                                 </th>
@@ -51,9 +55,17 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @php
+                                                $index1 = 0
+                                            @endphp
                                             @foreach ($dataPesanan->where('status', '!=', 'pesanan_ditolak') as $pesanan)
                                                 @foreach ($pesanan->listTransaksiDetail ?? [] as $detail)
                                                     <tr>
+                                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                            <p class="text-gray-900 whitespace-no-wrap">
+                                                                {{ ++$index1 }}
+                                                            </p>
+                                                        </td>
                                                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                                             <div class="ml-3">
                                                                 <p class="text-gray-900 whitespace-no-wrap">
@@ -142,6 +154,10 @@
                                             <tr>
                                                 <th
                                                     class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                                     No
+                                                </th>
+                                                <th
+                                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                                     Nama Pemesan
                                                 </th>
                                                 <th
@@ -164,9 +180,18 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @php
+                                                $index2 = 0
+                                            @endphp
                                             @foreach ($dataPesanan->where('status', 'pesanan_ditolak') as $pesanan)
                                                 @foreach ($pesanan->listTransaksiDetail ?? [] as $detail)
+                                                    {{-- @dd($index) --}}
                                                     <tr>
+                                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                            <p class="text-gray-900 whitespace-no-wrap">
+                                                                {{ ++$index2 }}
+                                                            </p>
+                                                        </td>
                                                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                                             <div class="ml-3">
                                                                 <p class="text-gray-900 whitespace-no-wrap">

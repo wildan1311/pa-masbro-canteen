@@ -44,6 +44,10 @@
                             <thead>
                                 <tr>
                                     <th
+                                         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                         No
+                                    </th>
+                                    <th
                                         class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                         No Pesanan
                                     </th>
@@ -69,6 +73,11 @@
                                 @foreach ($dataPesanan as $pesanan)
                                     {{-- @foreach ($pesanan->listTransaksiDetail ?? [] as $detail) --}}
                                         <tr>
+                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                <p class="text-gray-900 whitespace-no-wrap">
+                                                    {{ $loop->iteration }}
+                                                </p>
+                                            </td>
                                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                                 <div class="ml-3">
                                                     <p class="text-gray-900 whitespace-no-wrap">
@@ -107,7 +116,7 @@
                                                 <a href="#" onclick="toggleDetail({{$pesanan->id}})" class="text-blue-500 hover:text-blue-700">Detail</a>
                                             </td>
                                         </tr>
-                                        <tr id="detail-{{$pesanan->id}}" class="hidden">
+                                        {{-- <tr id="detail-{{$pesanan->id}}" class="hidden">
                                            <td colspan="4">
                                             <table class="table">
                                                 <thead>
@@ -146,7 +155,7 @@
                                                 </tbody>
                                             </table>
                                            </td>
-                                        </tr>
+                                        </tr> --}}
 
                                     {{-- @endforeach --}}
                                 @endforeach
