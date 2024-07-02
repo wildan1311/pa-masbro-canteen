@@ -116,9 +116,9 @@
                                                 <a href="#" onclick="toggleDetail({{$pesanan->id}})" class="text-blue-500 hover:text-blue-700">Detail</a>
                                             </td>
                                         </tr>
-                                        {{-- <tr id="detail-{{$pesanan->id}}" class="hidden">
-                                           <td colspan="4">
-                                            <table class="table">
+                                        <tr id="detail-{{$pesanan->id}}" class="hidden" >
+                                           <td colspan="5">
+                                            <table class="table w-100">
                                                 <thead>
                                                     <tr>
                                                         <th>
@@ -155,7 +155,7 @@
                                                 </tbody>
                                             </table>
                                            </td>
-                                        </tr> --}}
+                                        </tr>
 
                                     {{-- @endforeach --}}
                                 @endforeach
