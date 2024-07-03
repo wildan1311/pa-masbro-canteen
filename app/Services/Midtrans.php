@@ -45,8 +45,6 @@ class Midtrans
         return [
             'payment_type' => 'qris',
             "enabled_payments" => [
-                "gopay",
-                "shopeepay",
                 "other_qris"
             ],
             'transaction_details' => $this->getTransaksiDetail(),
