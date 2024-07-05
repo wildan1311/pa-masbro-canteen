@@ -63,7 +63,7 @@ class TenantController extends Controller
 
         $validator = Validator::make($request->all(), [
             // 'menu_id' => 'required',
-            'harga' => 'required|numeric',
+            'harga' => 'required|numeric|gt:0',
             'nama_menu' => 'required',
             'deskripsi_menu' => 'nullable',
             'kategori_id' => 'required',
