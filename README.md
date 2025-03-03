@@ -22,4 +22,5 @@ Masbro Canteen adalah aplikasi backend yang dikembangkan dengan Laravel untuk me
 
 ## INSTALASI
 
+COBA
 Untuk panduan instalasi lengkap, silakan merujuk ke [dokumentasi instalasi](https://docs.google.com/document/d/1mAcbCVxYK4zhBlL0tTO9HNJomXcY-gjLZA5OzJmG5p0/edit?usp=drive_link).
